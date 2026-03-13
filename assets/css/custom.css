@@ -1,0 +1,25 @@
+/* SEBASTIAN'S CUSTOM CHANGES */
+
+/* 1. Der dicke Trennbalken zwischen den Projekten */
+.posts > article {
+    border-left: 6px solid #eeeeee !important;
+    border-top: 6px solid #eeeeee !important;
+    padding: 3rem 0 0 3rem !important; /* Erzeugt Platz für die dicke Linie */
+}
+
+/* 2. Text rückt direkt ans Video */
+/* Entfernt den Standard-Abstand unter dem Video-Container */
+.posts article .image.fit {
+    margin-bottom: 0px !important;
+}
+
+/* Entfernt den Standard-Abstand über dem Text-Absatz */
+.posts article p {
+    margin-top: 5px !important; 
+    padding-top: 0px !important;
+}
+
+/* Optional: Die Überschrift auch etwas näher ans Video */
+.posts article header {
+    margin-bottom: 0.5rem !important;
+}

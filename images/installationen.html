@@ -1,0 +1,439 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>Installationen — Sebastian Steffen</title>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+        <link rel="stylesheet" href="assets/css/main.css" />
+        <link rel="stylesheet" href="assets/css/custom.css" />
+        <noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+     <style>
+
+    /* ╔══════════════════════════════════════════════════════════════╗
+       ║   ZENTRALE FARBVARIABLEN – nur hier anpassen                ║
+       ╠══════════════════════════════════════════════════════════════╣
+       ║  --accent            Gold: Kunde/Jahr/Rolle/Labels           ║
+       ║  --hover-outline     Rahmen Kacheln + Nav beim Hover         ║
+       ║  --nav-text          Registertext normal                     ║
+       ║  --nav-text-hover    Registertext beim Hover                 ║
+       ║  --nav-active-text   Aktiver Tab: Textfarbe                  ║
+       ║  --nav-active-bg     Aktiver Tab: Hintergrund                ║
+       ║  --nav-active-border Aktiver Tab: Rahmen                     ║
+       ║  --card-bg           Kachel-Hintergrund normal               ║
+       ║  --card-hover-bg     Kachel-Hintergrund beim Hover           ║
+       ║  --card-title        Kacheltitel Farbe (h2)                  ║
+       ║  --btn-border        "Mehr dazu" Rahmen normal               ║
+       ║  --border            Interne Trennlinien                     ║
+       ║  --muted             Gedämpfter Text (Copyright etc.)        ║
+       ╚══════════════════════════════════════════════════════════════╝ */
+    :root {
+        --black:              #0a0a0a;
+        --dark:               #111318;
+
+        --accent:             #c8a97e;          /* Gold: Labels Kunde/Jahr/Rolle/Tools        */
+        --border:             #2a2d36;          /* Interne Trennlinien                        */
+        --muted:              #aaaaaa;          /* Gedämpfter Text                            */
+        --hover-outline:      #ffffff;          /* Rahmen Kacheln + Nav beim Hover            */
+        --nav-text:           #888888;          /* Registertext normal                        */
+        --nav-text-hover:     #c0c0c0;          /* Registertext beim Hover                    */
+        --nav-active-text:    #ffffff;          /* Aktiver Tab: Textfarbe                     */
+        --nav-active-bg:      transparent;      /* Aktiver Tab: kein Hintergrund              */
+        --nav-active-border:  transparent;      /* Aktiver Tab: kein Rahmen                   */
+        --card-bg:            #111318;          /* Kachel normaler Hintergrund                */
+        --card-hover-bg:      #15181f;          /* Kachel Hintergrund beim Hover              */
+        --card-title:         #ffffff;          /* Kacheltitel (h2)                           */
+        --btn-border:         rgba(255,255,255,0.22); /* "Mehr dazu" Rahmen normal            */
+    }
+
+    a, a:hover, a:focus, a:active, a:visited {
+        color: inherit !important;
+        text-decoration: none !important;
+        border-bottom: none !important;
+    }
+        /* ── LOGO ── */
+    #header .logo {
+        color: #ffffff !important;
+        border-color: rgba(255,255,255,0.55) !important;
+        transition: border-color 0.35s ease !important;
+        outline: none !important;
+    }
+    #header .logo:hover,
+    #header .logo:focus,
+    #header .logo:active {
+        color: #ffffff !important;
+        border-color: rgba(255,255,255,0.95) !important;
+        background: transparent !important;
+        outline: none !important;
+        -webkit-tap-highlight-color: transparent !important;
+    }
+
+    /* ════════════════════════════════════════════════════
+       NAV – Ordnerreiter-Stil
+       Schmal in der Höhe, länger, flache Lasche
+    ════════════════════════════════════════════════════ */
+    #nav, #main, #footer {
+        max-width: 68rem !important;
+        width: 100% !important;
+        margin: 0 auto !important;
+    }
+    #nav {
+        border-bottom: 1px solid var(--border) !important;
+        background: transparent !important;
+        /* Tabs sitzen bündig an der Unterkante */
+        display: flex !important;
+        align-items: flex-end !important;
+        padding: 0 !important;
+    }
+    #nav ul.links {
+        display: flex !important;
+        align-items: flex-end !important;
+        gap: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        list-style: none !important;
+    }
+    #nav ul.links li a {
+        color: var(--nav-text) !important;
+        /* Ordnerreiter: flach, breit, am unteren Rand */
+        display: block !important;
+        padding: 0.28rem 1.6rem !important;      /* sehr flach in Höhe, breit */
+        letter-spacing: 0.08em !important;
+        font-size: 0.72rem !important;
+        border: 1px solid transparent !important;
+        border-bottom: none !important;           /* kein unterer Rand → "sitzt" auf der Linie */
+        border-radius: 3px 3px 0 0 !important;   /* oben leicht abgerundet */
+        transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease !important;
+        background: transparent !important;
+        line-height: 1.8 !important;
+        white-space: nowrap;
+    }
+    #nav ul.links li a:hover {
+        color: var(--nav-text-hover) !important;
+        border-color: var(--hover-outline) !important;
+        border-bottom: none !important;
+        background: rgba(255,255,255,0.04) !important;
+    }
+    /* Aktiver Tab: hebt sich ab, sitzt auf der Linie */
+    #nav ul.links li.active a,
+    #nav ul.links li.active a:hover {
+        color: #111318 !important;
+        background: #ffffff !important;
+        border-color: transparent !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.06em !important;
+    }
+
+    /* ── MAIN ── */
+    #main { padding: 0 !important; border: none !important; background-color: var(--dark) !important; }
+
+    /* ── PAGE TITLE BAR ── */
+    .page-title {
+        display: none !important;
+    }
+    .page-title .label { display: none !important; }
+    .page-title h1 { display: none !important; }
+    .page-title .page-divider { display: none !important; }
+    .feed-label {
+        font-size: 0.65rem; font-weight: 700; letter-spacing: 0.2em;
+        text-transform: uppercase; color: var(--accent);
+        display: block;
+        margin-bottom: 1.2rem;
+    }
+
+    /* ════════════════════════════════════════════════════
+       FEED – volle Breite, vertikal gestapelt
+       Kachel: Video oben (ganze Breite), Info darunter
+       Trennung: goldener Strich zwischen Projekten
+    ════════════════════════════════════════════════════ */
+    .posts {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 0 !important;
+        margin: 0 auto !important;
+        padding: 0 !important;
+        max-width: 100% !important;
+        background-color: transparent !important;
+        border: none !important;
+    }
+
+    /* Wrapper pro Projekt: Kachel + Trennstrich */
+    .posts article {
+        width: 100% !important;
+        background-color: var(--card-bg) !important;
+        box-sizing: border-box !important;
+        border: none !important;
+        padding: 3.5rem 4rem !important;
+        display: flex !important;
+        flex-direction: column !important;
+        position: relative;
+        transition: background 0.3s ease;
+    }
+    .posts article::before { display: none !important; }
+
+    /* Eleganter goldener Trennstrich zwischen Projekten */
+    .posts article { position: relative; }
+    .posts article::after { display: none !important; }
+
+    .posts article:hover { background-color: var(--card-hover-bg) !important; }
+
+    /* Video – volle Breite mit seitlichem Atemraum, 16:9 */
+    .posts article .image.fit {
+        width: 100% !important;
+        margin: 1.2rem 0 0 !important;
+        padding-top: 56.25% !important;
+        position: relative !important;
+        overflow: hidden !important;
+        height: 0 !important;
+        flex-shrink: 0;
+        border-radius: 3px;
+        overflow: hidden;
+    }
+    .posts article .image.fit iframe {
+        position: absolute !important;
+        top: 0; left: 0;
+        width: 100% !important;
+        height: 100% !important;
+        display: block;
+        transition: transform 0.5s ease, filter 0.3s ease;
+        filter: brightness(0.92);
+        transform: scale(1);
+    }
+    .posts article:hover .image.fit iframe {
+        transform: scale(1.03);
+        filter: brightness(1);
+    }
+
+    /* Titel: kein extra padding, article-padding reicht */
+    .posts article header {
+        width: 100% !important;
+        max-width: none;
+        margin: 0 !important;
+        padding: 0 0 0.3rem 0 !important;
+        border-bottom: none !important;
+        pointer-events: none;
+        display: flex; flex-direction: column;
+        min-height: auto !important;
+    }
+    .posts article header h2 {
+        color: var(--card-title) !important;
+        margin: 0 0 0.5rem 0 !important;
+        padding: 0 !important;
+        cursor: default;
+        text-align: left !important;
+    }
+    .posts article header h2 a { color: var(--card-title) !important; pointer-events: none; }
+
+    /* Metadaten: unter Video, zentriert, | getrennt, einheitliche Schrift */
+    .project-meta {
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 1rem 0 0 0 !important;
+        border-bottom: none !important;
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: wrap !important;
+        justify-content: flex-start !important;
+        align-items: center !important;
+        gap: 0 !important;
+        padding: 0.45rem 0 0.9rem 0 !important;
+    }
+    .meta-row {
+        display: flex; align-items: center;
+        font-size: 0.75rem;
+        color: rgba(255,255,255,0.45);
+        line-height: 1;
+    }
+    /* | Trenner zwischen den Einträgen */
+    .meta-row + .meta-row::before {
+        content: '|';
+        color: rgba(255,255,255,0.18);
+        margin: 0 0.65rem;
+        font-weight: 300;
+    }
+    .meta-label {
+        font-size: 0.75rem;
+        font-weight: normal;
+        text-transform: none;
+        letter-spacing: normal;
+        color: rgba(255,255,255,0.45);
+        flex-shrink: 0;
+        margin-right: 0.3rem;
+    }
+    .meta-value { font-size: 0.75rem; color: rgba(255,255,255,0.45); }
+
+    /* Beschreibung + Button: zentriert */
+    .desc-wrap {
+        width: 100% !important;
+        max-width: none;
+        margin: 0 !important;
+        padding: 0 !important;
+        display: flex; flex-direction: column;
+        position: relative; z-index: 1;
+    }
+    .desc-short {
+        font-size: 0.9rem !important; line-height: 1.7 !important;
+        color: #ffffff !important; margin: 1.2rem 0 0 !important;
+    }
+    .desc-long {
+        font-size: 0.9rem !important; line-height: 1.7 !important;
+        color: #ffffff !important; margin-top: 0.6rem !important;
+        max-height: 0; overflow: hidden;
+        transition: max-height 0.4s ease;
+    }
+    .desc-long.open { max-height: 400px; }
+
+    /* "Mehr dazu" Button */
+    .btn-mehr {
+        align-self: center;
+        margin-top: 1rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.7rem !important;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: rgba(255,255,255,0.5) !important;
+        cursor: pointer;
+        border: 1px solid var(--btn-border) !important;
+        background: none;
+        padding: 0.45em 1.4em !important;
+        line-height: 1 !important;
+        opacity: 1;
+        pointer-events: auto;
+        transition: border-color 0.3s ease, color 0.3s ease !important;
+        outline: none !important;
+    }
+    .btn-mehr::before { display: none !important; }
+    .btn-mehr:hover {
+        color: #ffffff !important;
+        border-color: var(--hover-outline) !important;
+        background: transparent !important;
+    }
+    .btn-mehr.open {
+        border-color: rgba(255,255,255,0.35) !important;
+        color: rgba(255,255,255,0.7) !important;
+    }
+    .btn-mehr.open:hover {
+        border-color: var(--hover-outline) !important;
+        color: #ffffff !important;
+    }
+
+    /* ── FOOTER ── */
+    #footer { padding: 1.5rem 0 !important; border-top: 1px solid var(--border) !important; }
+    #copyright { color: var(--muted) !important; }
+
+    @media screen and (max-width: 768px) {
+        #nav, #main, #footer { max-width: 100% !important; }
+        #nav ul.links li a { padding: 0.28rem 0.9rem !important; font-size: 0.65rem !important; }
+        .posts article { padding: 2rem 1.4rem !important; }
+    }
+
+    </style>
+    </head>
+    <body class="is-preload">
+        <div id="wrapper" class="fade-in">
+
+            <header id="header">
+                <a href="index.html" class="logo">Sebastian Steffen</a>
+            </header>
+
+            <nav id="nav">
+                <ul class="links">
+                    <li><a href="index.html">Videoarbeiten</a></li>
+                    <li class="active"><a href="installationen.html">Interaktive Installationen</a></li>
+                    <li><a href="generic.html">Über mich</a></li>
+                </ul>
+            </nav>
+
+            <div id="main">
+</div>
+                <section class="posts">
+<article>
+                        <span class="feed-label">Interaktive Installationen</span>
+                        <header><h2>Nähe in Zeiten des Abstandes</h2></header>
+                        <div class="project-meta">
+                            <div class="meta-row"><span class="meta-label">Kunde</span><span class="meta-value">—</span></div>
+                            <div class="meta-row"><span class="meta-label">Jahr</span><span class="meta-value">2020</span></div>
+                            <div class="meta-row"><span class="meta-label">Rolle</span><span class="meta-value">Konzept, Realisation</span></div>
+                            <div class="meta-row"><span class="meta-label">Tools</span><span class="meta-value">Greenscreen, Live Video</span></div>
+                        </div>
+                        <div class="image fit">
+                            <iframe src="https://www.youtube.com/embed/L5ceI1s-aPQ" frameborder="0" allowfullscreen></iframe>
+                        </div>
+                        
+                        <div class="desc-wrap">
+                            <p class="desc-short">In Zeiten des sozialen Abstandes wollte ich eine körperliche Interaktion zwischen Menschen ermöglichen.</p>
+                            <p class="desc-long">Durch Greenscreen-Technik wurden Silhouetten von Personen an verschiedenen Standorten auf einem gemeinsamen Bildschirm zusammengeführt. Die Installation lud Besucher ein, sich trotz physischer Distanz nah zu fühlen.</p>
+                            <button class="btn-mehr" aria-expanded="false">Mehr dazu</button>
+                        </div>
+                    </article>
+
+                    <article>
+                        <header><h2>Nur einmal ein spannendes Zoom-Meeting</h2></header>
+                        <div class="project-meta">
+                            <div class="meta-row"><span class="meta-label">Kunde</span><span class="meta-value">—</span></div>
+                            <div class="meta-row"><span class="meta-label">Jahr</span><span class="meta-value">2021</span></div>
+                            <div class="meta-row"><span class="meta-label">Rolle</span><span class="meta-value">Konzept, Technik</span></div>
+                            <div class="meta-row"><span class="meta-label">Tools</span><span class="meta-value">Roboterarm, Zoom API</span></div>
+                        </div>
+                        <div class="image fit">
+                            <iframe src="https://www.youtube.com/embed/jmodYfB7A3Y" frameborder="0" allowfullscreen></iframe>
+                        </div>
+                        
+                        <div class="desc-wrap">
+                            <p class="desc-short">Ein kollektives Werk im analogen Raum, gezeichnet durch einen Roboterarm.</p>
+                            <p class="desc-long">Der Arm wurde via Zoom-Call von verschiedenen Personen gesteuert. Das Ergebnis ist ein gemeinsames Bild — ein Experiment über kollektive Kreativität im digitalen Raum.</p>
+                            <button class="btn-mehr" aria-expanded="false">Mehr dazu</button>
+                        </div>
+                    </article>
+
+                    <article>
+                        <header><h2>Game 3D</h2></header>
+                        <div class="project-meta">
+                            <div class="meta-row"><span class="meta-label">Kunde</span><span class="meta-value">—</span></div>
+                            <div class="meta-row"><span class="meta-label">Jahr</span><span class="meta-value">2022</span></div>
+                            <div class="meta-row"><span class="meta-label">Rolle</span><span class="meta-value">Design, Produktion</span></div>
+                            <div class="meta-row"><span class="meta-label">Tools</span><span class="meta-value">Lasercutter, CAD</span></div>
+                        </div>
+                        <div class="image fit">
+                            <iframe src="https://www.youtube.com/embed/JV3vo9Kng8g" frameborder="0" allowfullscreen></iframe>
+                        </div>
+                        
+                        <div class="desc-wrap">
+                            <p class="desc-short">Ein kooperatives mechanisches Spiel aus 101 gelaserten Teilen.</p>
+                            <p class="desc-long">Das Spiel fordert mehrere Spieler zur Zusammenarbeit auf und funktioniert rein mechanisch — ohne Elektronik oder Bildschirm. Jedes Teil wurde in CAD konstruiert und mit dem Lasercutter gefertigt.</p>
+                            <button class="btn-mehr" aria-expanded="false">Mehr dazu</button>
+                        </div>
+                    </article>
+                </section>
+            </div>
+
+            <div id="copyright">
+                <ul><li>&copy; Sebastian Steffen</li><li>2026</li></ul>
+            </div>
+
+        </div>
+
+        <script src="assets/js/jquery.min.js"></script>
+        <script src="assets/js/jquery.scrollex.min.js"></script>
+        <script src="assets/js/jquery.scrolly.min.js"></script>
+        <script src="assets/js/browser.min.js"></script>
+        <script src="assets/js/breakpoints.min.js"></script>
+        <script src="assets/js/util.js"></script>
+        <script src="assets/js/main.js"></script>
+
+        <script>
+        document.querySelectorAll('.btn-mehr').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var long   = btn.closest('.desc-wrap').querySelector('.desc-long');
+                var isOpen = long.classList.contains('open');
+                long.classList.toggle('open');
+                btn.classList.toggle('open');
+                btn.textContent = isOpen ? 'Mehr dazu' : 'Weniger';
+                btn.setAttribute('aria-expanded', String(!isOpen));
+            });
+        });
+        </script>
+
+    </body>
+</html>
