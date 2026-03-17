@@ -304,9 +304,20 @@
         .icons.alt li a:hover { color: #ffffff !important; border-color: var(--accent) !important; background: transparent !important; }
 
         @media screen and (max-width: 980px) {
-            .about-wrapper { grid-template-columns: 1fr; }
-            .about-image { min-height: 50vw; }
-            .about-text { border-left: none; border-top: 1px solid var(--border); padding: 2.5rem 2rem; }
+            #wrapper { overflow-x: hidden !important; }
+            #nav, #main, #footer { max-width: 100% !important; }
+            .about-wrapper { grid-template-columns: 1fr; overflow: hidden; }
+            .about-image { min-height: 50vw; width: 100%; max-width: 100%; overflow: hidden; }
+            .about-image img { width: 100% !important; max-width: 100% !important; }
+            .about-text {
+                border-left: none;
+                border-top: 1px solid var(--border);
+                padding: 2.5rem 1.4rem;
+                width: 100%;
+                max-width: 100%;
+                box-sizing: border-box !important;
+            }
+            .about-text h1 { font-size: 1.4rem !important; }
             #footer { flex-direction: column; gap: 1.5rem; }
         }
     </style>
@@ -350,7 +361,7 @@
                 </section>
                 <section>
                     <h3>E-Mail</h3>
-                    <p><a href="mailto:sebastian.steffen@hyperwerk.ch">sebastian.steffen@hyperwerk.ch</a></p>
+                    <p><a href="/cdn-cgi/l/email-protection#720117101301061b131c5c0106171414171c321a0b021700051700195c111a"><span class="__cf_email__" data-cfemail="99eafcfbf8eaedf0f8f7b7eaedfcfffffcf7d9f1e0e9fcebeefcebf2b7faf1">[email&#160;protected]</span></a></p>
                 </section>
                 <section>
                     <h3>Social</h3>
@@ -367,7 +378,7 @@
         </div>
 
 
-        <script src="assets/js/jquery.min.js"></script>
+        <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="assets/js/jquery.min.js"></script>
         <script src="assets/js/jquery.scrollex.min.js"></script>
         <script src="assets/js/jquery.scrolly.min.js"></script>
         <script src="assets/js/browser.min.js"></script>
@@ -389,10 +400,4 @@
         });
         </script>
 
-        <script>
-        /* ── Intro nur beim ersten Besuch der Session ── */
-        (function() {
-            var intro = document.getElementById('intro');
-            if (!intro) return;
-            if (sessionStorage.getItem('intro_seen')) {
-                intro.s
+        <scr

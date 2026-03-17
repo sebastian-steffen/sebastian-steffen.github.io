@@ -371,18 +371,18 @@
             overflow: hidden !important;
         }
 
-        /* Metadaten: 2 pro Zeile, untereinander */
+        /* Metadaten: 2 pro Zeile */
         .project-meta {
             display: grid !important;
             grid-template-columns: 1fr 1fr !important;
             gap: 0.5rem 0 !important;
             padding: 0.6rem 0 0.8rem 0 !important;
         }
-        /* Trennstrich-Pseudo entfernen — Grid übernimmt das Layout */
+        /* Trennstrich-Pseudo entfernen */
         .meta-row + .meta-row::before {
             display: none !important;
         }
-        /* Jede Zelle: Label oben goldfarben, Wert darunter */
+        /* Zelle: Label goldfarben oben, Wert darunter, alles linksbündig */
         .meta-row {
             display: flex !important;
             flex-direction: column !important;
@@ -397,13 +397,19 @@
             letter-spacing: 0.12em !important;
             color: var(--accent) !important;
             margin-right: 0 !important;
+            display: block !important;
+            text-align: left !important;
         }
+        /* Kritisch: block + left verhindert Zentrierung bei Zeilenumbruch */
         .meta-value {
+            display: block !important;
             font-size: 0.78rem !important;
             color: rgba(255,255,255,0.7) !important;
+            text-align: left !important;
+            width: 100% !important;
         }
 
-        /* Titel-Schriftgrösse anpassen */
+        /* Titel-Schriftgrösse */
         .posts article header h2 {
             font-size: 1.1rem !important;
         }
