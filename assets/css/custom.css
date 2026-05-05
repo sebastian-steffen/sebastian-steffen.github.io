@@ -1,25 +1,563 @@
-/* SEBASTIAN'S CUSTOM CHANGES */
+/* ════════════════════════════════════════════════════════════════════
+   SEBASTIAN STEFFEN — Portfolio Custom Styles
+   Iteration 2: Apple-inspired refinement (system fonts, frosted nav,
+   borderless articles, focus-mode hover, refined motion)
 
-/* 1. Der dicke Trennbalken zwischen den Projekten */
-.posts > article {
-    border-left: 6px solid #eeeeee !important;
-    border-top: 6px solid #eeeeee !important;
-    padding: 3rem 0 0 3rem !important; /* Erzeugt Platz für die dicke Linie */
+   WICHTIG: Alles hier überschreibt absichtlich die inline <style>-
+   Blöcke der einzelnen HTML-Seiten via "html body"-Präfix
+   (höhere Spezifität als die ".posts article"-Regeln dort).
+   ════════════════════════════════════════════════════════════════════ */
+
+/* ── Fonts: System-Stack wie Apple/Microsoft sie nativ liefern ──
+   Auf Mac: SF Pro Text; auf Windows: Segoe UI; auf Linux: system-ui.
+   Kein externer Download nötig — schnell und immer "native" Look. */
+/* html:root hat höhere Spezifität (0,1,1) als das :root (0,1,0) im
+   inline <style> der einzelnen HTML-Seiten — gewinnt also den Cascade. */
+html:root {
+    --accent:           #d9c19a !important;
+    --accent-soft:      rgba(217,193,154,0.6) !important;
+    --bg-deep:          #050507 !important;
+    --bg-soft:          #0d0d10 !important;
+    --text-primary:     #f5f5f7 !important;
+    --text-secondary:   rgba(245,245,247,0.65) !important;
+    --text-tertiary:    rgba(245,245,247,0.4) !important;
+    --hairline:         rgba(245,245,247,0.07) !important;
+    --hairline-strong:  rgba(245,245,247,0.16) !important;
+    --ease-apple:       cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
-/* 2. Text rückt direkt ans Video */
-/* Entfernt den Standard-Abstand unter dem Video-Container */
-.posts article .image.fit {
-    margin-bottom: 0px !important;
+html body, html body input, html body button, html body textarea {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text",
+                 "Segoe UI Variable", "Segoe UI", system-ui,
+                 "Helvetica Neue", sans-serif !important;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    letter-spacing: -0.011em;
+}
+html, body {
+    background: var(--bg-deep) !important;
+    color: var(--text-primary);
 }
 
-/* Entfernt den Standard-Abstand über dem Text-Absatz */
-.posts article p {
-    margin-top: 5px !important; 
-    padding-top: 0px !important;
+/* ════════════════════════════════════════════════════════════════════
+   HEADER + LOGO
+   ════════════════════════════════════════════════════════════════════ */
+html body #header {
+    padding: 2.5rem 0 0 0 !important;
+    text-align: center !important;
+    background: transparent !important;
+    border: none !important;
+}
+html body #header .logo {
+    display: inline-block !important;
+    font-size: 2.1rem !important;
+    letter-spacing: 0.12em !important;
+    text-transform: uppercase !important;
+    font-weight: 500 !important;
+    border: none !important;
+    padding: 0 !important;
+    color: var(--text-primary) !important;
+    transition: color 0.4s var(--ease-apple) !important;
+}
+html body #header .logo:hover { color: var(--text-primary) !important; }
+
+/* ════════════════════════════════════════════════════════════════════
+   NAV — Apple-Style Frosted Pill mit Sliding Active-State
+   ════════════════════════════════════════════════════════════════════ */
+html body #nav {
+    position: sticky !important;
+    top: 1rem !important;
+    z-index: 100 !important;
+    background: transparent !important;
+    border: none !important;
+    border-bottom: none !important;
+    display: flex !important;
+    justify-content: center !important;
+    margin: 1.5rem auto 5rem auto !important;
+    padding: 0 !important;
+    /* main.css setzt width: calc(100% - 4rem) + overflow: hidden →
+       beschneidet die Pill-Enden → sichtbares asymmetrisches Clipping killen */
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: visible !important;
+    height: auto !important;
+}
+html body #nav ul.links {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.15rem !important;
+    background: rgba(15, 15, 18, 0.72) !important;
+    backdrop-filter: saturate(180%) blur(22px) !important;
+    -webkit-backdrop-filter: saturate(180%) blur(22px) !important;
+    border: 1px solid var(--hairline) !important;
+    border-radius: 999px !important;
+    padding: 0.35rem !important;
+    margin: 0 !important;
+    list-style: none !important;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.35),
+                inset 0 1px 0 rgba(255,255,255,0.04);
+}
+html body #nav ul.links li { margin: 0 !important; padding: 0 !important; }
+/* main.css setzt li.active { background: white } — das killen wir hier */
+html body #nav ul.links li.active {
+    background-color: transparent !important;
+    background: transparent !important;
+}
+html body #nav ul.links li a {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 0.55rem 1.2rem !important;
+    font-size: 0.78rem !important;
+    letter-spacing: 0.005em !important;
+    color: var(--text-secondary) !important;
+    border: none !important;
+    border-radius: 999px !important;
+    background: transparent !important;
+    transition: color 0.4s var(--ease-apple),
+                background 0.4s var(--ease-apple) !important;
+    white-space: nowrap !important;
+    font-weight: 500 !important;
+    line-height: 1 !important;
+}
+html body #nav ul.links li a:hover {
+    color: var(--text-primary) !important;
+    background: rgba(245,245,247,0.06) !important;
+    border: none !important;
+}
+html body #nav ul.links li a:focus,
+html body #nav ul.links li a:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+    border: none !important;
+}
+html body #nav ul.links li.active a,
+html body #nav ul.links li.active a:hover,
+html body #nav ul.links li.active a:focus,
+html body #nav ul.links li.active a:focus-visible {
+    color: var(--bg-deep) !important;
+    background: var(--accent) !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    font-weight: 600 !important;
 }
 
-/* Optional: Die Überschrift auch etwas näher ans Video */
-.posts article header {
-    margin-bottom: 0.5rem !important;
+/* ════════════════════════════════════════════════════════════════════
+   MAIN + WRAPPER
+   ════════════════════════════════════════════════════════════════════ */
+html body #wrapper { background: var(--bg-deep) !important; }
+html body #main {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    max-width: 64rem !important;
+    margin: 0 auto !important;
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   INTRO (nur erste Seite)
+   ════════════════════════════════════════════════════════════════════ */
+html body #intro h1 {
+    font-size: clamp(3rem, 9vw, 6.5rem) !important;
+    font-weight: 200 !important;
+    letter-spacing: -0.04em !important;
+    line-height: 1 !important;
+    color: var(--text-primary) !important;
+}
+html body #intro p {
+    font-size: 0.85rem !important;
+    letter-spacing: 0.4em !important;
+    text-transform: uppercase !important;
+    font-weight: 400 !important;
+    color: rgba(255,255,255,0.7) !important;
+}
+html body #intro .button.icon {
+    border-radius: 999px !important;
+    border: 1px solid rgba(255,255,255,0.4) !important;
+    padding: 0.7rem 1.4rem !important;
+    transition: all 0.4s var(--ease-apple) !important;
+}
+html body #intro .button.icon:hover {
+    background: rgba(255,255,255,0.1) !important;
+    border-color: rgba(255,255,255,0.8) !important;
+    transform: translateY(-2px);
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   ARTICLES — borderless, viel Atemraum, Hairline-Trennung
+   ════════════════════════════════════════════════════════════════════ */
+html body .posts {
+    counter-reset: project;
+    background: transparent !important;
+}
+html body .posts > article {
+    counter-increment: project;
+    background: transparent !important;
+    border: none !important;
+    border-top: 1px solid var(--hairline) !important;
+    padding: 5rem 2rem !important;
+    margin: 0 !important;
+    position: relative !important;
+    transition: opacity 0.5s var(--ease-apple),
+                transform 0.5s var(--ease-apple) !important;
+
+    /* Reveal-on-scroll initial state (siehe custom.js) */
+    opacity: 0;
+    transform: translateY(30px);
+}
+html body .posts > article.is-revealed {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.8s var(--ease-apple),
+                transform 0.8s var(--ease-apple) !important;
+}
+html body .posts > article:first-of-type {
+    border-top: none !important;
+    padding-top: 1rem !important;
+}
+html body .posts > article:hover { background: transparent !important; }
+
+/* Hover: Artikel expandiert leicht nach aussen */
+@media (hover: hover) {
+    html body .posts > article.is-revealed:hover {
+        transform: scale(1.012) !important;
+        z-index: 2;
+    }
+}
+
+/* Projekt-Nummerierung (von Iteration 1, jetzt eleganter) */
+html body .posts > article::before {
+    content: counter(project, decimal-leading-zero) "  /  " var(--total-projects, "08") !important;
+    display: block !important;
+    position: absolute !important;
+    top: 5rem !important;
+    right: 2rem !important;
+    font-size: 0.65rem !important;
+    letter-spacing: 0.32em !important;
+    color: var(--accent) !important;
+    opacity: 0.55 !important;
+    font-weight: 500 !important;
+    z-index: 5 !important;
+}
+html body .posts > article:first-of-type::before { top: 1rem !important; }
+
+/* Feed-Label (Videoarbeiten / Installationen) */
+html body .posts > article .feed-label {
+    font-size: 0.62rem !important;
+    letter-spacing: 0.32em !important;
+    text-transform: uppercase !important;
+    color: var(--text-tertiary) !important;
+    margin-bottom: 1.2rem !important;
+    font-weight: 500 !important;
+}
+
+/* ── Titel: gross, tight, refined ── */
+html body .posts > article header {
+    margin: 0 0 1rem 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    background: transparent !important;
+}
+html body .posts > article header h2 {
+    font-size: clamp(1.5rem, 3.4vw, 2.6rem) !important;
+    font-weight: 600 !important;
+    letter-spacing: -0.028em !important;
+    line-height: 1.05 !important;
+    color: var(--text-primary) !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    text-align: left !important;
+}
+
+/* ── Metadaten: gedämpft, einzeilig | getrennt ── */
+html body .project-meta {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    margin: 0 0 1.5rem 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    gap: 0 !important;
+}
+html body .meta-row {
+    display: flex !important;
+    align-items: center !important;
+    font-size: 0.78rem !important;
+    color: var(--text-tertiary) !important;
+    line-height: 1.4 !important;
+}
+html body .meta-row + .meta-row::before {
+    content: '·' !important;
+    color: var(--text-tertiary) !important;
+    margin: 0 0.7rem !important;
+    font-weight: 400 !important;
+    opacity: 0.6;
+}
+html body .meta-label {
+    color: var(--accent) !important;
+    font-size: 0.72rem !important;
+    letter-spacing: 0.08em !important;
+    text-transform: uppercase !important;
+    font-weight: 500 !important;
+    margin-right: 0.45rem !important;
+    opacity: 0.75;
+}
+html body .meta-value {
+    color: var(--text-secondary) !important;
+    font-size: 0.78rem !important;
+    font-weight: 400 !important;
+}
+
+/* ── Video-Container: weiche Rundung, smoother Filter-Hover ── */
+html body .posts > article .image.fit {
+    border-radius: 14px !important;
+    overflow: hidden !important;
+    margin: 1.5rem 0 0 0 !important;
+    padding-top: 56.25% !important;
+    position: relative !important;
+    height: 0 !important;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4),
+                0 0 0 1px var(--hairline);
+}
+html body .posts > article .image.fit iframe {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    border: none !important;
+    filter: saturate(0.9) brightness(0.95) !important;
+    transform: none !important;
+    transition: filter 0.6s var(--ease-apple) !important;
+}
+html body .posts > article:hover .image.fit iframe {
+    filter: saturate(1.05) brightness(1) !important;
+    transform: none !important;
+}
+
+/* ── Beschreibung ── */
+html body .desc-wrap {
+    margin: 0 !important;
+    padding: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+}
+html body .desc-short {
+    font-size: 1.02rem !important;
+    line-height: 1.65 !important;
+    color: var(--text-secondary) !important;
+    font-weight: 400 !important;
+    margin: 1.5rem 0 0 0 !important;
+    letter-spacing: -0.005em !important;
+    max-width: 50rem;
+}
+html body .desc-long {
+    font-size: 1.02rem !important;
+    line-height: 1.65 !important;
+    color: var(--text-secondary) !important;
+    font-weight: 400 !important;
+    margin-top: 0.8rem !important;
+    max-height: 0 !important;
+    overflow: hidden !important;
+    transition: max-height 0.5s var(--ease-apple) !important;
+    letter-spacing: -0.005em !important;
+    max-width: 50rem;
+}
+html body .desc-long.open { max-height: 600px !important; }
+
+/* ── "Mehr dazu" Button: Pill ── */
+html body .btn-mehr {
+    align-self: flex-start !important;
+    margin-top: 1.5rem !important;
+    padding: 0.65rem 1.4rem !important;
+    font-size: 0.7rem !important;
+    letter-spacing: 0.18em !important;
+    text-transform: uppercase !important;
+    font-weight: 500 !important;
+    color: var(--text-secondary) !important;
+    background: transparent !important;
+    border: 1px solid var(--hairline-strong) !important;
+    border-radius: 999px !important;
+    cursor: pointer !important;
+    transition: all 0.4s var(--ease-apple) !important;
+    line-height: 1 !important;
+}
+html body .btn-mehr:hover {
+    background: var(--accent) !important;
+    color: var(--bg-deep) !important;
+    border-color: var(--accent) !important;
+    transform: translateY(-1px);
+}
+html body .btn-mehr.open {
+    background: rgba(245,245,247,0.06) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--hairline-strong) !important;
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   SCROLL PROGRESS & CUSTOM CURSOR (Iteration 1, refined)
+   ════════════════════════════════════════════════════════════════════ */
+#scroll-progress {
+    position: fixed !important;
+    top: 0; left: 0;
+    height: 1px !important;
+    width: 0%;
+    background: linear-gradient(90deg, var(--accent-soft), var(--accent)) !important;
+    z-index: 9999;
+    pointer-events: none;
+    transition: width 0.08s linear;
+    box-shadow: 0 0 12px rgba(217,193,154,0.5) !important;
+}
+
+/* Cursor: Standard-Browser-Zeiger */
+
+/* ════════════════════════════════════════════════════════════════════
+   BASEL EASTER EGG — tippe B-A-S-E-L
+   ════════════════════════════════════════════════════════════════════ */
+body.basel-flash::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(ellipse at center,
+                rgba(217,193,154,0.18) 0%,
+                rgba(217,193,154,0) 70%);
+    z-index: 9997;
+    animation: baselGlow 1.4s var(--ease-apple) forwards;
+}
+@keyframes baselGlow {
+    0%   { opacity: 0; transform: scale(0.8); }
+    25%  { opacity: 1; transform: scale(1.05); }
+    100% { opacity: 0; transform: scale(1.2); }
+}
+#basel-toast {
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    background: rgba(15,15,18,0.92);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--accent);
+    color: var(--text-primary);
+    padding: 1rem 2rem;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    font-weight: 500;
+    z-index: 10000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s var(--ease-apple),
+                transform 0.5s var(--ease-apple);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+}
+#basel-toast.show {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+#basel-toast .heart { color: var(--accent); margin: 0 0.3rem; }
+
+/* ════════════════════════════════════════════════════════════════════
+   FOOTER
+   ════════════════════════════════════════════════════════════════════ */
+html body #footer {
+    background: transparent !important;
+    border-top: 1px solid var(--hairline) !important;
+    padding: 3rem 2rem !important;
+    margin-top: 6rem !important;
+    max-width: 64rem !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+html body #copyright {
+    color: var(--text-tertiary) !important;
+    font-size: 0.72rem !important;
+    letter-spacing: 0.18em !important;
+    text-transform: uppercase !important;
+}
+html body #copyright ul { padding: 0 !important; margin: 0 !important; }
+html body #copyright li { border: none !important; padding: 0 0.8rem !important; }
+
+/* ════════════════════════════════════════════════════════════════════
+   MOBILE — alles wird kleiner und gestapelter
+   ════════════════════════════════════════════════════════════════════ */
+/* Template-Hamburger ausblenden — wir nutzen unser eigenes Pill-Nav */
+html body #navPanelToggle,
+html body #navPanel,
+html body #titleBar { display: none !important; visibility: hidden !important; }
+/* Verhindere dass Template das Body verschiebt wenn navPanel offen */
+html body.navPanel-visible #wrapper { transform: none !important; }
+
+@media (max-width: 768px) {
+    html body #header { padding: 1.5rem 0 0 0 !important; }
+    html body #header .logo { font-size: 0.62rem !important; letter-spacing: 0.28em !important; }
+
+    html body #nav {
+        margin: 1rem auto 3rem auto !important;
+        top: 0.5rem !important;
+        padding: 0 1rem !important;
+    }
+    html body #nav ul.links {
+        padding: 0.3rem !important;
+        gap: 0.05rem !important;
+    }
+    html body #nav ul.links li a {
+        padding: 0.5rem 0.85rem !important;
+        font-size: 0.68rem !important;
+    }
+
+    html body #main { padding: 0 1rem !important; }
+
+    html body .posts > article {
+        padding: 3.5rem 0 !important;
+    }
+    html body .posts > article:first-of-type { padding-top: 1rem !important; }
+
+    html body .posts > article::before {
+        top: 3.5rem !important;
+        right: 0 !important;
+        font-size: 0.55rem !important;
+        letter-spacing: 0.28em !important;
+    }
+    html body .posts > article:first-of-type::before { top: 1rem !important; }
+
+    html body .posts > article header h2 {
+        font-size: 1.55rem !important;
+        letter-spacing: -0.022em !important;
+    }
+    html body .posts > article .image.fit { border-radius: 10px !important; }
+
+    /* Metadaten: Gold-Label oben, Wert darunter, 2 Spalten */
+    html body .project-meta {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 0.7rem 1rem !important;
+        margin: 0.5rem 0 1.2rem 0 !important;
+    }
+    html body .meta-row {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 0.15rem !important;
+    }
+    html body .meta-row + .meta-row::before { display: none !important; }
+    html body .meta-label {
+        font-size: 0.58rem !important;
+        letter-spacing: 0.14em !important;
+    }
+    html body .meta-value { font-size: 0.78rem !important; }
+
+    html body .desc-short, html body .desc-long {
+        font-size: 0.95rem !important;
+        line-height: 1.6 !important;
+    }
+
+    /* Custom Cursor auf Mobile sowieso aus (siehe custom.js — pointer:fine) */
+
+    /* Focus-Mode auf Mobile aus */
+    html body .posts:hover > article.is-revealed { opacity: 1 !important; }
+
+    html body #footer { padding: 2rem 1rem !important; margin-top: 3rem !important; }
 }
