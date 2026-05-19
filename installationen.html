@@ -7,6 +7,8 @@
         <link rel="stylesheet" href="assets/css/main.css" />
         <link rel="stylesheet" href="assets/css/custom.css" />
         <noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+        <!-- Cursor-Klasse sofort setzen → kein nativer Pfeil beim Seitenwechsel -->
+        <script>if(window.matchMedia('(pointer:fine)').matches)document.documentElement.classList.add('has-custom-cursor');</script>
      <style>
 
     /* ╔══════════════════════════════════════════════════════════════╗
@@ -416,30 +418,40 @@
             </div>
             <div class="desc-wrap">
                 <p class="desc-short">"Become a Star ist ein Koop-Spiel, das viel Spaß macht und die Kommunikation zwischen den Spielern auf die Probe stellt."</p>
-                <p class="desc-long">Zusätzliche Details zum Entstehungsprozess und der technischen Umsetzung mit dem Raspberry Pi.</p>
+                <p class="desc-long">Durch die Kombination von Hardware und Software entsteht ein einzigartiges Spielerlebnis, das sowohl körperliche als auch mentale Fähigkeiten erfordert.
+                    Durch hohe und tiefe Töne steuern die Spieler jeweils eine Spule, die sich entsprechend der Tonhöhe bewegt. Realisiert wurde das Projekt mit einem Lasercutter für die physischen Komponenten, Python für die Softwarelogik und Arduino und Raspberry Pi für die Steuerung der Hardware.
+                </p>
                 <button class="btn-mehr">Mehr dazu</button>
             </div>
         </article>
 
+       
         <article>
-            <header>
-                <h2>Nähe in Zeiten des Abstandes</h2>
-            </header>
-            <div class="project-meta">
-                <div class="meta-row"><span class="meta-label">Jahr</span><span class="meta-value">2020</span></div>
-                <div class="meta-row"><span class="meta-label">Rolle</span><span class="meta-value">Konzept, Realisation</span></div>
-                <div class="meta-row"><span class="meta-label">Tools</span><span class="meta-value">Greenscreen, Live Video</span></div>
-            </div>
-            <div class="image fit">
-                <iframe src="https://www.youtube.com/embed/L5ceI1s-aPQ" frameborder="0" allowfullscreen></iframe>
-            </div>
-            <div class="desc-wrap">
-                <p class="desc-short">In Zeiten des sozialen Abstandes wollte ich eine körperliche Interaktion ermöglichen.</p>
-                <p class="desc-long">Durch Greenscreen-Technik wurden Silhouetten von Personen an verschiedenen Standorten auf einem gemeinsamen Bildschirm zusammengeführt.</p>
-                <button class="btn-mehr">Mehr dazu</button>
-            </div>
-        </article>
-
+    <header>
+        <h2>Doomscrolling RC Car</h2>
+    </header>
+    <div class="project-meta">
+        <div class="meta-row"><span class="meta-label">Jahr</span><span class="meta-value">2026</span></div>
+        <div class="meta-row"><span class="meta-label">Rolle</span><span class="meta-value">Konzept, Realisation</span></div>
+        <div class="meta-row"><span class="meta-label">Tools</span><span class="meta-value">RC Car, Web App, QR Code</span></div>
+    </div>
+    <div class="image fit">
+        <iframe src="https://www.youtube.com/embed/jFdTgcZ5qRY" frameborder="0" allowfullscreen></iframe>
+    </div>
+    <div class="desc-wrap">
+        <p class="desc-short">
+            Für die Ausstellung „Where do you lose time“ im Basel Art Space entstand dieses interaktive Spiel, das Doomscrolling physisch erfahrbar macht.
+        </p>
+        <p class="desc-long">
+            Zwei Spielende steuern gemeinsam ein RC-Car, indem sie jeweils eine Seite des Fahrzeugs kontrollieren. 
+            Durch das Scannen eines QR-Codes öffnet sich auf dem Smartphone „Raceagram“ – eine simulierte Social-Media-Oberfläche – und ordnet jeder Person eine Fahrzeugseite zu.
+            <br><br>
+            Durch das Scrollen im Feed bewegen sich die jeweiligen Räder je nach Richtung vorwärts oder rückwärts. Was zunächst einfach wirkt, entpuppt sich schnell als Herausforderung: 
+            Präzises Scrollen und kontinuierliche Kommunikation sind notwendig, um den Parcours erfolgreich zu bewältigen.
+        </p>
+        <button class="btn-mehr">Mehr dazu</button>
+    </div>
+</article>
         <article>
             <header>
                 <h2>Nur einmal ein spannendes Zoom-Meeting</h2>
@@ -454,7 +466,7 @@
             </div>
             <div class="desc-wrap">
                 <p class="desc-short">Ein kollektives Werk im analogen Raum, gezeichnet durch einen Roboterarm.</p>
-                <p class="desc-long">Der Arm wurde via Zoom-Call gesteuert. Das Ergebnis ist ein Experiment über kollektive Kreativität im digitalen Raum.</p>
+                <p class="desc-long">Für das jährliche Openhouse der Fhnw während der Corona Zeit haben wir Spuren in die leeren Räumen der Hochschule hinterlassen wollen wie es sonst so üblich war. Der Arm wurde via Zoom-Call gesteuert, in dem die Bewegungen auf dem Bildschirmen getracked wurden. Das Ergebnis ist ein Experiment über kollektive Kreativität im digitalen Raum.</p>
                 <button class="btn-mehr">Mehr dazu</button>
             </div>
         </article>
@@ -473,11 +485,28 @@
             </div>
             <div class="desc-wrap">
                 <p class="desc-short">Ein kooperatives mechanisches Spiel aus 101 gelaserten Teilen.</p>
-                <p class="desc-long">Das Spiel fordert mehrere Spieler zur Zusammenarbeit auf und funktioniert rein mechanisch — ohne Elektronik.</p>
+                <p class="desc-long">Das Spiel fordert mehrere Spieler zur Zusammenarbeit auf und funktioniert rein mechanisch — ohne Elektronik. Das Prinzip basiert auf der Funktion eines 3D-Druckers. Dabei habe ich einen ungenauen überdimensionierten 3D-Drucker entworfen, der mit Krubeln jeden Punkt im 3D Raum anfahren kann.</p>
                 <button class="btn-mehr">Mehr dazu</button>
             </div>
         </article>
-
+         <article>
+            <header>
+                <h2>Nähe in Zeiten des Abstandes</h2>
+            </header>
+            <div class="project-meta">
+                <div class="meta-row"><span class="meta-label">Jahr</span><span class="meta-value">2020</span></div>
+                <div class="meta-row"><span class="meta-label">Rolle</span><span class="meta-value">Konzept, Realisation</span></div>
+                <div class="meta-row"><span class="meta-label">Tools</span><span class="meta-value">Greenscreen, Live Video</span></div>
+            </div>
+            <div class="image fit">
+                <iframe src="https://www.youtube.com/embed/L5ceI1s-aPQ" frameborder="0" allowfullscreen></iframe>
+            </div>
+            <div class="desc-wrap">
+                <p class="desc-short">In Zeiten des sozialen Abstandes wollte ich eine körperliche Interaktion ermöglichen.</p>
+                <p class="desc-long">Durch Greenscreen-Technik wurden Silhouetten von Personen an verschiedenen Standorten auf einem gemeinsamen Bildschirm zusammengeführt. So konnten Menschen aus der Ferne körperlich miteinander interagieren. Die 2 Greenscreens wurden in verschiedenen Räumen installiert. Über den Bildschirmen wurden die Bewegungen in Echtzeit übertragen und überlagert. So Begegneten sich die Menschen auf einem Screen, ohne von einander zu wissen.</p>
+                <button class="btn-mehr">Mehr dazu</button>
+            </div>
+        </article>
     </section>
 </div>
             <div id="copyright">
