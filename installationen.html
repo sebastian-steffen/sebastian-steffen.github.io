@@ -8,7 +8,7 @@
         <link rel="stylesheet" href="assets/css/custom.css" />
         <noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
         <!-- Cursor-Klasse sofort setzen → kein nativer Pfeil beim Seitenwechsel -->
-        <script>if(window.matchMedia('(pointer:fine)').matches)document.documentElement.classList.add('has-custom-cursor');</script>
+        
      <style>
 
     /* ╔══════════════════════════════════════════════════════════════╗
@@ -162,7 +162,7 @@
     /* Wrapper pro Projekt: Kachel + Trennstrich */
     .posts article {
         width: 100% !important;
-        background-color: var(--card-bg) !important;
+        background-color: transparent !important;
         box-sizing: border-box !important;
         border: none !important;
         padding: 3.5rem 4rem !important;
@@ -202,7 +202,7 @@
         transform: scale(1);
     }
     .posts article:hover .image.fit iframe {
-        transform: scale(1.03);
+        transform: none;
         filter: brightness(1);
     }
 
@@ -287,7 +287,8 @@
 
     /* "Mehr dazu" Button */
     .btn-mehr {
-        align-self: center;
+        align-self: flex-start;
+        border-radius: 999px !important;
         margin-top: 1rem;
         display: inline-flex;
         align-items: center;
@@ -406,6 +407,33 @@
         <article>
             <span class="feed-label">Interaktive Installationen</span>
             <header>
+                <h2>Doomscrolling RC Car</h2>
+            </header>
+            <div class="project-meta">
+                <div class="meta-row"><span class="meta-label">Jahr</span><span class="meta-value">2026</span></div>
+                <div class="meta-row"><span class="meta-label">Rolle</span><span class="meta-value">Konzept, Realisation</span></div>
+                <div class="meta-row"><span class="meta-label">Tools</span><span class="meta-value">RC Car, Web App, QR Code</span></div>
+            </div>
+            <div class="image fit">
+                <iframe src="https://www.youtube.com/embed/jFdTgcZ5qRY" frameborder="0" allowfullscreen></iframe>
+            </div>
+            <div class="desc-wrap">
+                <p class="desc-short">
+                    Für die Ausstellung „Where do you lose time" im Basel Art Space entstand dieses interaktive Spiel, das Doomscrolling physisch erfahrbar macht.
+                </p>
+                <p class="desc-long">
+                    Zwei Spielende steuern gemeinsam ein RC-Car, indem sie jeweils eine Seite des Fahrzeugs kontrollieren.
+                    Durch das Scannen eines QR-Codes öffnet sich auf dem Smartphone „Raceagram" – eine simulierte Social-Media-Oberfläche – und ordnet jeder Person eine Fahrzeugseite zu.
+                    <br><br>
+                    Durch das Scrollen im Feed bewegen sich die jeweiligen Räder je nach Richtung vorwärts oder rückwärts. Was zunächst einfach wirkt, entpuppt sich schnell als Herausforderung:
+                    Präzises Scrollen und kontinuierliche Kommunikation sind notwendig, um den Parcours erfolgreich zu bewältigen.
+                </p>
+                <button class="btn-mehr">Mehr dazu</button>
+            </div>
+        </article>
+
+        <article>
+            <header>
                 <h2>Become a Star</h2>
             </header>
             <div class="project-meta">
@@ -424,34 +452,6 @@
                 <button class="btn-mehr">Mehr dazu</button>
             </div>
         </article>
-
-       
-        <article>
-    <header>
-        <h2>Doomscrolling RC Car</h2>
-    </header>
-    <div class="project-meta">
-        <div class="meta-row"><span class="meta-label">Jahr</span><span class="meta-value">2026</span></div>
-        <div class="meta-row"><span class="meta-label">Rolle</span><span class="meta-value">Konzept, Realisation</span></div>
-        <div class="meta-row"><span class="meta-label">Tools</span><span class="meta-value">RC Car, Web App, QR Code</span></div>
-    </div>
-    <div class="image fit">
-        <iframe src="https://www.youtube.com/embed/jFdTgcZ5qRY" frameborder="0" allowfullscreen></iframe>
-    </div>
-    <div class="desc-wrap">
-        <p class="desc-short">
-            Für die Ausstellung „Where do you lose time“ im Basel Art Space entstand dieses interaktive Spiel, das Doomscrolling physisch erfahrbar macht.
-        </p>
-        <p class="desc-long">
-            Zwei Spielende steuern gemeinsam ein RC-Car, indem sie jeweils eine Seite des Fahrzeugs kontrollieren. 
-            Durch das Scannen eines QR-Codes öffnet sich auf dem Smartphone „Raceagram“ – eine simulierte Social-Media-Oberfläche – und ordnet jeder Person eine Fahrzeugseite zu.
-            <br><br>
-            Durch das Scrollen im Feed bewegen sich die jeweiligen Räder je nach Richtung vorwärts oder rückwärts. Was zunächst einfach wirkt, entpuppt sich schnell als Herausforderung: 
-            Präzises Scrollen und kontinuierliche Kommunikation sind notwendig, um den Parcours erfolgreich zu bewältigen.
-        </p>
-        <button class="btn-mehr">Mehr dazu</button>
-    </div>
-</article>
         <article>
             <header>
                 <h2>Nur einmal ein spannendes Zoom-Meeting</h2>
@@ -536,6 +536,5 @@
             });
         });
         </script>
-
     </body>
 </html>
