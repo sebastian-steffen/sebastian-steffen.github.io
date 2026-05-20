@@ -27,7 +27,7 @@ html:root {
     /* ── STELLSCHRAUBE Cursor-Grösse ──
        Wert hier ändern → Schraubenzieher wird grösser/kleiner.
        Muss mit CURSOR_SIZE in custom.js übereinstimmen. */
-    --cursor-size:      82px !important;
+    --cursor-size:      105px !important;
 }
 
 html body, html body input, html body button, html body textarea {
@@ -66,10 +66,13 @@ html body #header .logo {
 html body #header .logo:hover { color: var(--text-primary) !important; }
 
 /* ════════════════════════════════════════════════════════════════════
-   WRAPPER — overflow:hidden aus main.css entfernen, sonst bricht sticky
+   WRAPPER — overflow:clip statt visible/hidden:
+   - clip schneidet das parallax-.bg-Div ab (verhindert unendliches Scrollen)
+   - clip erstellt KEINEN Scroll-Container → position:sticky bleibt funktionsfähig
    ════════════════════════════════════════════════════════════════════ */
 html body #wrapper {
-    overflow: visible !important;
+    overflow-x: clip !important;
+    overflow-y: clip !important;
 }
 
 /* ════════════════════════════════════════════════════════════════════
