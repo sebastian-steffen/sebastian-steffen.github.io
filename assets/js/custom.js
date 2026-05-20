@@ -15,7 +15,7 @@
         if (nav.querySelector('ul.links')) return; // schon drin
         var panelLinks = document.querySelector('#navPanel ul.links');
         if (panelLinks) {
-            nav.appendChild(panelLinks.cloneNode(true));
+            nav.appendChild(panelLinks); /* BEWEGEN statt klonen → verhindert doppeltes Nav */
         }
     }
     restoreNav();
@@ -47,8 +47,15 @@
     var CURSOR_SIZE = 82;
 
     var hasFinePointer = window.matchMedia('(pointer: fine)').matches;
-    if (hasFinePointer) {
-        /* Klasse sofort setzen → cursor:none gilt ab dem ersten JS-Tick */
+    /* Schraubenzieher NUR wenn #intro im DOM ist (= index.html, erste Ansicht).
+       Auf allen anderen Seiten + nach sessionStorage-Entfernung des Intros:
+       has-custom-cursor aktiv entfernen, damit kein unsichtbarer Cursor entsteht. */
+    var hasIntro = !!document.getElementById('intro');
+    if (!hasIntro) {
+        document.documentElement.classList.remove('has-custom-cursor');
+    }
+    if (hasFinePointer && hasIntro) {
+        /* Klasse setzen → cursor:none gilt ab dem ersten JS-Tick */
         document.documentElement.classList.add('has-custom-cursor');
 
         var cur = document.createElement('img');
@@ -108,11 +115,15 @@
                     io.unobserve(entry.target);
                 }
             });
-        }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+        }, { threshold: 0.05, rootMargin: '0px 0px -20px 0px' });
         articles.forEach(function (a) { io.observe(a); });
     } else {
         articles.forEach(function (a) { a.classList.add('is-revealed'); });
     }
+    /* Sicherheitsnetz: nach 400ms alle sichtbaren Artikel einblenden */
+    setTimeout(function () {
+        articles.forEach(function (a) { a.classList.add('is-revealed'); });
+    }, 400);
 
     /* ── 4) Gesamtzahl Projekte für CSS-Counter ── */
     if (articles.length) {

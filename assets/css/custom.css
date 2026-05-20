@@ -66,21 +66,29 @@ html body #header .logo {
 html body #header .logo:hover { color: var(--text-primary) !important; }
 
 /* ════════════════════════════════════════════════════════════════════
-   NAV — Apple-Style Frosted Pill mit Sliding Active-State
+   WRAPPER — overflow:hidden aus main.css entfernen, sonst bricht sticky
+   ════════════════════════════════════════════════════════════════════ */
+html body #wrapper {
+    overflow: visible !important;
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   NAV — Sticky Pill-Nav (zentriert, dunkelblau, klar lesbar)
+   KEY FIX: flex-grow:0 auf ul.links verhindert full-width Stretch aus
+   main.css der das "doppelte" Nav erzeugt hat.
    ════════════════════════════════════════════════════════════════════ */
 html body #nav {
     position: sticky !important;
-    top: 1rem !important;
-    z-index: 100 !important;
+    top: 0 !important;
+    z-index: 1000 !important;
     background: transparent !important;
     border: none !important;
     border-bottom: none !important;
     display: flex !important;
     justify-content: center !important;
-    margin: 1.5rem auto 5rem auto !important;
-    padding: 0 !important;
-    /* main.css setzt width: calc(100% - 4rem) + overflow: hidden →
-       beschneidet die Pill-Enden → sichtbares asymmetrisches Clipping killen */
+    align-items: center !important;
+    margin: 0 auto 2rem auto !important;
+    padding: 0.6rem 0 !important;
     width: 100% !important;
     max-width: 100% !important;
     overflow: visible !important;
@@ -88,62 +96,44 @@ html body #nav {
 }
 html body #nav ul.links {
     display: inline-flex !important;
+    flex-grow: 0 !important;       /* FIX: main.css setzt flex-grow:1 → streckt auf 100% → visuell "doppelt" */
+    flex-shrink: 0 !important;
     align-items: center !important;
     gap: 0.15rem !important;
-    background: rgba(15, 15, 18, 0.72) !important;
+    background: rgba(10, 14, 28, 0.92) !important;
     backdrop-filter: saturate(180%) blur(22px) !important;
     -webkit-backdrop-filter: saturate(180%) blur(22px) !important;
-    border: 1px solid var(--hairline) !important;
+    border: 1px solid rgba(100, 130, 220, 0.25) !important;
     border-radius: 999px !important;
     padding: 0.35rem !important;
     margin: 0 !important;
     list-style: none !important;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.35),
-                inset 0 1px 0 rgba(255,255,255,0.04);
+    box-shadow: 0 4px 24px rgba(0,0,10,0.45) !important;
 }
-html body #nav ul.links li { margin: 0 !important; padding: 0 !important; }
-/* main.css setzt li.active { background: white } — das killen wir hier */
-html body #nav ul.links li.active {
-    background-color: transparent !important;
-    background: transparent !important;
-}
+html body #nav ul.links li { padding: 0 !important; margin: 0 !important; background: transparent !important; }
+html body #nav ul.links li.active { background: transparent !important; background-color: transparent !important; }
 html body #nav ul.links li a {
-    display: inline-flex !important;
-    align-items: center !important;
-    padding: 0.55rem 1.2rem !important;
-    font-size: 0.78rem !important;
-    letter-spacing: 0.005em !important;
-    color: var(--text-secondary) !important;
-    border: none !important;
+    display: inline-block !important;
+    padding: 0.55rem 1.3rem !important;
     border-radius: 999px !important;
-    background: transparent !important;
-    transition: color 0.4s var(--ease-apple),
-                background 0.4s var(--ease-apple) !important;
-    white-space: nowrap !important;
+    font-size: 0.75rem !important;
     font-weight: 500 !important;
-    line-height: 1 !important;
+    letter-spacing: 0.08em !important;
+    text-transform: uppercase !important;
+    color: rgba(220, 228, 255, 0.75) !important;
+    border: none !important;
+    background: transparent !important;
+    transition: background 0.25s ease, color 0.25s ease !important;
+    white-space: nowrap !important;
 }
 html body #nav ul.links li a:hover {
-    color: var(--text-primary) !important;
-    background: rgba(245,245,247,0.06) !important;
-    border: none !important;
-}
-html body #nav ul.links li a:focus,
-html body #nav ul.links li a:focus-visible {
-    outline: none !important;
-    box-shadow: none !important;
-    border: none !important;
+    background: rgba(100, 130, 220, 0.18) !important;
+    color: #fff !important;
 }
 html body #nav ul.links li.active a,
-html body #nav ul.links li.active a:hover,
-html body #nav ul.links li.active a:focus,
-html body #nav ul.links li.active a:focus-visible {
-    color: var(--bg-deep) !important;
-    background: var(--accent) !important;
-    border: none !important;
-    outline: none !important;
-    box-shadow: none !important;
-    font-weight: 600 !important;
+html body #nav ul.links li a.active {
+    background: rgba(80, 110, 210, 0.55) !important;
+    color: #fff !important;
 }
 
 /* ════════════════════════════════════════════════════════════════════
@@ -221,11 +211,10 @@ html body .posts > article:first-of-type {
 }
 html body .posts > article:hover { background: transparent !important; }
 
-/* Hover: Artikel expandiert leicht nach aussen */
+/* Hover: kein Zoom-Effekt */
 @media (hover: hover) {
     html body .posts > article.is-revealed:hover {
-        transform: scale(1.012) !important;
-        z-index: 2;
+        transform: none !important;
     }
 }
 
