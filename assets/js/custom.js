@@ -19,6 +19,12 @@
         }
     }
     restoreNav();
+    // Nochmal nach Page-Load: main.js feuert den <=medium-Breakpoint-Callback
+    // asynchron (nach unserem ersten restoreNav()), also ul.links nochmal zurückholen.
+    window.addEventListener('load', function () {
+        setTimeout(restoreNav, 50);
+        setTimeout(restoreNav, 300); // zweiter Versuch als Absicherung
+    });
     // Falls Template den Move später nochmal macht (bei Resize), nachfassen
     window.addEventListener('resize', function () {
         clearTimeout(window.__navRestoreT);
@@ -44,7 +50,7 @@
     /* ── 2) Custom Cursor — Schraubenzieher PNG ── */
     /* STELLSCHRAUBE: Grösse in px hier ändern.
        Gleicher Wert wie --cursor-size in custom.css setzen. */
-    var CURSOR_SIZE = 82;
+    var CURSOR_SIZE = 105;
 
     var hasFinePointer = window.matchMedia('(pointer: fine)').matches;
     /* Schraubenzieher NUR wenn #intro im DOM ist (= index.html, erste Ansicht).

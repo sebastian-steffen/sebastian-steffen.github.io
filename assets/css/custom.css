@@ -676,3 +676,36 @@ html body.navPanel-visible #wrapper { transform: none !important; }
 
     html body #footer { padding: 2rem 1rem !important; margin-top: 3rem !important; }
 }
+
+/* ════════════════════════════════════════════════════════════════════
+   MOBILE-ONLY FIXES — Touch / iPhone
+   Nur aktiv unter 736px. Desktop bleibt 100% unverändert.
+   ════════════════════════════════════════════════════════════════════ */
+
+/* ── Blauer Balken am Seitenende: body-Farbe ans dunkle Theme anpassen ── */
+/* Das Template setzt body { background: #1e252d } (bläulich).            */
+/* Wenn das parallax-.bg-Div geclippt wird, scheint die body-Farbe durch. */
+/* Wir matchen sie auf unser schwarz — sowohl body als auch wrapper.       */
+body {
+    background-color: #080808 !important;
+}
+html body #wrapper {
+    background-color: #080808 !important; /* Fallback falls .bg-Clip Lücke hinterlässt */
+}
+
+@media (max-width: 736px) {
+
+    /* ── Wood Sign: JS-Positionierung überschreiben ──
+       positionWood() platziert das Schild per inline-style.
+       Auf Mobile wollen wir es vertikal zentriert und sofort sichtbar. */
+    #wood-wrap {
+        top: 50% !important;
+        transform: translateX(-50%) translateY(-50%) !important;
+        width: min(88vw, 340px) !important;
+    }
+
+    /* ── Intro Overflow: Schild darf nicht abgeschnitten werden ── */
+    html body #intro {
+        overflow: visible !important;
+    }
+}
