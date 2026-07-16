@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Quest Nr. 27 – Sebastian Steffen</title>
+<style>
+  :root{
+    --ink:#3b3733; --ink-light:#7a736b;
+    --paper:#f8f4ea; --paper-dark:#efe8d8;
+    --red:#b5432f; --blue:#4a6fa5;
+    --bpbg:#1b3a5b; --bp:#e8f0f8; --bpmut:#9db8d2;
+    --chalk:#f2ede2;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    background:var(--paper);
+    background-image:radial-gradient(var(--paper-dark) 0.8px, transparent 0.8px);
+    background-size:26px 26px;
+    color:var(--ink);
+    font-family:"Segoe Print","Bradley Hand","Marker Felt","Comic Neue","Comic Sans MS",cursive;
+    display:flex;flex-direction:column;align-items:center;min-height:100vh;overflow-x:hidden;
+  }
+  body.bpmode{background:var(--bpbg);background-image:linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);background-size:30px 30px;color:var(--bp);}
+  body.rlmode{background:#2c2a28;background-image:none;color:var(--chalk);}
+  .screen{display:none;width:100%;max-width:1000px;padding:18px 14px 30px;flex-direction:column;align-items:center;}
+  .screen.active{display:flex;}
+  h1{font-size:clamp(1.6rem,4.5vw,2.5rem);transform:rotate(-1.2deg);}
+  h2{font-size:clamp(1.15rem,3.2vw,1.55rem);transform:rotate(-0.8deg);}
+  p{line-height:1.55;}
+  .note{max-width:580px;text-align:center;margin-top:14px;font-size:1.05rem;}
+  .small{font-size:.85rem;opacity:.75;}
+  .underline{position:relative;display:inline-block;}
+  .underline::after{content:"";position:absolute;left:-4px;right:-8px;bottom:-2px;height:3px;background:var(--red);border-radius:50% 40% 60% 50%/80% 60% 90% 40%;transform:rotate(-0.6deg);opacity:.85;}
+  button.hand{
+    font-family:inherit;font-size:1.05rem;color:inherit;background:transparent;
+    border:2.5px solid currentColor;border-radius:255px 15px 225px 15px/15px 225px 15px 255px;
+    padding:9px 24px;margin-top:20px;cursor:pointer;transform:rotate(-0.5deg);transition:transform .15s;
+  }
+  button.hand:hover{transform:rotate(0.8deg) scale(1.04);}
+  a{color:inherit;}
+  .skip{margin-top:22px;font-size:.9rem;opacity:.7;}
+  .skip a{text-decoration:underline dashed;cursor:pointer;}
+  .topbar{width:100%;display:flex;justify-content:center;}
+  /* Todo-Liste */
+  .todo{display:flex;align-items:center;gap:18px;margin:8px auto 4px;flex-wrap:wrap;justify-content:center;}
+  .todo span{display:flex;align-items:center;gap:6px;font-size:.85rem;opacity:.7;}
+  .todo span.cur{opacity:1;font-weight:bold;}
+  .todo i.box{width:16px;height:16px;border:2px solid currentColor;border-radius:4px 2px 5px 3px;display:inline-flex;align-items:center;justify-content:center;font-style:normal;font-size:.8rem;line-height:1;}
+  .todo span.done{opacity:.9;}
+  .todo span.done i.box::before{content:"\2713";color:var(--red);font-weight:bold;}
+  .sound{font-family:inherit;font-size:.75rem;background:none;border:none;color:inherit;opacity:.6;cursor:pointer;text-decoration:underline dashed;}
+  .scenewrap{width:100%;position:relative;}
+  svg.scene{width:100%;height:auto;display:block;touch-action:none;}
+  .clickable{cursor:pointer;}
+  .clickable:hover .stroke,.clickable:focus .stroke{stroke:var(--red);}
+  .bpmode .clickable:hover .bstroke,.bpmode .clickable:focus .bstroke{stroke:#ffd76a;}
+  .clickable:focus{outline:none;}
+  .stroke{stroke:var(--ink);stroke-width:2.6;fill:none;stroke-linecap:round;stroke-linejoin:round;transition:stroke .15s;}
+  .bstroke{stroke:var(--bp);stroke-width:2.6;fill:none;stroke-linecap:round;stroke-linejoin:round;transition:stroke .15s;}
+  .label{font-family:inherit;font-size:15px;fill:var(--ink-light);}
+  .blabel{font-family:inherit;font-size:14px;fill:var(--bpmut);}
+  .rednum{font-family:inherit;font-weight:bold;fill:var(--red);}
+  .redword{color:var(--red);font-weight:bold;}
+  #imgHint{transition:filter .3s;}
+  #imgHint.flash{animation:pulseimg .7s ease-in-out 5;}
+  @keyframes pulseimg{0%,100%{filter:none;}50%{filter:drop-shadow(0 0 14px #b5432f) brightness(1.4);}}
+  .overlay{display:none;position:fixed;inset:0;background:rgba(30,28,26,.45);z-index:20;align-items:center;justify-content:center;padding:16px;}
+  .overlay.open{display:flex;}
+  .card{
+    background:var(--paper);color:var(--ink);max-width:460px;width:100%;padding:26px 26px 20px;
+    border:2.5px solid var(--ink);border-radius:255px 15px 225px 15px/15px 225px 15px 255px;
+    box-shadow:6px 8px 0 rgba(30,28,26,.25);transform:rotate(-0.7deg);position:relative;max-height:88vh;overflow:auto;
+  }
+  .card::before{content:"";position:absolute;top:-12px;left:50%;transform:translateX(-50%) rotate(-2deg);width:90px;height:24px;background:rgba(214,196,150,.75);border:1px solid rgba(59,55,51,.15);}
+  .card h3{margin-bottom:10px;font-size:1.15rem;}
+  .card p{font-size:.98rem;margin-bottom:10px;}
+  .card .hint{color:var(--blue);font-size:.95rem;border-top:1.5px dashed var(--ink-light);padding-top:10px;}
+  .card .hint.fail{color:var(--red);}
+  .card img{max-width:100%;border:2px solid var(--ink);}
+  .lockrow{display:flex;flex-direction:column;gap:10px;align-items:center;margin:8px 0 4px;}
+  .lockrow input{
+    font-family:inherit;font-size:1.4rem;text-align:center;width:86px;padding:6px 4px;color:var(--ink);
+    background:#fffdf6;border:2.5px solid var(--ink);border-radius:14px 4px 12px 5px;
+  }
+  .lockrow input:focus{outline:2px dashed var(--blue);}
+  .shakebtn{animation:shake .45s;}
+  @keyframes shake{0%,100%{transform:translateX(0) rotate(-0.5deg)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}
+  /* Raum 2 Bauplan */
+  .subj{position:absolute;left:18%;top:54.5%;width:11.9%;pointer-events:auto;cursor:pointer;z-index:3;}
+  .subj video,.subj img{width:100%;display:block;}
+  .subj.seltarget{filter:drop-shadow(0 0 12px #ffd76a);}
+  .bulb:hover,.bulb.selp{filter:drop-shadow(0 0 9px rgba(255,215,106,.8));}
+  .bulb:hover .glass,.bulb.selp .glass{stroke:#ffd76a;}
+  .wire{cursor:pointer;}
+  .bulb.liton .glass{fill:#ffd76a;}
+  .bulb.liton{filter:drop-shadow(0 0 10px #ffd76a);}
+  .bulb.flicker{animation:flick .15s 4;}
+  @keyframes flick{50%{opacity:.3;}}
+  /* Raum 3 */
+  .stage{
+    position:relative;width:100%;aspect-ratio:900/620;border:3px solid var(--chalk);border-radius:6px;
+    background:url("fotos/kulisse.jpg") center 30%/cover no-repeat;overflow:hidden;
+  }
+  .stage::before{content:"";position:absolute;inset:0;background:rgba(20,18,16,.55);}
+  .stage > *{position:absolute;z-index:2;}
+  .pol{width:15%;background:var(--chalk);box-shadow:3px 4px 8px rgba(0,0,0,.5);cursor:pointer;transition:transform .15s;padding:6px 6px 18px 6px;}
+  .pol img{width:100%;display:block;}
+  .pol:hover{transform:scale(1.06) rotate(0deg) !important;}
+  .chalktxt{color:var(--chalk);font-size:clamp(.6rem,1.6vw,.95rem);text-shadow:0 1px 3px #000;}
+  .walltag{cursor:pointer;text-decoration:underline dashed;}
+  .startpanel{right:4%;bottom:6%;border:3px solid var(--chalk);border-radius:10px;padding:2% 3%;background:rgba(20,18,16,.5);text-align:center;}
+  .startpanel button{margin-top:8px;font-size:clamp(.7rem,1.8vw,1rem);padding:6px 16px;}
+  .phase2{display:none;}
+  .stage.testing .phase1{display:none;}
+  .stage.testing .phase2{display:block;}
+  .buzzer{width:13%;bottom:6%;cursor:pointer;}
+  .buzzer svg{width:100%;height:auto;display:block;filter:drop-shadow(0 2px 4px rgba(0,0,0,.6));}
+  #buzzA{left:24%;cursor:default;}
+  #buzzB{right:12%;}
+  #buzzB:hover{transform:scale(1.05);}
+  .dome{fill:#6e6862;transition:fill .06s;}
+  #buzzA.lit .dome{fill:#ffd76a;}
+  #buzzA.lit svg{filter:drop-shadow(0 0 16px #ffd76a);}
+  #buzzB .dome{fill:#a54638;}
+  /* >>> POSITION TEAMKOLLEGE: hier selber anpassen (left = Abstand von links, bottom = Abstand von unten, width = Groesse) <<< */
+  .mateimg{left:7%;bottom:0%;width:20%;}
+  /* <<< Ende Position Teamkollege >>> */
+  .mateimg{transform-origin:50% 88%;transition:transform .09s ease-out;}
+  .mateimg.nudge{transform:rotate(4deg);}
+  .mateimg img{width:100%;display:block;filter:drop-shadow(0 3px 6px rgba(0,0,0,.6));}
+  /* Finale */
+  .folderwrap{position:relative;margin-top:16px;width:min(520px,92vw);cursor:pointer;}
+  .folderwrap svg{width:100%;height:auto;display:block;position:relative;z-index:2;}
+  .folderwrap img.seb{position:absolute;right:-13%;bottom:-2%;width:40%;pointer-events:none;filter:drop-shadow(2px 4px 6px rgba(0,0,0,.25));z-index:3;}
+  .cvpeek{position:absolute;left:6%;bottom:-7%;width:24%;z-index:1;transform:rotate(-7deg);border:2px solid var(--ink);box-shadow:2px 3px 6px rgba(0,0,0,.2);overflow:hidden;height:14%;background:#fff;}
+  .cvpeek img{width:100%;display:block;}
+  .cvpanel{display:none;flex-direction:column;align-items:center;margin-top:20px;}
+  .cvpanel.open{display:flex;}
+  .cvpanel a.cvlink{display:block;max-width:min(420px,88vw);border:3px solid var(--ink);box-shadow:5px 7px 0 rgba(59,55,51,.18);transform:rotate(-0.8deg);}
+  .cvpanel img{width:100%;display:block;}
+  .akte{font-size:clamp(1.15rem,3.4vw,1.6rem);font-weight:bold;margin-top:14px;transform:rotate(-0.8deg);}
+  .stamp{display:inline-block;margin:14px 0 4px;padding:8px 22px;color:var(--red);border:3.5px solid var(--red);border-radius:8px;font-size:1.25rem;letter-spacing:2px;transform:rotate(-6deg);opacity:.9;}
+  .contacts{margin-top:20px;display:flex;gap:14px;flex-wrap:wrap;justify-content:center;}
+  .contacts a{font-size:1rem;color:var(--ink);text-decoration:none;border:2.5px solid var(--ink);padding:8px 18px;border-radius:225px 15px 255px 15px/15px 255px 15px 225px;background:var(--paper);}
+  .contacts a:hover{color:var(--red);border-color:var(--red);}
+  footer{margin-top:auto;padding:16px 16px 24px;text-align:center;font-size:.78rem;opacity:.65;max-width:640px;}
+</style>
+</head>
+<body>
+
+<section class="screen active" id="intro">
+  <div style="height:5vh"></div>
+  <h1>Quest Nr. <span class="underline">27</span></h1>
+  <p class="note">Boda Borg Zürich hat 25 Quests, und Nummer 26 ist bereits im Bau.<br>Das hier ist meine Bewerbung als Nummer 27.</p>
+  <p class="note small">Sebastian Steffen · Bewerbung als Quest Creator (80%)<br>Dauer: zwei bis drei Minuten. Regeln wie bei euch: ausprobieren, scheitern, nochmal.</p>
+  <button class="hand" id="startbtn">Quest starten</button>
+  <p class="skip">Keine Zeit? Kein Problem. <a id="introskip">Durch die angelehnte Tür direkt zum Ziel.</a></p>
+</section>
+
+<section class="screen" id="room1">
+  <div class="topbar"><h2>Raum 1: Die Skizze</h2></div>
+  <div class="todo" data-step="0"></div>
+  <p class="small" style="margin:6px 0 8px">Sieh dich um. Die Tür braucht einen Code.</p>
+  <div class="scenewrap">
+  <svg class="scene" viewBox="0 0 900 560" xmlns="http://www.w3.org/2000/svg">
+    <path class="stroke" d="M18 472 Q 240 466 480 471 T 884 469" stroke-width="3"/>
+    <image id="imgHint" href="fotos/raum1.png" x="110" y="46" width="124" height="95"/>
+    <g class="clickable" id="o-door" tabindex="0" role="button" aria-label="Questtür mit Codeschloss">
+      <path class="stroke" d="M86 470 L 89 152 Q 172 144 254 150 L 257 469" stroke-width="3"/>
+      <path class="stroke" d="M104 456 L 106 172 Q 172 166 240 171 L 242 455" stroke-width="2"/>
+      <path class="stroke" d="M144 190 L 145 232 Q 172 236 200 231 L 201 191 Q 172 186 144 190 Z" stroke-width="2"/>
+      <text class="rednum" x="172" y="221" font-size="24" text-anchor="middle">27</text>
+      <path class="stroke" d="M228 282 a9 9 0 1 0 0.1 0"/>
+      <text class="label" x="140" y="500">Questtür (Code?)</text>
+      <rect x="80" y="146" width="185" height="330" fill="transparent"/>
+    </g>
+    <g class="clickable" id="o-crate" tabindex="0" role="button" aria-label="Kiste">
+      <path class="stroke" d="M368 466 L 371 398 Q 440 392 508 397 L 511 465 Z"/>
+      <path class="stroke" d="M371 420 Q 440 414 508 419 M400 399 L 399 464 M478 398 L 480 464" stroke-width="1.8"/>
+      <text class="label" x="412" y="500">Kiste</text>
+      <rect x="362" y="390" width="156" height="82" fill="transparent"/>
+    </g>
+    <g>
+      <path class="stroke" d="M540 362 Q 700 356 858 361 L 860 382 Q 700 377 542 384 Z"/>
+      <path class="stroke" d="M560 384 L 557 468 M838 381 L 842 467 M560 430 Q 700 424 840 428"/>
+    </g>
+    <g class="clickable" id="o-book" tabindex="0" role="button" aria-label="Notizbuch">
+      <path class="stroke" d="M628 352 Q 665 336 683 342 Q 701 334 739 348 L 733 366 Q 703 356 684 362 Q 665 354 635 368 Z"/>
+      <path class="stroke" d="M683 342 L 684 362"/>
+      <path class="stroke" d="M643 352 Q 656 346 667 348 M694 348 Q 707 346 719 351" stroke-width="1.5"/>
+      <text class="label" x="648" y="410">Notizbuch</text>
+      <rect x="620" y="325" width="150" height="50" fill="transparent"/>
+    </g>
+    <g class="clickable" id="o-cam" tabindex="0" role="button" aria-label="Wandbild mit Kamera">
+      <path class="stroke" d="M602 46 L 604 174 Q 693 180 784 173 L 786 48 Q 694 40 602 46 Z" stroke-width="2.6"/>
+      <path class="stroke" d="M616 58 L 618 162 Q 693 167 770 161 L 772 60 Q 693 53 616 58 Z" stroke-width="1.8"/>
+      <path class="stroke" d="M648 98 L 650 88 L 672 88 L 674 98 M640 98 L 742 96 L 744 142 Q 693 147 642 142 Z" stroke-width="2"/>
+      <path class="stroke" d="M693 118 a17 17 0 1 0 0.1 0 M693 125 a10 10 0 1 0 0.1 0 M726 106 a3 3 0 1 0 0.1 0" stroke-width="2"/>
+      <text class="label" x="655" y="198">Wandbild</text>
+      <rect x="596" y="40" width="196" height="140" fill="transparent"/>
+    </g>
+  </svg>
+  </div>
+  <p class="skip"><a class="roomskip" data-to="room2">Raum überspringen</a> · <a class="allskip">direkt zum Ziel</a></p>
+</section>
+
+<section class="screen" id="room2">
+  <div class="topbar"><h2>Raum 2: Der Bauplan</h2></div>
+  <div class="todo" data-step="1"></div>
+  <p class="small" style="margin:6px 0 8px">Sechs Aussagen im Plan. Drei beschreiben mich. Zieh ihre Kabel zu mir und mach dann das Licht an.</p>
+  <div class="scenewrap" id="planwrap">
+  <svg class="scene" viewBox="0 0 900 560" xmlns="http://www.w3.org/2000/svg" id="svg2">
+    <text class="blabel" x="450" y="60" text-anchor="middle" font-size="20">Bauplan</text>
+    <!-- Aussenwaende -->
+    <path class="bstroke" d="M60 100 L 840 100 L 840 500 L 60 500 Z" stroke-width="5"/>
+    <!-- Innenwaende mit Tueroeffnungen -->
+    <path class="bstroke" d="M380 100 L 380 230 M380 270 L 380 500" stroke-width="4"/>
+    <path class="bstroke" d="M60 300 L 180 300 M220 300 L 380 300" stroke-width="4"/>
+    <path class="bstroke" d="M600 100 L 600 200 M600 240 L 600 500" stroke-width="4"/>
+    <path class="bstroke" d="M600 300 L 700 300 M740 300 L 840 300" stroke-width="4"/>
+    <!-- Tuerfluegel-Boegen -->
+    <path class="bstroke" d="M380 230 A 40 40 0 0 1 420 270" stroke-width="1.5" opacity=".5"/>
+    <path class="bstroke" d="M220 300 A 40 40 0 0 1 180 340" stroke-width="1.5" opacity=".5"/>
+    <path class="bstroke" d="M600 200 A 40 40 0 0 0 560 240" stroke-width="1.5" opacity=".5"/>
+    <path class="bstroke" d="M740 300 A 40 40 0 0 1 700 340" stroke-width="1.5" opacity=".5"/>
+    <!-- Anschlusspunkt beim Video -->
+    <g id="connector">
+      <circle cx="118" cy="408" r="10" stroke="#ffd76a" stroke-width="2.5" fill="none"/>
+      <circle cx="118" cy="408" r="3" fill="#ffd76a"/>
+      <text x="118" y="382" text-anchor="middle" font-size="15" fill="#ffd76a" font-family="inherit">ich bin..</text>
+    </g>
+    <g id="wires"></g>
+    <g id="templine"></g>
+    <g id="bulbs"></g>
+    <g id="sparks"></g>
+    <!-- Lichtschalter -->
+    <g class="clickable" id="lightswitch" tabindex="0" role="button" aria-label="Lichtschalter">
+      <rect x="782" y="420" width="40" height="60" rx="7" stroke="#e8f0f8" stroke-width="2.6" fill="rgba(232,240,248,.08)"/>
+      <rect id="swnub" x="794" y="452" width="16" height="18" rx="4" fill="#e8f0f8"/>
+      <text class="blabel" x="802" y="416" text-anchor="middle" font-size="12">Licht</text>
+    </g>
+  </svg>
+  <div class="subj" id="subjwrap" title="Anschluss">
+    <video id="subj" autoplay loop muted playsinline><source src="fotos/subjekt.webm" type="video/webm"></video>
+  </div>
+  </div>
+  <p class="skip"><a class="roomskip" data-to="room3">Raum überspringen</a> · <a class="allskip">direkt zum Ziel</a></p>
+</section>
+
+<section class="screen" id="room3">
+  <div class="topbar"><h2>Raum 3: Der Playtest</h2></div>
+  <div class="todo" data-step="2"></div>
+  <p class="small" style="margin:6px 0 8px" id="r3hint">Ab hier ist es kein Plan mehr, sondern gebaute Realität. Sieh dich um und starte dann den Playtest.</p>
+  <div class="stage" id="stage">
+    <div class="pol phase1" id="pol1" style="left:3%;top:5%;transform:rotate(-5deg)"><img src="fotos/polaroid1.jpg" alt="Become a Star"></div>
+    <div class="pol phase1" id="pol2" style="left:19%;top:9%;transform:rotate(4deg)"><img src="fotos/polaroid2.jpg" alt="Team-Installation HGK"></div>
+    <div class="pol phase1" id="pol3" style="left:5%;top:46%;transform:rotate(2deg)"><img src="fotos/polaroid3.jpg" alt="Escape-Room-Wand"></div>
+    <div class="chalktxt phase1" style="left:22%;top:56%;">eigene Projekte<br>(anklicken)</div>
+    <div class="startpanel phase1" id="startpanel">
+      <div class="chalktxt">Nun müssen wir den Raum noch testen.</div>
+      <button class="hand" id="startplay" style="color:var(--chalk)">Start Playtest</button>
+    </div>
+    <div class="chalktxt phase2" id="r3instr" style="left:50%;top:5%;transform:translateX(-50%);text-align:center;width:80%">Co-op-Test: Drück Buzzer B genau dann, wenn Buzzer A aufblitzt.</div>
+    <div class="mateimg phase2"><img src="fotos/teamkollege.png" alt="Teamkollege"></div>
+    <div class="chalktxt phase2" style="left:4%;bottom:40%;">dein Teamkollege</div>
+    <div class="buzzer phase2" id="buzzA"><svg viewBox="0 0 120 74" xmlns="http://www.w3.org/2000/svg">
+      <path class="dome" d="M18 52 a42 42 0 0 1 84 0 Z"/>
+      <path d="M18 52 a42 42 0 0 1 84 0" stroke="#f2ede2" stroke-width="3" fill="none"/>
+      <rect x="8" y="52" width="104" height="16" rx="5" stroke="#f2ede2" stroke-width="3" fill="rgba(20,18,16,.5)"/>
+    </svg><div class="chalktxt" style="text-align:center">Buzzer A</div></div>
+    <div class="buzzer phase2" id="buzzB" role="button" tabindex="0" aria-label="Buzzer B drücken"><svg viewBox="0 0 120 74" xmlns="http://www.w3.org/2000/svg">
+      <path class="dome" d="M18 52 a42 42 0 0 1 84 0 Z"/>
+      <path d="M18 52 a42 42 0 0 1 84 0" stroke="#f2ede2" stroke-width="3" fill="none"/>
+      <rect x="8" y="52" width="104" height="16" rx="5" stroke="#f2ede2" stroke-width="3" fill="rgba(20,18,16,.5)"/>
+    </svg><div class="chalktxt" style="text-align:center">Buzzer B (du)</div></div>
+    <div class="chalktxt phase2" id="r3msg" style="left:50%;bottom:2.5%;transform:translateX(-50%);text-align:center;width:60%"></div>
+  </div>
+  <p class="skip"><a class="roomskip" data-to="finale">Raum überspringen</a></p>
+</section>
+
+<section class="screen" id="finale">
+  <div class="todo" data-step="3"></div>
+  <span class="stamp">QUEST 27 ERÖFFNET</span>
+  <p class="note" style="margin-top:8px">Skizze, Bauplan, Playtest: So baue ich Räume.</p>
+  <p class="akte">Die geheime Akte ist freigeschaltet.</p>
+  <p class="note" style="margin-top:2px">Schau sie dir gerne an, ich freue mich auf deine Rückmeldung.</p>
+  <div class="folderwrap" id="folder" role="button" tabindex="0" aria-label="Mappe öffnen">
+    <svg viewBox="0 0 520 340" xmlns="http://www.w3.org/2000/svg">
+      <path d="M30 84 L 30 46 Q 31 36 42 36 L 150 34 Q 160 34 164 44 L 172 62 L 470 60" stroke="#3b3733" stroke-width="3" fill="#efe3c2"/>
+      <path d="M18 90 Q 240 82 490 88 L 474 316 Q 244 326 34 318 Z" stroke="#3b3733" stroke-width="3" fill="#f3e9cd"/>
+      <text x="190" y="180" font-size="26" fill="#3b3733" font-family="inherit" font-weight="bold">Sebastian Steffen</text>
+      <text x="190" y="214" font-size="19" fill="#7a736b" font-family="inherit">Quest Creator (80%)</text>
+      <text x="190" y="266" font-size="14" fill="#4a6fa5" font-family="inherit" text-decoration="underline">Mappe öffnen</text>
+      <path d="M52 130 L 150 128 M52 156 L 132 154 M52 182 L 144 180" stroke="#7a736b" stroke-width="2" fill="none" stroke-linecap="round" opacity=".5"/>
+    </svg>
+    <img class="seb" src="fotos/profilfoto.png" alt="Sebastian Steffen im Boda Borg Shirt">
+  </div>
+  <div class="cvpanel" id="cvpanel">
+    <p class="small" style="margin-bottom:8px">Klick auf den Lebenslauf öffnet das PDF.</p>
+    <a class="cvlink" href="fotos/lebenslauf.pdf" target="_blank" rel="noopener"><img src="fotos/cv-1.png" alt="Lebenslauf Sebastian Steffen, Seite 1"></a>
+  </div>
+  <div class="contacts">
+    <a href="https://sebastian-steffen.github.io/" target="_blank" rel="noopener">Portfolio ansehen</a>
+    <a href="mailto:sebastian.steffen@hyperwerk.ch">E-Mail schreiben</a>
+    <a href="tel:+41796656325">+41 79 665 63 25</a>
+  </div>
+  <p class="skip"><a id="resetlink">Nochmal von vorne</a></p>
+</section>
+
+<div class="overlay" id="overlay">
+  <div class="card" role="dialog" aria-modal="true">
+    <h3 id="card-title"></h3>
+    <div id="card-media"></div>
+    <p id="card-body"></p>
+    <div id="card-extra"></div>
+    <p class="hint" id="card-hint"></p>
+    <button class="hand" id="card-btn">Weiter</button>
+  </div>
+</div>
+
+<footer>
+  <button class="sound" id="soundbtn">Ton: an</button><br>
+  Diese Seite läuft vollständig in deinem Browser. Keine Cookies, kein Tracking, keine Datenerhebung.<br>
+  Gezeichnet und gebaut von Sebastian Steffen, Juli 2026.
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var Q = window.Q = { litNow:false, buzzTimer:null, testing:false };
+
+  /* ---------- Sound ---------- */
+  var audioOn = true, ctx = null;
+  function ac(){ try{ if(!ctx){ var AC = window.AudioContext||window.webkitAudioContext; if(AC) ctx = new AC(); } }catch(e){} return ctx; }
+  function tone(freq, dur, type, vol){
+    if(!audioOn) return;
+    var c = ac(); if(!c) return;
+    try{
+      var o=c.createOscillator(), g=c.createGain();
+      o.type=type||"square"; o.frequency.value=freq;
+      g.gain.value=vol||0.04; g.gain.exponentialRampToValueAtTime(0.0001, c.currentTime+dur);
+      o.connect(g); g.connect(c.destination); o.start(); o.stop(c.currentTime+dur);
+    }catch(e){}
+  }
+  var sClick=function(){tone(660,0.06,"square");};
+  var sErr=function(){tone(140,0.25,"sawtooth",0.05);};
+  var sOk=function(){tone(520,0.09,"square");setTimeout(function(){tone(780,0.14,"square");},90);};
+  var sHum=function(){tone(90,0.6,"sine",0.06);};
+  document.getElementById("soundbtn").addEventListener("click", function(){
+    audioOn=!audioOn; this.textContent = audioOn ? "Ton: an" : "Ton: aus";
+  });
+
+  /* ---------- Todo-Liste ---------- */
+  var steps=["Skizze","Bauplan","Playtest","Eröffnung"];
+  var done=[false,false,false,false];
+  function renderTodos(){
+    document.querySelectorAll(".todo").forEach(function(f){
+      var cur=parseInt(f.dataset.step,10), html="";
+      steps.forEach(function(s,i){
+        var cls=(i===cur?"cur ":"")+(done[i]?"done":"");
+        html+='<span class="'+cls+'"><i class="box"></i>'+s+'</span>';
+      });
+      f.innerHTML=html;
+    });
+  }
+  renderTodos();
+  function go(id){
+    if(id==="room2") done[0]=true;
+    if(id==="room3"){ done[0]=true; done[1]=true; }
+    if(id==="finale"){ done[0]=true; done[1]=true; done[2]=true; done[3]=true; }
+    renderTodos();
+    document.querySelectorAll(".screen").forEach(function(s){s.classList.remove("active");});
+    document.getElementById(id).classList.add("active");
+    document.body.className = id==="room2" ? "bpmode" : (id==="room3" ? "rlmode" : "");
+    window.scrollTo(0,0);
+    if(id!=="room3") stopBuzzer();
+  }
+  Q.go=go;
+
+  /* ---------- Karten ---------- */
+  var afterClose=null;
+  function openCard(title, body, opt){
+    opt=opt||{};
+    document.getElementById("card-title").textContent=title;
+    var b=document.getElementById("card-body");
+    if(opt.htmlBody){ b.innerHTML=body||""; } else { b.textContent=body||""; }
+    var h=document.getElementById("card-hint");
+    h.textContent=opt.hint||""; h.style.display=opt.hint?"block":"none";
+    h.className=opt.fail?"hint fail":"hint";
+    document.getElementById("card-media").innerHTML=opt.media||"";
+    document.getElementById("card-extra").innerHTML=opt.extra||"";
+    var btn=document.getElementById("card-btn");
+    btn.style.display=opt.noBtn?"none":"inline-block";
+    btn.textContent=opt.btn||"Weiter";
+    afterClose=opt.after||null;
+    document.getElementById("overlay").classList.add("open");
+  }
+  function closeCard(){
+    document.getElementById("overlay").classList.remove("open");
+    if(afterClose){var a=afterClose;afterClose=null;a();}
+  }
+  document.getElementById("card-btn").addEventListener("click", closeCard);
+  document.getElementById("overlay").addEventListener("click", function(e){ if(e.target===this) closeCard(); });
+  Q.openCard=openCard; Q.closeCard=closeCard;
+
+  function press(el, fn){
+    el.addEventListener("click", fn);
+    el.addEventListener("keydown", function(e){ if(e.key==="Enter"||e.key===" "){e.preventDefault();fn(e);} });
+  }
+
+  press(document.getElementById("startbtn"), function(){ sClick(); go("room1"); });
+  press(document.getElementById("introskip"), function(){ go("finale"); });
+  document.querySelectorAll(".allskip").forEach(function(a){ press(a, function(){ go("finale"); }); });
+  document.querySelectorAll(".roomskip").forEach(function(a){ press(a, function(){ go(a.dataset.to); }); });
+  press(document.getElementById("resetlink"), function(){ location.reload(); });
+
+  /* ---------- Raum 1 ---------- */
+  press(document.getElementById("o-crate"), function(){
+    sClick();
+    openCard("Die Kiste",
+      '<span class="redword">Zehn</span> Jahre Werkstatterfahrung als Automatiker EFZ: Metall bearbeiten, Montagearbeiten auf Baustellen, Unterhalt von Anlagen. Schweissen, schrauben, schwitzen.',
+      {htmlBody:true});
+  });
+  press(document.getElementById("o-book"), function(){
+    sClick();
+    openCard("Das Notizbuch",
+      'Seit <span class="redword">sechs</span> Jahren: interaktive Installationen, Arbeit in voll ausgestatteten Schreiner- und Metallwerkstätten als Tutor für die FHNW. Drei Jahre Escape-Room-Erfahrung: Räume aufgebaut mit groben Holzkonstruktionen, Wände gestellt, Kabel gezogen, Räume gestrichen.',
+      {htmlBody:true});
+  });
+  press(document.getElementById("o-cam"), function(){
+    sClick();
+    openCard("Das Wandbild",
+      '<span class="redword">Fünf</span> Jahre Social-Media-Skills: Geschichten erzählen, Reichweiten optimieren. Nebenbei könnte ich maximale Vorfreude auf eure neuen Räume wecken.',
+      {htmlBody:true});
+  });
+  var attempts=0, solved1=false;
+  press(document.getElementById("o-door"), function(){
+    if(solved1) return;
+    sClick();
+    openCard("Die Questtür",
+      "Nr. 27. Dahinter geht es weiter. Das Schloss will vier Zahlen.",
+      { extra:
+        '<div class="lockrow">'+
+        '<input id="c0" inputmode="numeric" maxlength="2" autocomplete="off" aria-label="erste Zahl">'+
+        '<div class="arrowdown">&#8595;</div>'+
+        '<input id="c1" inputmode="numeric" maxlength="2" autocomplete="off" aria-label="zweite Zahl">'+
+        '<div class="arrowdown">&#8595;</div>'+
+        '<input id="c2" inputmode="numeric" maxlength="2" autocomplete="off" aria-label="dritte Zahl">'+
+        '<div class="arrowdown">&#8595;</div>'+
+        '<input id="c3" inputmode="numeric" maxlength="2" autocomplete="off" aria-label="vierte Zahl">'+
+        '<button class="hand" id="openbtn" type="button">Öffnen</button>'+
+        '</div>',
+        hint:"Gib die Zahlen in der richtigen Reihenfolge ein.",
+        noBtn:true });
+    var ob=document.getElementById("openbtn");
+    ob.addEventListener("click", tryOpen);
+  });
+  function val(id){ var e=document.getElementById(id); if(!e||e.value.trim()==="") return null; var n=parseInt(e.value,10); return isNaN(n)?null:n; }
+  function tryOpen(){
+    var v=[val("c0"),val("c1"),val("c2"),val("c3")];
+    if(validateCode(v)){
+      solved1=true; sOk(); closeCard();
+      openCard("Klick. Offen.",
+        "Die Skizze nimmt langsam Form an. Nun weiter zum nächsten Schritt: der Planung.",
+        { btn:"Weiter", after:function(){ go("room2"); } });
+    } else {
+      attempts++; sErr();
+      var ob=document.getElementById("openbtn");
+      if(ob){ ob.classList.remove("shakebtn"); void ob.offsetWidth; ob.classList.add("shakebtn"); }
+      var h=document.getElementById("card-hint");
+      h.className="hint fail"; h.style.display="block";
+      flashHint();
+      if(attempts===1){ h.textContent="Probiers nochmal."; }
+      else if(attempts===2){ h.textContent="Nächstes Mal kriegst du einen Tipp."; }
+      else { h.textContent="Tipp: von oben nach unten."; }
+    }
+  }
+  function validateCode(v){ return v[0]===5 && v[1]===27 && v[2]===6 && v[3]===10; }
+  Q.validateCode=validateCode; Q.tryOpen=tryOpen;
+  function flashHint(){
+    var img=document.getElementById("imgHint");
+    img.classList.remove("flash"); void img.getBoundingClientRect(); img.classList.add("flash");
+    setTimeout(function(){ img.classList.remove("flash"); }, 4000);
+  }
+
+  /* ---------- Raum 2: Bauplan ---------- */
+  var WORDS=[
+    {t:"motiviert", ok:true,  x:150, y:190},
+    {t:"faul", ok:false, x:300, y:150, quip:"faul? Netter Versuch."},
+    {t:"gestresst", ok:false, x:480, y:170, quip:"gestresst? Höchstens kurz vor der Vernissage."},
+    {t:"kein Teamplayer", ok:false, x:480, y:390, quip:"kein Teamplayer? Bei Boda Borg undenkbar."},
+    {t:"kreativ", ok:true, x:720, y:170},
+    {t:"flexibel", ok:true, x:720, y:390}
+  ];
+  var CONN={x:118,y:408};
+  var WCOLORS=["#e0895e","#7fb6e8","#e8d06a"];
+  var conns=[]; Q.conns=conns;
+  var NS="http://www.w3.org/2000/svg";
+  var svg2=document.getElementById("svg2");
+  var bulbsG=document.getElementById("bulbs"), wiresG=document.getElementById("wires"), tempG=document.getElementById("templine");
+  function el(n,attrs){ var e=document.createElementNS(NS,n); for(var k in attrs) e.setAttribute(k,attrs[k]); return e; }
+  WORDS.forEach(function(w,i){
+    var g=el("g",{"class":"bulb clickable",id:"b"+i,tabindex:"0",role:"button","aria-label":w.t});
+    g.appendChild(el("rect",{x:w.x-58,y:w.y-52,width:116,height:104,fill:"transparent"}));
+    // Glaskolben
+    g.appendChild(el("circle",{cx:w.x,cy:w.y,r:17,"class":"bstroke glass","stroke-width":"2.6",fill:"rgba(232,240,248,.07)"}));
+    // Gluehfaden
+    g.appendChild(el("path",{d:"M"+(w.x-6)+" "+(w.y+8)+" L "+(w.x-4)+" "+(w.y-2)+" L "+w.x+" "+(w.y+4)+" L "+(w.x+4)+" "+(w.y-2)+" L "+(w.x+6)+" "+(w.y+8),"class":"bstroke","stroke-width":"1.6"}));
+    // Sockel mit Gewinde
+    g.appendChild(el("path",{d:"M"+(w.x-9)+" "+(w.y+15)+" L "+(w.x-7)+" "+(w.y+30)+" Q "+w.x+" "+(w.y+35)+" "+(w.x+7)+" "+(w.y+30)+" L "+(w.x+9)+" "+(w.y+15),"class":"bstroke","stroke-width":"2.2"}));
+    g.appendChild(el("path",{d:"M"+(w.x-8)+" "+(w.y+21)+" L "+(w.x+8)+" "+(w.y+21)+" M"+(w.x-8)+" "+(w.y+26)+" L "+(w.x+8)+" "+(w.y+26),"class":"bstroke","stroke-width":"1.5"}));
+    var t=el("text",{x:w.x,y:w.y-30,"text-anchor":"middle","font-size":"15",fill:"#e8f0f8","font-family":"inherit"});
+    t.textContent=w.t; g.appendChild(t);
+    bulbsG.appendChild(g);
+  });
+  function isConnected(i){ return conns.some(function(c){return c.wi===i;}); }
+  function connect(i){
+    if(isConnected(i)) return;
+    if(conns.length>=3){
+      sErr();
+      openCard("Kurzschlussgefahr","Nur drei Anschlüsse frei. Lös zuerst ein Kabel (Glühbirne anklicken).",{fail:true,btn:"Ok"});
+      return;
+    }
+    var used=conns.map(function(c){return c.slot;});
+    var free=[0,1,2].filter(function(s){return used.indexOf(s)<0;})[0];
+    conns.push({wi:i, slot:free}); sClick(); drawWires();
+  }
+  function disconnect(i){
+    for(var k=conns.length-1;k>=0;k--){ if(conns[k].wi===i) conns.splice(k,1); }
+    sClick(); drawWires();
+  }
+  Q.connect=connect; Q.disconnect=disconnect; Q.isConnected=isConnected;
+  function drawWires(){
+    wiresG.innerHTML="";
+    conns.forEach(function(c){
+      var w=WORDS[c.wi];
+      var sx=w.x, sy=w.y+34, off=(c.slot-1)*14;
+      var p=el("path",{d:"M"+sx+" "+sy+" C "+(sx)+" "+(sy+70)+", "+(CONN.x+off+40)+" "+(CONN.y-80)+", "+(CONN.x+off*0.4)+" "+(CONN.y-8),
+        stroke:WCOLORS[c.slot],"stroke-width":"4",fill:"none","stroke-linecap":"round","class":"wire"});
+      p.addEventListener("click", function(){ disconnect(c.wi); });
+      wiresG.appendChild(p);
+    });
+  }
+  /* Drag and Drop plus Klick-Fallback */
+  var drag=null, sel=null;
+  function toSvg(evt){
+    var pt=svg2.createSVGPoint(); pt.x=evt.clientX; pt.y=evt.clientY;
+    try{ return pt.matrixTransform(svg2.getScreenCTM().inverse()); }catch(e){ return {x:0,y:0}; }
+  }
+  function setSel(i){
+    sel=i;
+    document.querySelectorAll(".bulb").forEach(function(p){p.classList.remove("selp");});
+    document.getElementById("subjwrap").classList.toggle("seltarget", sel!==null);
+    if(sel!==null){ var p=document.getElementById("b"+sel); if(p) p.classList.add("selp"); }
+  }
+  function inTarget(p){ return p.x>=62 && p.x<=378 && p.y>=290 && p.y<=498; }
+  WORDS.forEach(function(w,i){
+    var bg=document.getElementById("b"+i);
+    bg.addEventListener("pointerdown", function(e){
+      e.preventDefault();
+      drag={i:i, moved:false};
+      try{ svg2.setPointerCapture(e.pointerId); }catch(err){}
+    });
+  });
+  svg2.addEventListener("pointermove", function(e){
+    if(!drag) return;
+    drag.moved=true;
+    var p=toSvg(e), w=WORDS[drag.i];
+    tempG.innerHTML="";
+    tempG.appendChild(el("path",{d:"M"+w.x+" "+(w.y+32)+" L "+p.x+" "+p.y,stroke:"#ffd76a","stroke-width":"3","stroke-dasharray":"7 6",fill:"none","stroke-linecap":"round"}));
+  });
+  svg2.addEventListener("pointerup", function(e){
+    if(!drag) return;
+    var p=toSvg(e);
+    tempG.innerHTML="";
+    if(drag.moved && inTarget(p)){ connect(drag.i); setSel(null); }
+    else if(!drag.moved){
+      if(isConnected(drag.i)){ disconnect(drag.i); setSel(null); }
+      else { setSel(sel===drag.i?null:drag.i); }
+    }
+    drag=null;
+  });
+  press(document.getElementById("subjwrap"), function(){
+    if(sel!==null){ connect(sel); setSel(null); }
+  });
+  /* Lichtschalter */
+  var solved2=false;
+  press(document.getElementById("lightswitch"), function(){
+    if(solved2) return;
+    if(conns.length<3){
+      sErr();
+      openCard("Noch dunkel.","Erst "+conns.length+" von 3 Kabeln sind mit mir verbunden.",{fail:true,btn:"Ok"});
+      return;
+    }
+    var wrong=conns.filter(function(c){return !WORDS[c.wi].ok;});
+    if(wrong.length===0){
+      solved2=true; sHum(); setTimeout(sOk,250);
+      document.getElementById("swnub").setAttribute("y","428");
+      conns.forEach(function(c){ document.getElementById("b"+c.wi).classList.add("liton"); });
+      openCard("Der Plan ist aufgegangen.",
+        "Motiviert, kreativ, flexibel: richtig verdrahtet, die Lampen brennen. Ein Hammer liegt bereit. Let's build it!",
+        { noBtn:true, extra:
+          '<div style="text-align:center"><svg id="hammerbtn" viewBox="0 0 130 84" style="width:150px;cursor:pointer" role="button" tabindex="0" aria-label="Hammer nehmen">'+
+          '<g stroke="#3b3733" stroke-width="3.2" fill="#f3e9cd" stroke-linecap="round" stroke-linejoin="round">'+
+          '<rect x="24" y="12" width="82" height="28" rx="3"/>'+
+          '<path d="M60 40 L 59 76 Q 65 81 71 76 L 71 40"/>'+
+          '</g></svg><div class="small">Hammer nehmen</div></div>' });
+      var hb=document.getElementById("hammerbtn");
+      press(hb, function(){ sClick(); closeCard(); go("room3"); });
+    } else {
+      sErr();
+      var quips=wrong.map(function(c){return WORDS[c.wi].quip;}).join(" ");
+      wrong.forEach(function(c){
+        var b=document.getElementById("b"+c.wi);
+        b.classList.remove("flicker"); void b.getBoundingClientRect(); b.classList.add("flicker");
+      });
+      var sp=document.getElementById("sparks"); sp.innerHTML="";
+      wrong.forEach(function(c){
+        var w=WORDS[c.wi];
+        sp.appendChild(el("path",{d:"M"+(w.x-24)+" "+(w.y-6)+" l7 6 l-9 3 l10 5 l-7 6",stroke:"#ffd76a","stroke-width":"2.5",fill:"none"}));
+      });
+      setTimeout(function(){ sp.innerHTML=""; },900);
+      for(var k=conns.length-1;k>=0;k--){ if(!WORDS[conns[k].wi].ok) conns.splice(k,1); }
+      drawWires();
+      openCard("Die Sicherung fliegt raus.", quips,
+        { fail:true, hint:"Bei Boda Borg heisst das: kurz schütteln, nochmal verdrahten.", btn:"Nochmal" });
+    }
+  });
+  Q.flipSwitch=function(){ document.getElementById("lightswitch").dispatchEvent(new MouseEvent("click",{bubbles:true})); };
+  /* Video-Fallback */
+  (function(){
+    var v=document.getElementById("subj");
+    function fb(){ document.getElementById("subjwrap").innerHTML='<img src="fotos/subjekt_still.png" alt="Sebastian">'; }
+    if(!v.canPlayType || !v.canPlayType('video/webm; codecs="vp9"')) { fb(); return; }
+    v.addEventListener("error", fb);
+    var s=v.querySelector("source"); if(s) s.addEventListener("error", fb);
+  })();
+
+  /* ---------- Raum 3 ---------- */
+  press(document.getElementById("pol1"), function(){
+    sClick();
+    openCard("Become a Star",
+      "Interaktive Installation: Lasercut-Parcours, Elektronik und Mikrofon. Gebaut in der Freizeit, gespielt vom Publikum.",
+      { media:'<img src="fotos/polaroid1.jpg" alt="Become a Star">' });
+  });
+  press(document.getElementById("pol2"), function(){
+    sClick();
+    openCard("Teamspiel-Installation, HGK Basel",
+      "Mehrere Personen steuern gemeinsam eine Stadt aus Holz. Diplomausstellung, komplett selbst konstruiert und gebaut.",
+      { media:'<img src="fotos/polaroid2.jpg" alt="Team-Installation">' });
+  });
+  press(document.getElementById("pol3"), function(){
+    sClick();
+    openCard("Die Wand im Hintergrund",
+      "Kein Stockfoto: Diese Escape-Room-Wand habe ich mitgebaut. Grobe Holzkonstruktion, Wände gestellt, Kabel gezogen, gestrichen. Genau die Wand, vor der du gerade stehst.",
+      { media:'<img src="fotos/polaroid3.jpg" alt="Escape-Room-Wand">' });
+  });
+  press(document.getElementById("startplay"), function(){
+    sClick();
+    Q.testing=true;
+    document.getElementById("stage").classList.add("testing");
+    document.getElementById("r3hint").textContent="Beobachte den Rhythmus deines Teamkollegen.";
+    startBuzzer();
+  });
+  Q.startPlay=function(){ document.getElementById("startplay").dispatchEvent(new MouseEvent("click",{bubbles:true})); };
+  var misses=0, lastOff=0, solved3=false, flashCount=0;
+  function startBuzzer(){
+    stopBuzzer();
+    (function cycle(){
+      var pos=flashCount%5;
+      var gap=(pos===0)?(900+Math.random()*600):(150+Math.random()*200);
+      Q.buzzTimer=setTimeout(function(){
+        var d=(pos===4)?400:(100+Math.random()*200);
+        flashCount++;
+        Q.litNow=true; document.getElementById("buzzA").classList.add("lit"); tone(880,0.08,"sine",0.03);
+        var m=document.querySelector(".mateimg"); if(m) m.classList.add("nudge");
+        Q.buzzTimer=setTimeout(function(){
+          Q.litNow=false; lastOff=Date.now();
+          document.getElementById("buzzA").classList.remove("lit");
+          if(m) m.classList.remove("nudge");
+          cycle();
+        }, d);
+      }, gap);
+    })();
+  }
+  function stopBuzzer(){ if(Q.buzzTimer){clearTimeout(Q.buzzTimer);Q.buzzTimer=null;} Q.litNow=false; var b=document.getElementById("buzzA"); if(b) b.classList.remove("lit"); }
+  Q.startBuzzer=startBuzzer; Q.stopBuzzer=stopBuzzer;
+  press(document.getElementById("buzzB"), function(){
+    if(solved3 || !Q.testing) return;
+    if(Q.litNow || (Date.now()-lastOff)<150){
+      solved3=true; stopBuzzer(); sOk();
+      openCard("Playtest bestanden.",
+        "Der Test war ein voller Erfolg. Fazit: Der Raum ist bereit, hunderte von Menschen zu begeistern.",
+        { btn:"Zur Eröffnung", after:function(){ go("finale"); } });
+    } else {
+      misses++; sErr();
+      document.getElementById("r3msg").textContent = misses<3 ? "Daneben. Schau auf Buzzer A und drück genau beim Aufblitzen." : "Dranbleiben. Scheitern gehört bei Boda Borg zum Konzept.";
+    }
+  });
+  Q.pressB=function(){ document.getElementById("buzzB").dispatchEvent(new MouseEvent("click",{bubbles:true})); };
+
+  /* ---------- Finale ---------- */
+  press(document.getElementById("folder"), function(){
+    sClick();
+    document.getElementById("cvpanel").classList.add("open");
+  });
+})();
+</script>
+</body>
+</html>
