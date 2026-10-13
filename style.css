@@ -447,11 +447,6 @@ footer.kontakt-ping .big { animation: kontaktLift 1.6s ease .35s; }
 @media (pointer: coarse), (max-width: 900px) {
   .table, .table .pcard { touch-action: pan-y; }
 }
-/* Umdrehen: Vorderseite sicher ausblenden (Safari ignoriert sonst backface-visibility bei Ebenen) */
-.flip .front, .pcard .face:not(.back) { transition: visibility 0s linear .3s; }
-.flip .back, .pcard .back { visibility: hidden; transition: visibility 0s linear .3s; }
-.flip.flipped .front, .pcard.flipped .face:not(.back) { visibility: hidden; }
-.flip.flipped .back, .pcard.flipped .back { visibility: visible; }
 /* Kleine Tischkarten: Eckzeichen kleiner, eng in die Ecke, Name mit Abstand */
 @media (max-width: 620px) {
   .pcard .idx { font-size: 12px; }
@@ -470,4 +465,20 @@ footer.kontakt-ping .big { animation: kontaktLift 1.6s ease .35s; }
   .rail-mini:disabled { opacity: .25; }
   .more.rail { scrollbar-width: none; }
   .more.rail::-webkit-scrollbar { display: none; }
+}
+
+/* ===== Touch: flach drehen =====
+   Safari auf iPhone/iPad zeigt bei der 3D-Drehung Vorder- und Rückseite gleichzeitig.
+   Auf Touch-Geräten dreht die Karte deshalb flach (schmal bis zur Kante, Seite wechseln, wieder breit).
+   Die Bewegung macht app.js (turn); hier nur: kein 3D, und immer genau eine Seite sichtbar.
+   Am Computer (Maus) bleibt alles wie bisher. */
+@media (pointer: coarse) {
+  .pcard .inner, .pcard.flipped .inner,
+  .flip .inner, .flip.flipped .inner,
+  .pc .pc-inner, .pc.flipped .pc-inner,
+  .pc:hover .pc-inner, .pc.flipped:hover .pc-inner { transform: none; transition: none; }
+  .pcard .face, .flip .face, .pc-face { backface-visibility: visible; -webkit-backface-visibility: visible; }
+  .pcard .back, .flip .back, .pc-back { transform: none; visibility: hidden; }
+  .pcard.flipped .back, .flip.flipped .back, .pc.flipped .pc-back { visibility: visible; }
+  .pcard.flipped .face:not(.back), .flip.flipped .front, .pc.flipped .pc-face:not(.pc-back) { visibility: hidden; }
 }

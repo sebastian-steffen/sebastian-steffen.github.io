@@ -57,6 +57,22 @@
   }
   function fill(el, html) { el.innerHTML = html; el.querySelectorAll('img').forEach(fallback); }
 
+  /* Karte umdrehen. Touch-Geräte: flach drehen (schmal, Seite wechseln, breit), weil Safari
+     die 3D-Drehung fehlerhaft zeigt. Maus: Klasse direkt setzen, die 3D-Drehung macht das CSS. */
+  var FLAT = window.matchMedia && matchMedia('(pointer: coarse)').matches;
+  function turn(inner, apply) {
+    if (!FLAT || !inner || !inner.animate) { apply(); return; }
+    if (inner._turning) return;
+    inner._turning = true;
+    var a = inner.animate([{ transform: 'scaleX(1)' }, { transform: 'scaleX(0)' }], { duration: 170, easing: 'ease-in', fill: 'forwards' });
+    a.onfinish = function () {
+      apply();
+      var b = inner.animate([{ transform: 'scaleX(0)' }, { transform: 'scaleX(1)' }], { duration: 200, easing: 'ease-out' });
+      a.cancel();
+      b.onfinish = function () { inner._turning = false; };
+    };
+  }
+
   /* ---------- Karten auf dem Tisch: ziehen & umdrehen ---------- */
   function initTable(table) {
     var cards = [].slice.call(table.querySelectorAll('.pcard'));
@@ -90,14 +106,14 @@
       c.addEventListener('pointerup', function () {
         if (!c.classList.contains('dragging')) return;
         c.classList.remove('dragging');
-        if (!moved) c.classList.toggle('flipped');
+        if (!moved) turn(c.querySelector('.inner'), function () { c.classList.toggle('flipped'); });
       });
       /* Falls der Browser den Zeiger verliert: Karte sofort loslassen */
       ['pointercancel', 'lostpointercapture'].forEach(function (ev) {
         c.addEventListener(ev, function () { c.classList.remove('dragging'); });
       });
       c.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); c.classList.toggle('flipped'); }
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); turn(c.querySelector('.inner'), function () { c.classList.toggle('flipped'); }); }
       });
     });
     return {
@@ -260,7 +276,7 @@
         }).join('') + '</div>' +
       '</section>';
     box.querySelectorAll('.pc').forEach(function (b) {
-      b.addEventListener('click', function () { b.setAttribute('aria-pressed', b.classList.toggle('flipped')); });
+      b.addEventListener('click', function () { turn(b.querySelector('.pc-inner'), function () { b.setAttribute('aria-pressed', b.classList.toggle('flipped')); }); });
     });
     var list = p.postkarten.map(function (k) { return { src: IMG + k.bild, alt: k.titel }; });
     box.querySelectorAll('.zoom').forEach(function (b) {
@@ -407,8 +423,7 @@
     });
     document.querySelectorAll('.flip').forEach(function (f) {
       f.addEventListener('click', function () {
-        var on = f.classList.toggle('flipped');
-        f.setAttribute('aria-pressed', on);
+        turn(f.querySelector('.inner'), function () { f.setAttribute('aria-pressed', f.classList.toggle('flipped')); });
       });
     });
     document.getElementById('tools').innerHTML = tools.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('');
