@@ -482,3 +482,12 @@ footer.kontakt-ping .big { animation: kontaktLift 1.6s ease .35s; }
   .pcard.flipped .back, .flip.flipped .back, .pc.flipped .pc-back { visibility: visible; }
   .pcard.flipped .face:not(.back), .flip.flipped .front, .pc.flipped .pc-face:not(.pc-back) { visibility: hidden; }
 }
+
+/* Tischkarten: schlichte Rückseite wie bei «Mein Blatt», nur Text */
+.pcard .back .pattern { border: 0; background: none; padding: 14px; }
+.pcard .back .pattern span { background: none; box-shadow: none; padding: 0; color: var(--ink); font-size: 15px; line-height: 1.45; }
+
+/* Weitere Karten: alle in einer Reihe, keine Karte hebt sich an */
+.more.rail .card:hover .face, .more.rail .card:focus-visible .face { transform: none; }
+/* Touch: angetippte Karten bleiben sonst angehoben stehen */
+@media (hover: none) { a.card:hover .face { transform: none; } }

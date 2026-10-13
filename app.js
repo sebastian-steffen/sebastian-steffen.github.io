@@ -450,7 +450,7 @@
   }
   /* Rückseiten, Joker, Info-Karten bekommen je ein eigenes Bild */
   var seed = 7;
-  document.querySelectorAll('.pcard .back .pattern, .joker .face, .flip .front').forEach(function (el) {
+  document.querySelectorAll('.joker .face, .flip .front').forEach(function (el) {
     el.insertAdjacentHTML('afterbegin', artSvg(seed += 13));
   });
   /* Grosse Linie im Hero, die sich einmal selbst zeichnet */
