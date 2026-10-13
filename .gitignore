@@ -1,0 +1,10 @@
+# Original-Videos (bis 2 GB) nie hochladen – GitHub erlaubt max. 100 MB pro Datei.
+# Online gebraucht werden nur die kleinen Web-Versionen in video/web/.
+/video/*
+!/video/web/
+
+# Hilfsdateien
+/video/web/_convert.sh
+/video/web/_log.txt
+/neu/_lhf_sheet.jpg
+/neu/projekte.backup-*.js

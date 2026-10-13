@@ -66,7 +66,7 @@
 
         var cur = document.createElement('img');
         cur.id  = 'cursor-screwdriver';
-        cur.src = 'images/cursor-screwdriver.png';
+        cur.src = (location.pathname.indexOf('/alt/') > -1 ? '../' : '') + 'images/cursor-screwdriver.png';
         cur.alt = '';
         document.body.appendChild(cur);
 

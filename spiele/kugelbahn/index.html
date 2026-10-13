@@ -1,0 +1,1429 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Kugelbahn Koop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=Instrument+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: Figma-artige Werkbank — Ebenen links, unendliche Canvas mittig, kontextueller Inspector rechts */
+:root{
+  --bg:#e6e8e7; --panel:#f5f6f5; --raised:#ffffff; --ink:#191b1a; --muted:#5b625f; --line:#d2d6d4;
+  --accent:#7a4bff; --accent-soft:#ece5ff; --accent-ink:#ffffff;
+  --warn:#e2461c; --ok:#178a49; --stage:#dcdfdd;
+  --f-display:"Bricolage Grotesque","Arial Narrow",system-ui,sans-serif;
+  --f-ui:"Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#121413; --panel:#1a1d1c; --raised:#232726; --ink:#e6ebe8; --muted:#98a19d; --line:#303533;
+  --accent:#a587ff; --accent-soft:#2a2340; --accent-ink:#110d1c; --warn:#ff6a3f; --ok:#3fca7c; --stage:#0f1110; color-scheme:dark; } }
+:root[data-theme="dark"]{
+  --bg:#121413; --panel:#1a1d1c; --raised:#232726; --ink:#e6ebe8; --muted:#98a19d; --line:#303533;
+  --accent:#a587ff; --accent-soft:#2a2340; --accent-ink:#110d1c; --warn:#ff6a3f; --ok:#3fca7c; --stage:#0f1110; color-scheme:dark; }
+
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-ui);font-size:13px;overflow:hidden}
+#app{height:100%;display:flex;flex-direction:column;gap:10px;padding-inline:16px;padding-block:10px 14px;box-sizing:border-box}
+button,select,input{font:inherit;color:inherit}
+kbd{font-family:var(--f-mono);font-size:10.5px;padding:0 4px;border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;background:var(--raised);color:var(--ink);white-space:nowrap}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.top{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-ball{width:22px;height:22px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#b996ff,#7a4bff 55%,#4e22c9)}
+.brand h1{font-family:var(--f-display);font-weight:800;font-size:20px;letter-spacing:-.01em;margin:0;line-height:1}
+.tools{display:flex;gap:2px;background:var(--raised);border:1px solid var(--line);border-radius:10px;padding:3px}
+.tool{width:34px;height:30px;border:0;background:transparent;border-radius:7px;cursor:pointer;display:grid;place-items:center;color:var(--ink)}
+.tool:hover{background:var(--accent-soft)}
+.tool.on{background:var(--accent);color:var(--accent-ink)}
+.tool svg{width:16px;height:16px}
+.sep{width:1px;background:var(--line);margin:3px 3px}
+.modes{display:flex;background:var(--raised);border:1px solid var(--line);border-radius:999px;padding:3px;gap:2px;margin-left:auto}
+.seg{border:0;background:transparent;padding:5px 13px;border-radius:999px;cursor:pointer;font-weight:600;display:flex;gap:7px;align-items:center}
+.seg.on{background:var(--ink);color:var(--bg)}
+.seg.on kbd{background:transparent;color:inherit;border-color:currentColor}
+#modeTest.on{background:var(--accent);color:var(--accent-ink)}
+.btn{background:var(--raised);border:1px solid var(--line);border-radius:6px;padding:5px 10px;cursor:pointer;white-space:nowrap}
+.btn:hover{border-color:var(--muted)}
+.btn.danger{color:var(--warn)}
+.btn.armed{background:var(--warn);color:#fff;border-color:var(--warn)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+.btn:disabled{opacity:.4;cursor:default}
+.iconbtn{width:32px;padding:5px 0;text-align:center}
+
+.work{flex:1;min-height:0;display:grid;grid-template-columns:232px minmax(0,1fr) 292px;gap:12px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:auto;min-height:0;padding:12px;display:flex;flex-direction:column;gap:10px}
+.panel h2{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:2px 0 0;font-weight:600}
+.presets{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.pre{display:flex;align-items:center;gap:6px;background:var(--raised);border:1px solid var(--line);border-radius:7px;padding:4px 6px;cursor:grab;touch-action:none;user-select:none;font-size:12px;text-align:left;min-width:0}
+.pre svg{width:28px;height:18px;flex:none}
+.pre span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pre:hover{border-color:var(--accent)}
+.pre.on{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent);background:var(--accent-soft)}
+.layers{display:flex;flex-direction:column;gap:1px}
+.lay{display:flex;align-items:center;gap:7px;padding:4px 6px;border-radius:6px;cursor:pointer;user-select:none;min-width:0}
+.lay:hover{background:var(--accent-soft)}
+.lay.on{background:var(--accent);color:var(--accent-ink)}
+.lay.sec{font-weight:600}
+.lay.el{padding-left:22px;font-size:12px}
+.lay .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lay .ct{font-family:var(--f-mono);font-size:11px;opacity:.7}
+.lay svg{width:13px;height:13px;flex:none}
+.sw{width:11px;height:11px;border-radius:3px;display:inline-block;flex:none}
+.sw.round{border-radius:50%}
+.lay .tag{font-size:10px;font-family:var(--f-mono);opacity:.75}
+
+.stage{position:relative;min-height:0;border-radius:10px;overflow:hidden;border:1px solid var(--line);background:var(--stage)}
+#cv{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;outline:none}
+.overlay-tl{position:absolute;left:10px;top:10px;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.chip{background:var(--raised);border:1px solid var(--line);border-radius:999px;padding:3px 10px;font-family:var(--f-mono);font-size:12px;font-variant-numeric:tabular-nums}
+.chip.mode{font-family:var(--f-ui);font-weight:600}
+.chip.mode.test{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+button.chip{cursor:pointer;font-family:var(--f-ui)}
+button.chip:hover{border-color:var(--accent)}
+.crumbsep{color:var(--muted)}
+.banner{position:absolute;left:50%;top:12px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:7px 16px;border-radius:999px;font-weight:600;font-size:13.5px;white-space:nowrap;pointer-events:none;box-shadow:0 4px 14px rgba(0,0,0,.18);max-width:calc(100% - 40px);overflow:hidden;text-overflow:ellipsis}
+.banner.fail{background:var(--warn);color:#fff}
+.banner.win{background:var(--ok);color:#fff;font-family:var(--f-display);font-size:16px}
+.zoom{position:absolute;right:10px;bottom:10px;display:flex;gap:4px;align-items:center}
+.zoom .chip{min-width:52px;text-align:center}
+.tips{position:absolute;left:10px;bottom:10px;right:230px;font-size:11.5px;color:var(--muted);line-height:1.6;pointer-events:none}
+.tips kbd{font-size:10px}
+
+.insp{display:flex;flex-direction:column;gap:9px}
+.insp h3{font-family:var(--f-display);font-weight:600;font-size:18px;margin:0;letter-spacing:-.01em}
+.insp .sub{color:var(--muted);font-size:12px;margin:-4px 0 0;line-height:1.45}
+.insp h4{margin:6px 0 0;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.row{display:grid;grid-template-columns:92px minmax(0,1fr);gap:8px;align-items:center}
+.row>span:first-child{color:var(--muted);font-size:12px}
+.inp{display:flex;align-items:center;gap:6px;min-width:0}
+.inp input,.row select,.txt{width:100%;min-width:0;box-sizing:border-box;background:var(--raised);border:1px solid var(--line);border-radius:6px;padding:5px 7px;font-family:var(--f-mono);font-size:12px}
+.row select,.txt{font-family:var(--f-ui);font-size:13px}
+.inp em{font-style:normal;color:var(--muted);font-size:11px;font-family:var(--f-mono);flex:none}
+.inp input:disabled{opacity:.45}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:6px 10px}
+.grid2 .row{grid-template-columns:20px minmax(0,1fr)}
+.seg2{display:flex;gap:3px;flex-wrap:wrap}
+.seg2 button{flex:1;display:flex;align-items:center;gap:5px;justify-content:center;border:1px solid var(--line);background:var(--raised);border-radius:6px;padding:5px 6px;cursor:pointer;font-size:12px;white-space:nowrap}
+.seg2 button.on{border-color:var(--accent);background:var(--accent-soft);font-weight:600}
+.check{display:flex;gap:8px;align-items:center;font-size:12.5px;cursor:pointer}
+.check input{accent-color:var(--accent);width:15px;height:15px;margin:0}
+.acts{display:flex;gap:6px;flex-wrap:wrap}
+.acts .btn{flex:1}
+.srow{display:flex;flex-direction:column;gap:2px}
+.srow .lab{display:flex;justify-content:space-between;gap:8px;font-size:12.5px}
+.srow output{font-family:var(--f-mono);font-size:12px;font-variant-numeric:tabular-nums}
+.srow input[type=range]{width:100%;accent-color:var(--accent);margin:0}
+.srow small,.hint{color:var(--muted);font-size:11px;line-height:1.4}
+details{border-top:1px solid var(--line);padding-top:6px}
+details>summary{cursor:pointer;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600;padding:3px 0;list-style:none;display:flex;justify-content:space-between}
+details>summary::after{content:"+";font-family:var(--f-mono)}
+details[open]>summary::after{content:"–"}
+details>div{display:flex;flex-direction:column;gap:8px;padding:6px 0 4px}
+.keys{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;font-size:12px;color:var(--muted);align-items:center}
+.keys span:nth-child(odd){text-align:right}
+.callout{background:var(--accent-soft);border-radius:8px;padding:8px 10px;font-size:12px;line-height:1.45}
+
+.modal{position:fixed;inset:0;background:rgba(10,12,11,.45);display:flex;align-items:center;justify-content:center;padding:16px;z-index:20}
+.mbox{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;width:min(640px,100%);max-height:100%;overflow:auto;display:flex;flex-direction:column;gap:10px;box-sizing:border-box}
+.mbox h3{font-family:var(--f-display);font-size:19px;margin:0}
+.mbox p{margin:0;color:var(--muted);line-height:1.45}
+.mbox textarea{width:100%;box-sizing:border-box;height:220px;background:var(--raised);border:1px solid var(--line);border-radius:8px;padding:8px;font-family:var(--f-mono);font-size:11.5px;color:var(--ink);resize:vertical}
+.mrow{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.msg{font-size:12px;color:var(--ok);min-height:1em}
+.ghost{position:fixed;pointer-events:none;z-index:30;background:var(--accent);color:var(--accent-ink);padding:4px 10px;border-radius:999px;font-weight:600;font-size:12px;transform:translate(-50%,-140%)}
+
+@media (max-width: 1050px){
+  html,body{height:auto} body{overflow:auto} #app{height:auto}
+  .work{grid-template-columns:minmax(0,1fr)}
+  .stage{height:72vh;order:-1}
+  .modes{margin-left:0}
+  .tips{display:none}
+}
+@media (prefers-reduced-motion: reduce){ *{transition:none!important} }
+</style>
+
+<div id="app">
+  <header class="top">
+    <div class="brand"><span class="brand-ball" aria-hidden="true"></span><h1>Kugelbahn Koop</h1></div>
+    <div class="tools" id="tools">
+      <button class="tool" data-tool="select" title="Auswählen (V)" type="button"><svg viewBox="0 0 16 16"><path d="M3.5 2 L12.5 8.2 L8.3 9 L6.4 13.4 Z" fill="currentColor"/></svg></button>
+      <button class="tool" data-tool="hand" title="Hand / Verschieben (H, oder Leertaste halten)" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M5.5 8V3.6a1 1 0 0 1 2 0V7.5M7.5 7V2.7a1 1 0 0 1 2 0V7.5M9.5 7.5V3.6a1 1 0 0 1 2 0v4.6M11.5 8V5.6a1 1 0 0 1 2 0v4c0 3-2 5-4.6 5-2 0-3.1-.9-4.1-2.4L3 9.6a1 1 0 0 1 1.6-1.2L5.5 9.6"/></svg></button>
+      <span class="sep"></span>
+      <button class="tool" data-tool="section" title="Spielfeld aufziehen (F)" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M5 1.5v13M11 1.5v13M1.5 5h13M1.5 11h13"/></svg></button>
+      <button class="tool" data-tool="rect" title="Rechteck / Balken (R)" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="4.5" width="12" height="7" rx=".5"/></svg></button>
+      <button class="tool" data-tool="circle" title="Kreis (O)" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="5.5"/></svg></button>
+    </div>
+    <div class="modes">
+      <button class="seg on" id="modeBuild" type="button">Bauen <kbd>Esc</kbd></button>
+      <button class="seg" id="modeTest" type="button">Testen <kbd>Enter</kbd></button>
+    </div>
+    <button class="btn iconbtn" id="undoBtn" type="button" title="Rückgängig (Ctrl+Z)">↶</button>
+    <button class="btn iconbtn" id="redoBtn" type="button" title="Wiederholen (Ctrl+Shift+Z)">↷</button>
+    <button class="btn" id="ioBtn" type="button">Export / Import</button>
+  </header>
+
+  <main class="work">
+    <aside class="panel" aria-label="Bauteile und Ebenen">
+      <h2>Bauteile</h2>
+      <div class="presets" id="presets"></div>
+      <h2>Ebenen</h2>
+      <div class="layers" id="layers"></div>
+    </aside>
+
+    <section class="stage" id="stage">
+      <canvas id="cv" tabindex="0" aria-label="Canvas mit Spielfeldern"></canvas>
+      <div class="overlay-tl" id="tl"></div>
+      <div class="banner" id="banner" hidden></div>
+      <div class="tips" id="tips"></div>
+      <div class="zoom">
+        <button class="btn iconbtn" id="zOut" type="button" title="Herauszoomen (-)">−</button>
+        <button class="chip" id="zLbl" type="button" title="Alles zeigen (Shift+1)">100%</button>
+        <button class="btn iconbtn" id="zIn" type="button" title="Hineinzoomen (+)">+</button>
+      </div>
+    </section>
+
+    <aside class="panel" aria-label="Eigenschaften"><div class="insp" id="insp"></div></aside>
+  </main>
+
+  <div class="modal" id="ioModal" hidden>
+    <div class="mbox" role="dialog" aria-label="Export und Import">
+      <h3>Export / Import</h3>
+      <p>Das ganze Board als JSON: alle Spielfelder, Bauteile und Einstellungen. Kopieren und aufbewahren, oder anderes JSON einfügen. „Hinzufügen" legt die Spielfelder daraus neben die bestehenden.</p>
+      <textarea id="ioText" spellcheck="false"></textarea>
+      <div class="mrow">
+        <button class="btn" id="ioCopy" type="button">Kopieren</button>
+        <button class="btn primary" id="ioAdd" type="button">Hinzufügen</button>
+        <button class="btn danger" id="ioReplace" type="button">Board ersetzen</button>
+        <label class="btn" for="ioFile">JSON-Datei öffnen</label>
+        <input type="file" id="ioFile" accept=".json,application/json" hidden>
+        <button class="btn" id="ioSample" type="button">Skizze 1 neu anlegen</button>
+        <button class="btn" id="ioClose" type="button" style="margin-left:auto">Schliessen</button>
+      </div>
+      <div class="msg" id="ioMsg"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+(()=>{
+'use strict';
+const $=s=>document.querySelector(s);
+const cv=$('#cv'), ctx=cv.getContext('2d');
+const DEG=Math.PI/180;
+const clamp=(v,a,b)=>v<a?a:v>b?b:v;
+const uid=()=>Math.random().toString(36).slice(2,10);
+const deep=o=>JSON.parse(JSON.stringify(o));
+const normAng=a=>((a+180)%360+360)%360-180;
+const r1=v=>Math.round(v*10)/10;
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]);
+
+/* ================= Konstanten ================= */
+const PL={1:{fill:'#5ccf6e',edge:'#2c8a41',name:'Spieler 1',kh:'A   D',kv:'W   S'},2:{fill:'#42a9ff',edge:'#1c6cbc',name:'Spieler 2',kh:'←   →',kv:'↑   ↓'}};
+const KEYS={1:{l:'KeyA',r:'KeyD',u:'KeyW',d:'KeyS'},2:{l:'ArrowLeft',r:'ArrowRight',u:'ArrowUp',d:'ArrowDown'}};
+const EFF={normal:'Normal',bounce:'Bounce',reset:'Neustart',slick:'Glatt',grip:'Griffig'};
+const STATIC_FILL={normal:'#a2a8a5',bounce:'#f2501f',reset:'#1e2120',slick:'#9fdcef',grip:'#8b5e3f'};
+const SEESAW_FILL='#d9a520';
+const SEC_DEF={gravity:2000,restitution:0.25,friction:0.5,bounce:1,maxSpeed:2600,rotLimit:35,rotSpeed:110,rotRamp:120,rotSpring:false,rangeScale:100,slideSpeed:380,slideRamp:100,slideSpring:false,seesawMass:2,seesawDamp:2,seesawReturn:6,winRule:'all'};
+const PREF_DEF={snap:true,grid:10,trail:true,timeScale:1,waitStart:true};
+const R=(k,label,min,max,step,unit,hint)=>({k,label,min,max,step,unit,hint,t:'range'});
+const B=(k,label,hint)=>({k,label,hint,t:'bool'});
+const SEC_GROUPS=[
+ {g:'Kugel & Physik',open:true,items:[R('gravity','Schwerkraft',100,6000,50,'px/s²'),R('restitution','Abprall normal',0,0.9,0.05,'','0 = klebt · 0.9 = springt stark'),R('friction','Reibung',0,1.5,0.05,'','wie stark die Kugel rollt statt rutscht'),R('bounce','Bounce-Stärke',0.5,1.5,0.05,'×','1 = gleiche Geschwindigkeit zurück'),R('maxSpeed','Max. Tempo',400,5000,100,'px/s')]},
+ {g:'Rotationsbalken',items:[R('rotLimit','Rotationslimit',0,180,1,'±°','Standard für alle ohne eigenes Limit · 180 = frei'),R('rotSpeed','Drehtempo',10,400,5,'°/s'),R('rotRamp','Reaktionszeit',0,600,10,'ms','bis volles Tempo · 0 = sofort'),B('rotSpring','Federt beim Loslassen zurück')]},
+ {g:'Schieber',items:[R('rangeScale','Range',10,200,5,'%','skaliert alle Schienen · 100 = wie gezeichnet'),R('slideSpeed','Schiebetempo',20,1200,10,'px/s'),R('slideRamp','Reaktionszeit',0,600,10,'ms'),B('slideSpring','Federt zur Mitte zurück')]},
+ {g:'Wippe',items:[R('seesawMass','Trägheit',0.5,10,0.5,'×','im Verhältnis zur Kugel'),R('seesawDamp','Dämpfung',0,10,0.5,''),R('seesawReturn','Rückstellkraft',0,40,1,'')]},
+];
+const PREF_ITEMS=[B('waitStart','Kugel wartet auf Leertaste'),R('timeScale','Zeitlupe / Tempo',0.2,1.5,0.05,'×'),B('trail','Spur der Kugel zeigen'),B('snap','Am Raster einrasten','Shift beim Drehen = 15°-Schritte'),R('grid','Rastergrösse',5,50,5,'px')];
+const findItem=k=>{for(const g of SEC_GROUPS)for(const it of g.items)if(it.k===k)return it; return PREF_ITEMS.find(i=>i.k===k);};
+
+const SVG={
+ wall:'<rect x="2" y="9" width="36" height="8" fill="#1e2120"/>',
+ bounce:'<rect x="2" y="9" width="36" height="8" fill="#f2501f"/>',
+ plat:'<rect x="2" y="9" width="36" height="8" fill="#a2a8a5"/>',
+ rotor:'<g transform="rotate(-14 20 13)"><rect x="3" y="9" width="34" height="9" fill="#5ccf6e"/></g><circle cx="20" cy="13" r="2.4" fill="#fff" stroke="#1e2120"/>',
+ slider:'<line x1="2" y1="22" x2="38" y2="4" stroke="#1e2120"/><g transform="rotate(-10 20 13)"><rect x="11" y="8.5" width="18" height="9" fill="#42a9ff"/></g>',
+ seesaw:'<g transform="rotate(10 20 11)"><rect x="3" y="8" width="34" height="6" fill="#d9a520"/></g><path d="M20 13 L15 23 L25 23 Z" fill="#1e2120"/>',
+ pin:'<circle cx="20" cy="13" r="7" fill="#f2501f"/>',
+ wheel:'<circle cx="20" cy="13" r="10" fill="#5ccf6e"/><path d="M20 13 L20 5 M20 13 L27 17 M20 13 L13 17" stroke="#fff" stroke-width="1.6"/>',
+ goal:'<circle cx="20" cy="13" r="10" fill="rgba(122,75,255,.15)" stroke="#7a4bff" stroke-width="1.6" stroke-dasharray="3 2"/><circle cx="20" cy="13" r="4" fill="none" stroke="#7a4bff" stroke-width="1.2"/>',
+ start:'<circle cx="20" cy="13" r="8" fill="#7a4bff"/><circle cx="17" cy="10" r="2" fill="#fff" opacity=".7"/>',
+ spawn:'<circle cx="16" cy="15" r="8" fill="rgba(242,140,30,.2)" stroke="#e8851a" stroke-width="1.6"/><circle cx="31" cy="7" r="5" fill="none" stroke="#7a4bff" stroke-width="1.4" stroke-dasharray="2 2"/><path d="M21 11 L27 9" stroke="#e8851a" stroke-dasharray="2 2"/>',
+ section:'<rect x="5" y="4" width="30" height="19" fill="#fff" stroke="#7a4bff" stroke-width="1.4"/><text x="5" y="3" font-size="0"/>',
+};
+const PRESETS=[
+ {key:'wall',label:'Begrenzung',tool:'rect',p:{effect:'reset'},def:{w:300,h:24}},
+ {key:'bounce',label:'Bounce-Balken',tool:'rect',p:{effect:'bounce'},def:{w:200,h:24}},
+ {key:'plat',label:'Plattform',tool:'rect',p:{},def:{w:200,h:24}},
+ {key:'rotor',label:'Rotor',tool:'rect',p:{motion:'rotor',player:1},def:{w:200,h:40}},
+ {key:'slider',label:'Schieber',tool:'rect',p:{motion:'slider',player:2},def:{w:180,h:40}},
+ {key:'seesaw',label:'Wippe',tool:'rect',p:{motion:'seesaw',lim:25},def:{w:240,h:24}},
+ {key:'pin',label:'Pin',tool:'circle',p:{effect:'bounce'},def:{r:16}},
+ {key:'wheel',label:'Rad',tool:'circle',p:{motion:'rotor',player:1,lim:180},def:{r:45}},
+ {key:'goal',label:'Ziel',tool:'place',kind:'goal'},
+ {key:'start',label:'Kugel',tool:'place',kind:'start'},
+ {key:'spawn',label:'Multiball',tool:'place',kind:'spawn'},
+ {key:'section',label:'Spielfeld',tool:'section'},
+];
+
+/* ================= Datenmodell ================= */
+const BASE={
+  rect:{w:200,h:24,a:0,effect:'normal',motion:'static',player:1,lim:null,pox:0,railAng:0,rMin:-120,rMax:120,keyAxis:'auto',parent:null},
+  circle:{r:20,a:0,effect:'normal',motion:'static',player:1,lim:null,pox:0,railAng:0,rMin:-120,rMax:120,keyAxis:'auto',parent:null},
+  goal:{r:50,parent:null},
+  spawn:{r:28,dx:0,dy:-160,br:26,once:true,parent:null},
+  start:{r:32,sleep:false},
+};
+function mkEl(kind,o){return Object.assign({id:uid(),kind,x:0,y:0,sec:null},deep(BASE[kind]),o||{});}
+let doc;
+function newSection(o){return Object.assign({id:uid(),name:'Spielfeld '+((doc?doc.sections.length:0)+1),x:0,y:0,w:900,h:1000,settings:deep(SEC_DEF)},o||{});}
+const isBody=e=>e&&(e.kind==='rect'||e.kind==='circle');
+const isMover=e=>isBody(e)&&e.motion!=='static';
+const elById=id=>doc.elements.find(e=>e.id===id)||null;
+const secById=id=>doc.sections.find(s=>s.id===id)||null;
+const findAny=id=>elById(id)||secById(id);
+const elsOf=sid=>doc.elements.filter(e=>e.sec===sid);
+const looseEls=()=>doc.elements.filter(e=>!e.sec||!secById(e.sec));
+const inSec=(s,p)=>p.x>=s.x&&p.x<=s.x+s.w&&p.y>=s.y&&p.y<=s.y+s.h;
+function secAt(x,y){for(let i=doc.sections.length-1;i>=0;i--){const s=doc.sections[i]; if(inSec(s,{x,y}))return s.id;} return null;}
+function reparent(e){ if(!e)return; if(e.parent){const p=elById(e.parent); if(p){e.sec=p.sec; return;}} e.sec=secAt(e.x,e.y); }
+const settingsOf=e=>{const s=e&&secById(e.sec); return s?s.settings:SEC_DEF;};
+
+/* Skizze 1 aus Version 1 */
+function sampleV1(){
+  const E=o=>Object.assign({a:0,effect:'normal'},o);
+  return {name:'Skizze 1 · Game Mockup',W:980,H:1140,settings:{},elements:[
+    E({type:'bar',x:490,y:7.5,w:980,h:15,effect:'reset'}),E({type:'bar',x:14,y:432.5,w:28,h:835,effect:'bounce'}),
+    E({type:'bar',x:971,y:281.5,w:16,h:533,effect:'reset'}),E({type:'bar',x:571.5,y:560.5,w:815,h:25,effect:'reset'}),
+    E({type:'bar',x:231.5,y:832,w:407,h:24,effect:'reset'}),E({type:'bar',x:784,y:832,w:390,h:24,effect:'reset'}),
+    E({type:'rotor',x:230,y:170.5,w:380,h:41,player:1,lim:null}),E({type:'rotor',x:863.5,y:258.5,w:171,h:41,player:1,lim:null}),
+    E({type:'rotor',x:284.5,y:457.5,w:241,h:41,player:1,lim:null}),E({type:'rotor',x:621.5,y:663.5,w:171,h:41,player:1,lim:null}),
+    E({type:'rotor',x:621.5,y:920.5,w:171,h:41,player:1,lim:null}),
+    E({type:'slider',x:615,y:335.5,w:184,h:41,player:2,rMin:-107,rMax:97}),E({type:'slider',x:147.5,y:763.5,w:185,h:41,player:2,rMin:-27,rMax:739}),
+    E({type:'slider',x:410,y:920.5,w:184,h:41,player:2,rMin:-110,rMax:24}),
+    E({type:'goal',x:389.5,y:1065.5,w:237,h:131,t:16}),E({type:'start',x:87,y:117}),
+  ]};
+}
+function fromV1(p,ox,oy){
+  const st=Object.assign({},SEC_DEF); for(const k in SEC_DEF) if(p.settings&&p.settings[k]!=null) st[k]=p.settings[k];
+  const sec={id:uid(),name:p.name||'Spielfeld',x:ox,y:oy,w:p.W||980,h:p.H||1140,settings:st};
+  const ballR=(p.settings&&p.settings.ballR)||32, els=[];
+  for(const e of p.elements||[]){
+    const b={x:e.x+ox,y:e.y+oy,sec:sec.id}, rp={w:e.w,h:e.h,a:e.a||0,effect:e.effect||'normal'};
+    switch(e.type){
+      case 'bar': els.push(mkEl('rect',Object.assign(b,rp))); break;
+      case 'rotor': els.push(mkEl('rect',Object.assign(b,rp,{motion:'rotor',player:e.player||1,lim:e.lim??null}))); break;
+      case 'slider': case 'vslider': els.push(mkEl('rect',Object.assign(b,rp,{motion:'slider',player:e.player||2,railAng:(e.a||0)+(e.type==='vslider'?90:0),rMin:e.rMin??-120,rMax:e.rMax??120}))); break;
+      case 'seesaw': els.push(mkEl('rect',Object.assign(b,rp,{motion:'seesaw',lim:e.lim??25}))); break;
+      case 'pin': els.push(mkEl('circle',Object.assign(b,{r:e.r||16,effect:e.effect||'bounce'}))); break;
+      case 'start': els.push(mkEl('start',Object.assign(b,{r:ballR}))); break;
+      case 'goal':{
+        const a=(e.a||0)*DEG,c=Math.cos(a),s=Math.sin(a),t=e.t||16,w=e.w,h=e.h;
+        const P=(lx,ly)=>({x:r1(b.x+lx*c-ly*s),y:r1(b.y+lx*s+ly*c)});
+        const eff=e.effect||'normal';
+        els.push(mkEl('rect',Object.assign(P(-w/2+t/2,0),{sec:sec.id,w:t,h,a:e.a||0,effect:eff})));
+        els.push(mkEl('rect',Object.assign(P(w/2-t/2,0),{sec:sec.id,w:t,h,a:e.a||0,effect:eff})));
+        els.push(mkEl('rect',Object.assign(P(0,h/2-t/2),{sec:sec.id,w,h:t,a:e.a||0,effect:eff})));
+        const gr=Math.max(20,Math.min((w-2*t)/2,(h-t)/2)-6);
+        els.push(mkEl('goal',Object.assign(P(0,h/2-t-gr),{sec:sec.id,r:r1(gr)})));
+        break;}
+    }
+  }
+  return {sec,els};
+}
+function demoSection(X){
+  const sec=newSection({name:'Spielwiese · neue Bauteile',x:X,y:0,w:1000,h:1000}); sec.settings.winRule='all';
+  const s=sec.id, E=(k,o)=>mkEl(k,Object.assign({sec:s},o));
+  const slider=E('rect',{x:X+500,y:900,w:280,h:20,motion:'slider',player:1,railAng:0,rMin:-320,rMax:320});
+  const els=[
+    E('start',{x:X+120,y:128,r:28}),
+    E('rect',{x:X+10,y:450,w:20,h:900,effect:'bounce'}),
+    E('rect',{x:X+990,y:450,w:20,h:900,effect:'bounce'}),
+    E('rect',{x:X+180,y:745,w:320,h:18,a:14}),E('rect',{x:X+820,y:745,w:320,h:18,a:-14}),
+    E('rect',{x:X+240,y:170,w:320,h:28,motion:'rotor',player:1}),
+    E('rect',{x:X+480,y:300,w:200,h:20,a:16}),
+    E('spawn',{x:X+640,y:350,r:30,dx:200,dy:-250,br:26}),
+    E('circle',{x:X+830,y:340,r:55,motion:'rotor',player:2,lim:180}),
+    E('circle',{x:X+300,y:470,r:14,effect:'bounce'}),E('circle',{x:X+390,y:440,r:14,effect:'bounce'}),E('circle',{x:X+720,y:520,r:14,effect:'bounce'}),
+    E('rect',{x:X+450,y:620,w:260,h:24,a:-12,motion:'slider',player:2,railAng:0,rMin:-260,rMax:260}),
+    slider,
+    E('rect',{x:X+366,y:855,w:16,h:70,parent:slider.id}),
+    E('rect',{x:X+634,y:855,w:16,h:70,parent:slider.id}),
+    E('goal',{x:X+500,y:860,r:46,parent:slider.id}),
+  ];
+  return {sec,els};
+}
+
+/* ================= Speichern ================= */
+const DOC_KEY='kugelbahn-koop.v2', V1_KEY='kugelbahn-koop.v1';
+let saveT=0;
+function saveDoc(){clearTimeout(saveT); saveT=setTimeout(()=>{try{doc.view={x:cam.x,y:cam.y,z:cam.z}; localStorage.setItem(DOC_KEY,JSON.stringify(doc));}catch(e){}},300);}
+function rightEdge(){return doc.sections.reduce((m,s)=>Math.max(m,s.x+s.w),-200);}
+function loadDoc(){
+  try{const raw=localStorage.getItem(DOC_KEY); if(raw){const d=JSON.parse(raw); if(d&&Array.isArray(d.sections)&&Array.isArray(d.elements)) doc=d;}}catch(e){}
+  if(!doc){
+    doc={v:2,sections:[],elements:[],prefs:deep(PREF_DEF),view:null};
+    let migrated=false;
+    try{const r=localStorage.getItem(V1_KEY); if(r){const s=JSON.parse(r); const ps=Object.values(s.projects||{}); let ox=0;
+      for(const p of ps){const {sec,els}=fromV1(p,ox,0); doc.sections.push(sec); doc.elements.push(...els); ox+=sec.w+200;} migrated=ps.length>0;}}catch(e){}
+    if(!migrated){const {sec,els}=fromV1(sampleV1(),0,0); doc.sections.push(sec); doc.elements.push(...els);}
+    const d=demoSection(rightEdge()+200); doc.sections.push(d.sec); doc.elements.push(...d.els);
+  }
+  if(!doc.fix1){ doc.fix1=1; const s=doc.sections.find(q=>q.name==='Spielwiese · neue Bauteile');
+    if(s){ const X=s.x; const rw=doc.elements.find(e=>e.sec===s.id&&e.kind==='rect'&&e.effect==='reset'&&Math.abs(e.x-(X+990))<1); if(rw) rw.effect='bounce';
+      if(!doc.elements.some(e=>e.sec===s.id&&e.kind==='rect'&&e.a===14)) doc.elements.push(mkEl('rect',{sec:s.id,x:X+180,y:745,w:320,h:18,a:14}),mkEl('rect',{sec:s.id,x:X+820,y:745,w:320,h:18,a:-14})); } }
+  doc.prefs=Object.assign(deep(PREF_DEF),doc.prefs||{});
+  for(const s of doc.sections) s.settings=Object.assign(deep(SEC_DEF),s.settings||{});
+  for(const e of doc.elements) if(BASE[e.kind]) for(const k in BASE[e.kind]) if(e[k]===undefined) e[k]=deep(BASE[e.kind][k]);
+}
+
+/* ================= Verlauf ================= */
+let hist=[], hi=0;
+const snapshot=()=>JSON.stringify({sections:doc.sections,elements:doc.elements});
+function commit(){const s=snapshot(); if(s!==hist[hi]){hist=hist.slice(0,hi+1); hist.push(s); if(hist.length>200)hist.shift(); hi=hist.length-1;} saveDoc(); renderLayers();}
+function restore(s){const d=JSON.parse(s); doc.sections=d.sections; doc.elements=d.elements;
+  for(const id of [...sel]) if(!findAny(id)) sel.delete(id);
+  if(focusId&&!secById(focusId)){ if(mode==='test') setMode('build'); focusId=null; }
+  if(sim&&!secById(sim.sec.id)) setMode('build'); else if(sim) sim.sec=secById(sim.sec.id);
+  rt.clear(); saveDoc(); renderAll();}
+function undo(){if(hi>0){hi--; restore(hist[hi]);}}
+function redo(){if(hi<hist.length-1){hi++; restore(hist[hi]);}}
+
+/* ================= Zustand ================= */
+let mode='build', focusId=null, tool='select', preset=null, sel=new Set(), hoverId=null, attachSrc=[];
+const rt=new Map();
+function st(e){let s=rt.get(e.id); if(!s){s={ang:0,vel:0,off:0}; rt.set(e.id,s);} return s;}
+const focusSec=()=>focusId?secById(focusId):null;
+let sim=null;
+const keys=new Set();
+let cam={x:-100,y:-100,z:0.5}, camAnim=null, dpr=1;
+let flashMsg=null;
+
+/* ================= Bewegung & Geometrie ================= */
+const ID={px:0,py:0,th:0,tx:0,ty:0,om:0,vx:0,vy:0,src:null};
+function motionOf(e){
+  let m=null;
+  if(isMover(e)) m=e;
+  else if(e.parent){const p=elById(e.parent); if(isMover(p)) m=p;}
+  if(!m) return ID;
+  const s=st(m), a=(m.a||0)*DEG;
+  if(m.motion==='rotor'||m.motion==='seesaw'){const px=m.x+Math.cos(a)*(m.pox||0), py=m.y+Math.sin(a)*(m.pox||0); return {px,py,th:s.ang,tx:0,ty:0,om:s.vel,vx:0,vy:0,src:m};}
+  const ra=(m.railAng||0)*DEG, ux=Math.cos(ra), uy=Math.sin(ra);
+  return {px:m.x,py:m.y,th:0,tx:ux*s.off,ty:uy*s.off,om:0,vx:ux*s.vel,vy:uy*s.vel,src:m};
+}
+function xf(m,x,y){ if(!m.th) return [x+m.tx,y+m.ty]; const c=Math.cos(m.th),s=Math.sin(m.th),dx=x-m.px,dy=y-m.py; return [m.px+dx*c-dy*s+m.tx,m.py+dx*s+dy*c+m.ty]; }
+function velAt(m,x,y){const Px=m.px+m.tx, Py=m.py+m.ty; return [m.vx-m.om*(y-Py), m.vy+m.om*(x-Px)];}
+function geo(e,home){
+  const m=home?ID:motionOf(e); const [cx,cy]=xf(m,e.x,e.y);
+  if(e.kind==='rect') return {k:'r',cx,cy,hw:e.w/2,hh:e.h/2,ang:(e.a||0)*DEG+m.th,mot:m,th:m.th};
+  return {k:'c',cx,cy,r:e.r,mot:m,th:m.th,ang:(e.a||0)*DEG+m.th};
+}
+function hitRect(s,bx,by,R){
+  const c=Math.cos(s.ang), si=Math.sin(s.ang), dx=bx-s.cx, dy=by-s.cy;
+  const lx=dx*c+dy*si, ly=-dx*si+dy*c;
+  if(Math.abs(lx)>s.hw+R||Math.abs(ly)>s.hh+R) return null;
+  let qx=clamp(lx,-s.hw,s.hw), qy=clamp(ly,-s.hh,s.hh), nx, ny, pen;
+  if(qx===lx&&qy===ly){
+    const px=s.hw-Math.abs(lx), py=s.hh-Math.abs(ly);
+    if(px<py){nx=lx<0?-1:1; ny=0; pen=px+R; qx=nx*s.hw;} else {nx=0; ny=ly<0?-1:1; pen=py+R; qy=ny*s.hh;}
+  } else {const ddx=lx-qx, ddy=ly-qy, d=Math.hypot(ddx,ddy); if(d>=R) return null; nx=ddx/d; ny=ddy/d; pen=R-d;}
+  return {nx:nx*c-ny*si, ny:nx*si+ny*c, pen, cx:s.cx+qx*c-qy*si, cy:s.cy+qx*si+qy*c};
+}
+function hitCircle(s,bx,by,R){
+  const dx=bx-s.cx, dy=by-s.cy, d=Math.hypot(dx,dy);
+  if(d>=R+s.r) return null; const nx=d?dx/d:0, ny=d?dy/d:-1;
+  return {nx,ny,pen:R+s.r-d,cx:s.cx+nx*s.r,cy:s.cy+ny*s.r};
+}
+
+/* ================= Physik ================= */
+function axisInput(p,ax){const k=KEYS[p||1]; return ax==='h'?(keys.has(k.r)?1:0)-(keys.has(k.l)?1:0):(keys.has(k.d)?1:0)-(keys.has(k.u)?1:0);}
+function sliderAxis(e){ if(e.keyAxis==='h'||e.keyAxis==='v') return e.keyAxis; const ra=(e.railAng||0)*DEG; return Math.abs(Math.cos(ra))>=Math.abs(Math.sin(ra))-1e-6?'h':'v'; }
+function approach(cur,target,rate,dt){if(rate<=0)return target; const d=target-cur, m=rate*dt; return Math.abs(d)<=m?target:cur+Math.sign(d)*m;}
+function updateMovers(dt,els,S){
+  for(const e of els){
+    if(!isMover(e)) continue; const s=st(e);
+    if(e.motion==='rotor'){
+      const lim=(e.lim==null?S.rotLimit:e.lim)*DEG, maxW=S.rotSpeed*DEG, inp=axisInput(e.player,'h');
+      let target=inp*maxW; if(!inp&&S.rotSpring) target=clamp(-s.ang*7,-maxW,maxW);
+      s.vel=approach(s.vel,target,S.rotRamp>0?maxW/(S.rotRamp/1000):0,dt); s.ang+=s.vel*dt;
+      if(lim<Math.PI-1e-6){ if(s.ang>lim){s.ang=lim; if(s.vel>0)s.vel=0;} if(s.ang<-lim){s.ang=-lim; if(s.vel<0)s.vel=0;} }
+    } else if(e.motion==='slider'){
+      const sc=S.rangeScale/100, lo=Math.min(e.rMin,e.rMax)*sc, hi=Math.max(e.rMin,e.rMax)*sc, maxV=S.slideSpeed;
+      const ax=sliderAxis(e), ra=(e.railAng||0)*DEG;
+      const sgn=ax==='h'?(Math.cos(ra)<-1e-6?-1:1):(Math.sin(ra)<-1e-6?-1:1);
+      const inp=axisInput(e.player,ax)*sgn;
+      let target=inp*maxV; if(!inp&&S.slideSpring) target=clamp(-s.off*6,-maxV,maxV);
+      s.vel=approach(s.vel,target,S.slideRamp>0?maxV/(S.slideRamp/1000):0,dt); s.off+=s.vel*dt;
+      if(s.off>hi){s.off=hi; if(s.vel>0)s.vel=0;} if(s.off<lo){s.off=lo; if(s.vel<0)s.vel=0;}
+    } else if(e.motion==='seesaw'){
+      const lim=(e.lim==null?25:e.lim)*DEG;
+      s.vel+=(-S.seesawReturn*s.ang-S.seesawDamp*s.vel)*dt; s.ang+=s.vel*dt;
+      if(s.ang>lim){s.ang=lim; if(s.vel>0)s.vel*=-0.2;} if(s.ang<-lim){s.ang=-lim; if(s.vel<0)s.vel*=-0.2;}
+    }
+  }
+}
+function resolve(b,g,c,S){
+  const Rr=b.r, I=0.4*Rr*Rr, eff=g.e.effect||'normal';
+  b.x+=c.nx*c.pen; b.y+=c.ny*c.pen;
+  const nx=c.nx, ny=c.ny, rcx=-nx*Rr, rcy=-ny*Rr;
+  const [bvx,bvy]=velAt(g.mot,c.cx,c.cy);
+  const vrx=b.vx-b.w*rcy-bvx, vry=b.vy+b.w*rcx-bvy, vn=vrx*nx+vry*ny;
+  if(vn>=0) return;
+  let rest,mu;
+  switch(eff){case 'bounce':rest=S.bounce;mu=0;break; case 'slick':rest=S.restitution*0.5;mu=0.02;break; case 'grip':rest=0.05;mu=1.8;break; default:rest=S.restitution;mu=S.friction;}
+  if(eff==='bounce'){if(-vn<25)rest=0;} else if(-vn<70) rest=0;
+  const jn=-(1+rest)*vn; b.vx+=jn*nx; b.vy+=jn*ny;
+  const tx=-ny, ty=nx, vt=vrx*tx+vry*ty, rct=rcx*ty-rcy*tx;
+  let jt=-vt/(1+rct*rct/I); const mx=mu*jn; jt=clamp(jt,-mx,mx);
+  b.vx+=jt*tx; b.vy+=jt*ty; b.w+=rct*jt/I;
+  const src=g.mot.src;
+  if(src&&src.motion==='seesaw'){
+    const mb=(Rr/32)**2, Jx=(jn*nx+jt*tx)*mb, Jy=(jn*ny+jt*ty)*mb;
+    const rx=c.cx-(g.mot.px+g.mot.tx), ry=c.cy-(g.mot.py+g.mot.ty);
+    const Ib=S.seesawMass*(src.kind==='rect'?(src.w*src.w+src.h*src.h)/12:src.r*src.r/2);
+    st(src).vel+=(rx*(-Jy)-ry*(-Jx))/Ib;
+  }
+}
+const mkBall=(x,y,r,n)=>({x,y,vx:0,vy:0,w:0,ang:0,r,n:n||1,alive:true,parked:false,lost:false});
+const WHY={reset:'hat eine Neustart-Fläche berührt',out:'ist aus dem Spielfeld gefallen'};
+const startsOf=sec=>doc.elements.filter(e=>e.kind==='start'&&e.sec===sec.id);
+function startOf(sec){return {found:startsOf(sec).length>0};}
+function newSim(sec){const s={sec,balls:[],triggered:new Set(),cd:{},phase:'ready',t:0,attempts:0,wins:0,best:null,msgT:0,marks:[],paused:false,lastWin:0,trail:[],trT:0}; newRound(s); return s;}
+function newRound(sm){
+  rt.clear(); const ss=startsOf(sm.sec);
+  sm.balls=ss.length?ss.map((q,i)=>Object.assign(mkBall(q.x,q.y,q.r,i+1),{sleep:!!q.sleep})):[mkBall(sm.sec.x+sm.sec.w/2,sm.sec.y+60,30,1)]; sm.lastLoss=null; sm.triggered=new Set(); sm.cd={}; sm.t=0; sm.trail=[];
+  if(doc.prefs.waitStart) sm.phase='ready'; else {sm.phase='run'; sm.attempts++;}
+}
+function loseBall(sm,b,why){ if(!b.alive)return; b.alive=false; b.lost=true; b.why=why; sm.lastLoss=b; if(sm.balls.length>1) flash(`Kugel ${b.n} ${WHY[why]}`); sm.marks.push({x:b.x,y:b.y}); if(sm.marks.length>12) sm.marks.shift(); }
+function checkRules(sm){
+  if(sm.phase!=='run')return;
+  const S=sm.sec.settings; let alive=0,parked=0,lost=0;
+  for(const b of sm.balls){ if(b.alive)alive++; if(b.parked)parked++; if(b.lost)lost++; }
+  if(S.winRule==='any'){ if(parked) win(sm); else if(!alive) fail(sm); }
+  else { if(lost) fail(sm); else if(!alive&&parked) win(sm); }
+}
+function win(sm){sm.phase='win'; sm.wins++; sm.lastWin=sm.t; if(sm.best==null||sm.t<sm.best) sm.best=sm.t;}
+function fail(sm){sm.phase='fail'; sm.msgT=1.5;}
+function physStep(dt){
+  const sm=sim, S=sm.sec.settings, sec=sm.sec, els=elsOf(sec.id);
+  updateMovers(dt,els,S);
+  if(sm.phase!=='run') return;
+  sm.t+=dt;
+  const cols=[]; for(const e of els) if(isBody(e)){const g=geo(e); g.e=e; cols.push(g);}
+  const balls=sm.balls;
+  for(const b of balls){ if(!b.alive||b.sleep)continue;
+    b.vy+=S.gravity*dt; const sp=Math.hypot(b.vx,b.vy); if(sp>S.maxSpeed){const f=S.maxSpeed/sp; b.vx*=f; b.vy*=f;}
+    b.x+=b.vx*dt; b.y+=b.vy*dt; b.ang+=b.w*dt; b.w*=1-0.12*dt; }
+  for(let it=0;it<2;it++){
+    for(const b of balls){ if(!b.alive)continue;
+      for(const g of cols){ const c=g.k==='r'?hitRect(g,b.x,b.y,b.r):hitCircle(g,b.x,b.y,b.r); if(!c)continue;
+        if(b.sleep){const [vx,vy]=velAt(g.mot,c.cx,c.cy); if(Math.hypot(vx,vy)>5) b.sleep=false; else continue;}
+        if(g.e.effect==='reset'){loseBall(sm,b,'reset'); break;} resolve(b,g,c,S); } }
+    for(let i=0;i<balls.length;i++){const a=balls[i]; if(!a.alive)continue;
+      for(let j=i+1;j<balls.length;j++){const b=balls[j]; if(!b.alive)continue;
+        const dx=b.x-a.x, dy=b.y-a.y, d=Math.hypot(dx,dy), rs=a.r+b.r; if(d>=rs||d===0)continue;
+        if(a.sleep||b.sleep){ if(a.sleep&&b.sleep) continue; a.sleep=false; b.sleep=false; }
+        const nx=dx/d, ny=dy/d, ma=a.r*a.r, mb=b.r*b.r, tot=ma+mb, pen=rs-d;
+        a.x-=nx*pen*mb/tot; a.y-=ny*pen*mb/tot; b.x+=nx*pen*ma/tot; b.y+=ny*pen*ma/tot;
+        const vr=(b.vx-a.vx)*nx+(b.vy-a.vy)*ny; if(vr<0){const e=Math.min(S.restitution+0.3,0.9), jj=-(1+e)*vr/(1/ma+1/mb);
+          a.vx-=jj/ma*nx; a.vy-=jj/ma*ny; b.vx+=jj/mb*nx; b.vy+=jj/mb*ny;} } }
+  }
+  for(const b of balls){ if(!b.alive)continue;
+    if(b.x<sec.x-b.r*3||b.x>sec.x+sec.w+b.r*3||b.y>sec.y+sec.h+b.r*3||b.y<sec.y-sec.h){loseBall(sm,b,'out'); continue;}
+    for(const e of els){
+      if(e.kind==='goal'){const g=geo(e); if(Math.hypot(b.x-g.cx,b.y-g.cy)<g.r){b.alive=false; b.parked=true; break;}}
+      else if(e.kind==='spawn'){const g=geo(e);
+        if(Math.hypot(b.x-g.cx,b.y-g.cy)<g.r+b.r*0.6&&!(e.once&&sm.triggered.has(e.id))&&!(sm.cd[e.id]>0)&&balls.length<8){
+          const [sx,sy]=xf(g.mot,e.x+e.dx,e.y+e.dy); balls.push(mkBall(sx,sy,e.br,balls.length+1)); sm.triggered.add(e.id); sm.cd[e.id]=1.2;}}
+    }
+  }
+  for(const k in sm.cd) sm.cd[k]-=dt;
+  checkRules(sm);
+  sm.trT+=dt; if(sm.trT>1/50){sm.trT=0; for(const b of balls) if(b.alive) sm.trail.push({x:b.x,y:b.y}); if(sm.trail.length>300) sm.trail.splice(0,sm.trail.length-300);}
+}
+
+/* ================= Kamera ================= */
+function cssSize(){return {w:cv.clientWidth||1,h:cv.clientHeight||1};}
+function resize(){dpr=Math.min(window.devicePixelRatio||1,2); const {w,h}=cssSize(); cv.width=Math.round(w*dpr); cv.height=Math.round(h*dpr);}
+new ResizeObserver(resize).observe($('#stage'));
+const toWorld=ev=>{const r=cv.getBoundingClientRect(); return {x:cam.x+(ev.clientX-r.left)/cam.z, y:cam.y+(ev.clientY-r.top)/cam.z};};
+const toScreen=(x,y)=>({x:(x-cam.x)*cam.z,y:(y-cam.y)*cam.z});
+function camFor(x,y,w,h,pad){const {w:W,h:H}=cssSize(); const top=48, bot=40; const z=clamp(Math.min((W-2*pad)/w,(H-top-bot-2*pad)/h),0.04,6); return {z,x:x+w/2-W/2/z,y:y+h/2-(H+top-bot)/2/z};}
+function goCam(t,instant){const rm=window.matchMedia('(prefers-reduced-motion: reduce)').matches; if(instant||rm){cam=Object.assign({},t); camAnim=null; saveDoc(); return;} camAnim={from:Object.assign({},cam),to:t,t:0};}
+function bboxAll(){
+  let x0=Infinity,y0=Infinity,x1=-Infinity,y1=-Infinity;
+  const add=(a,b,c,d)=>{x0=Math.min(x0,a);y0=Math.min(y0,b);x1=Math.max(x1,c);y1=Math.max(y1,d);};
+  for(const s of doc.sections) add(s.x,s.y-30,s.x+s.w,s.y+s.h);
+  for(const e of looseEls()){const r=e.r||Math.max(e.w||0,e.h||0)/2; add(e.x-r,e.y-r,e.x+r,e.y+r);}
+  if(!isFinite(x0)) return {x:-500,y:-400,w:1000,h:800};
+  return {x:x0,y:y0,w:x1-x0,h:y1-y0};
+}
+function fitAll(instant){const b=bboxAll(); goCam(camFor(b.x,b.y,b.w,b.h,40),instant);}
+function fitSec(s,instant){goCam(camFor(s.x,s.y,s.w,s.h,24),instant);}
+function fitSel(){
+  const ids=[...sel]; if(!ids.length){const f=focusSec(); return f?fitSec(f):fitAll();}
+  let x0=Infinity,y0=Infinity,x1=-Infinity,y1=-Infinity;
+  for(const id of ids){const s=secById(id); if(s){x0=Math.min(x0,s.x);y0=Math.min(y0,s.y);x1=Math.max(x1,s.x+s.w);y1=Math.max(y1,s.y+s.h);continue;}
+    const e=elById(id); if(!e)continue; const r=e.r||Math.hypot(e.w||0,e.h||0)/2; x0=Math.min(x0,e.x-r);y0=Math.min(y0,e.y-r);x1=Math.max(x1,e.x+r);y1=Math.max(y1,e.y+r);}
+  if(isFinite(x0)) goCam(camFor(x0,y0,Math.max(60,x1-x0),Math.max(60,y1-y0),60));
+}
+function zoomAt(f,sx,sy){const wx=cam.x+sx/cam.z, wy=cam.y+sy/cam.z; cam.z=clamp(cam.z*f,0.04,8); cam.x=wx-sx/cam.z; cam.y=wy-sy/cam.z; camAnim=null; saveDoc();}
+
+/* ================= Zeichnen ================= */
+let TK={}, tkT=-1e9;
+function tokens(){const now=performance.now(); if(now-tkT>500){const cs=getComputedStyle(document.documentElement); const g=k=>cs.getPropertyValue(k).trim(); TK={stage:g('--stage')||'#dcdfdd',muted:g('--muted')||'#5b625f',accent:g('--accent')||'#7a4bff',ink:g('--ink')||'#191b1a'}; tkT=now;} return TK;}
+const layer=e=>{ if(e.kind==='goal'||e.kind==='spawn') return 1; if(e.kind==='start') return 6; if(!isBody(e)) return 0;
+  return {static:0,seesaw:2,slider:3,rotor:4}[e.motion]??0; };
+const ordered=list=>list.map((e,i)=>[e,i]).sort((a,b)=>layer(a[0])-layer(b[0])||a[1]-b[1]).map(x=>x[0]);
+let PX=1, labelRects=[];
+function hatch(hw,hh,kind){
+  ctx.save();
+  if(kind==='reset'){ctx.strokeStyle='rgba(20,22,21,.85)'; ctx.lineWidth=4; for(let x=-hw-hh*2;x<hw+hh*2;x+=12){ctx.beginPath(); ctx.moveTo(x,-hh); ctx.lineTo(x+hh*2,hh); ctx.stroke();}}
+  if(kind==='slick'){ctx.strokeStyle='rgba(255,255,255,.75)'; ctx.lineWidth=2; for(let x=-hw;x<hw+hh*2;x+=22){ctx.beginPath(); ctx.moveTo(x,-hh); ctx.lineTo(x-hh,hh); ctx.stroke();}}
+  if(kind==='grip'){ctx.fillStyle='rgba(30,22,15,.55)'; for(let x=-hw+5;x<hw;x+=9)for(let y=-hh+5;y<hh;y+=9) ctx.fillRect(x-1.2,y-1.2,2.4,2.4);}
+  if(kind==='bounce'){ctx.strokeStyle='#f2501f'; ctx.lineWidth=7; ctx.strokeRect(-hw,-hh,hw*2,hh*2);}
+  ctx.restore();
+}
+function bodyFill(e){ if(e.motion==='static') return STATIC_FILL[e.effect||'normal']; if(e.motion==='seesaw') return SEESAW_FILL; return PL[e.player||1].fill; }
+function pivotDot(x,y){ctx.beginPath(); ctx.arc(x,y,Math.max(4,5*PX*0.8),0,7); ctx.fillStyle='#fff'; ctx.fill(); ctx.lineWidth=Math.max(1.5,2*PX*0.6); ctx.strokeStyle='#1e2120'; ctx.stroke();}
+function keyText(e){const p=PL[e.player||1]; if(e.motion==='slider') return sliderAxis(e)==='h'?p.kh:p.kv; return p.kh;}
+function drawBody(e){
+  const g=geo(e), fill=bodyFill(e), eff=e.effect||'normal', overlay=e.motion!=='static'&&eff!=='normal';
+  ctx.save(); ctx.translate(g.cx,g.cy); ctx.rotate(g.ang);
+  ctx.beginPath(); if(g.k==='r') ctx.rect(-g.hw,-g.hh,g.hw*2,g.hh*2); else ctx.arc(0,0,g.r,0,7);
+  ctx.fillStyle=fill; ctx.fill();
+  if(overlay){ctx.save(); ctx.clip(); if(g.k==='r') hatch(g.hw,g.hh,eff); else hatch(g.r,g.r,eff); ctx.restore();}
+  if(e.motion==='rotor'||e.motion==='slider'){ctx.strokeStyle=PL[e.player||1].edge; ctx.lineWidth=PX; ctx.stroke();}
+  if(g.k==='c'&&e.motion!=='static'){ctx.strokeStyle='rgba(255,255,255,.75)'; ctx.lineWidth=Math.max(2,g.r*0.08);
+    const ox=-(e.pox||0); for(let k=0;k<3;k++){const a=k*2*Math.PI/3; ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(Math.cos(a)*g.r*0.78,Math.sin(a)*g.r*0.78); ctx.stroke();}}
+  ctx.restore();
+  if(e.motion==='rotor'||e.motion==='seesaw'){
+    const m=g.mot; const px=m.px+m.tx, py=m.py+m.ty;
+    if(e.motion==='seesaw'&&e.kind==='rect'){ctx.beginPath(); ctx.moveTo(px,py); ctx.lineTo(px-12,py+e.h/2+18); ctx.lineTo(px+12,py+e.h/2+18); ctx.closePath(); ctx.fillStyle='rgba(30,33,32,.22)'; ctx.fill();}
+    pivotDot(px,py);
+  }
+  if(mode==='test'&&(e.motion==='rotor'||e.motion==='slider')){
+    const sz=g.k==='r'?Math.min(g.hw*2,g.hh*6):g.r*1.6; if(sz*cam.z<50||(g.k==='r'&&g.hh*2*cam.z<12)) return;
+    ctx.save(); ctx.translate(g.cx,g.cy); if(g.k==='r') ctx.rotate(g.ang);
+    const fs=g.k==='r'?Math.min(g.hh*1.1,15*PX):Math.min(g.r*0.45,15*PX);
+    ctx.font=`600 ${fs}px "IBM Plex Mono", monospace`; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillStyle='rgba(10,30,20,.6)'; ctx.fillText(keyText(e),0,fs*0.05); ctx.restore();
+  }
+}
+function drawRail(e){
+  const sc=settingsOf(e).rangeScale/100, ra=(e.railAng||0)*DEG, ux=Math.cos(ra), uy=Math.sin(ra);
+  const x1=e.x+ux*e.rMin*sc, y1=e.y+uy*e.rMin*sc, x2=e.x+ux*e.rMax*sc, y2=e.y+uy*e.rMax*sc;
+  ctx.strokeStyle='#1e2120'; ctx.lineWidth=1.5*PX;
+  ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+  const nx=-uy*7*PX, ny=ux*7*PX;
+  ctx.beginPath(); ctx.moveTo(x1-nx,y1-ny); ctx.lineTo(x1+nx,y1+ny); ctx.moveTo(x2-nx,y2-ny); ctx.lineTo(x2+nx,y2+ny); ctx.stroke();
+}
+function drawGhosts(e){
+  const S=settingsOf(e), lim=e.motion==='rotor'?(e.lim==null?S.rotLimit:e.lim):(e.lim==null?25:e.lim);
+  const a=(e.a||0)*DEG, px=e.x+Math.cos(a)*(e.pox||0), py=e.y+Math.sin(a)*(e.pox||0);
+  ctx.save(); ctx.strokeStyle='rgba(30,33,32,.32)'; ctx.setLineDash([6*PX,5*PX]); ctx.lineWidth=1.2*PX;
+  if(lim>=180){ const rr=e.kind==='rect'?Math.hypot(Math.abs(e.pox||0)+e.w/2,e.h/2):(Math.abs(e.pox||0)+e.r); ctx.beginPath(); ctx.arc(px,py,rr,0,7); ctx.stroke(); }
+  else if(lim>0) for(const sgn of [-1,1]){
+    const m={px,py,th:sgn*lim*DEG,tx:0,ty:0}; const [cx,cy]=xf(m,e.x,e.y);
+    ctx.save(); ctx.translate(cx,cy); ctx.rotate(a+m.th); ctx.beginPath();
+    if(e.kind==='rect') ctx.rect(-e.w/2,-e.h/2,e.w,e.h); else ctx.arc(0,0,e.r,0,7); ctx.stroke(); ctx.restore();
+  }
+  ctx.restore();
+}
+function drawBall(x,y,r,ang,alpha){
+  ctx.save(); ctx.globalAlpha*=alpha??1;
+  const gr=ctx.createRadialGradient(x-r*0.35,y-r*0.4,r*0.1,x,y,r);
+  gr.addColorStop(0,'#b896ff'); gr.addColorStop(0.55,'#7d4dff'); gr.addColorStop(1,'#5427d6');
+  ctx.beginPath(); ctx.arc(x,y,r,0,7); ctx.fillStyle=gr; ctx.fill();
+  ctx.beginPath(); ctx.arc(x+Math.cos(ang)*r*0.58,y+Math.sin(ang)*r*0.58,r*0.13,0,7); ctx.fillStyle='rgba(255,255,255,.85)'; ctx.fill();
+  ctx.restore();
+}
+function drawZone(e){
+  const g=geo(e);
+  if(e.kind==='goal'){
+    ctx.beginPath(); ctx.arc(g.cx,g.cy,g.r,0,7); ctx.fillStyle='rgba(122,75,255,.12)'; ctx.fill();
+    ctx.save(); ctx.setLineDash([6*PX,4*PX]); ctx.strokeStyle='#7a4bff'; ctx.lineWidth=2*PX; ctx.stroke(); ctx.restore();
+    ctx.beginPath(); ctx.arc(g.cx,g.cy,g.r*0.55,0,7); ctx.strokeStyle='rgba(122,75,255,.45)'; ctx.lineWidth=1.2*PX; ctx.stroke();
+    ctx.fillStyle='#5a33d6'; ctx.font=`800 ${Math.max(6,g.r*0.42)}px "Bricolage Grotesque", sans-serif`; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('ziel',g.cx,g.cy);
+  } else if(e.kind==='spawn'){
+    const used=sim&&sim.sec.id===e.sec&&e.once&&sim.triggered.has(e.id);
+    ctx.save(); ctx.globalAlpha*=used?0.35:1;
+    const [sx,sy]=xf(g.mot,e.x+e.dx,e.y+e.dy);
+    ctx.save(); ctx.setLineDash([5*PX,4*PX]); ctx.strokeStyle='#e8851a'; ctx.lineWidth=1.3*PX; ctx.beginPath(); ctx.moveTo(g.cx,g.cy); ctx.lineTo(sx,sy); ctx.stroke();
+    ctx.strokeStyle='#7a4bff'; ctx.beginPath(); ctx.arc(sx,sy,e.br,0,7); ctx.stroke(); ctx.restore();
+    ctx.beginPath(); ctx.arc(g.cx,g.cy,g.r,0,7); ctx.fillStyle='rgba(242,140,30,.18)'; ctx.fill(); ctx.strokeStyle='#e8851a'; ctx.lineWidth=2*PX; ctx.stroke();
+    ctx.fillStyle='#b45f0a'; ctx.font=`700 ${Math.max(6,g.r*0.6)}px "IBM Plex Mono", monospace`; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('+1',g.cx,g.cy+1);
+    ctx.restore();
+  }
+}
+function drawStart(e){
+  const showBall=!(sim&&sim.sec.id===e.sec);
+  const sib=doc.elements.filter(k=>k.kind==='start'&&k.sec===e.sec), n=sib.indexOf(e)+1;
+  if(showBall){ drawBall(e.x,e.y,e.r,-0.8); if(e.sleep) sleepRing(e.x,e.y,e.r);
+    if(sib.length>1&&e.r*cam.z>7){ctx.fillStyle='#fff'; ctx.font=`700 ${e.r*0.95}px "IBM Plex Mono", monospace`; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(String(n),e.x,e.y+e.r*0.05);} }
+  else { ctx.save(); ctx.setLineDash([5*PX,4*PX]); ctx.strokeStyle='#7a4bff'; ctx.lineWidth=1.4*PX; ctx.beginPath(); ctx.arc(e.x,e.y,e.r+4*PX,0,7); ctx.stroke(); ctx.restore(); }
+  if(sib.length===1&&!e.sleep&&e.r*cam.z>8&&(mode==='build'||(sim&&sim.phase==='ready'))){ctx.fillStyle='#7a4bff'; ctx.font=`600 ${11*PX}px "IBM Plex Mono", monospace`; ctx.textAlign='left'; ctx.textBaseline='bottom'; ctx.fillText('START',e.x+e.r*0.7,e.y-e.r-3*PX);}
+}
+function drawElements(list,isFocus){
+  if(mode==='build') for(const e of list) if(isBody(e)&&(e.motion==='rotor'||e.motion==='seesaw')&&(isFocus||sel.has(e.id))) drawGhosts(e);
+  for(const e of list) if(isBody(e)&&e.motion==='slider') drawRail(e);
+  for(const e of ordered(list)){
+    if(isBody(e)) drawBody(e); else if(e.kind==='start') drawStart(e); else drawZone(e);
+  }
+}
+function visRect(){const {w,h}=cssSize(); return {x0:cam.x,y0:cam.y,x1:cam.x+w/cam.z,y1:cam.y+h/cam.z};}
+function draw(){
+  const tk=tokens(); const {w:CW,h:CH}=cssSize();
+  PX=1/cam.z;
+  ctx.setTransform(dpr,0,0,dpr,0,0); ctx.fillStyle=tk.stage; ctx.fillRect(0,0,CW,CH);
+  ctx.setTransform(dpr*cam.z,0,0,dpr*cam.z,-cam.x*cam.z*dpr,-cam.y*cam.z*dpr);
+  const vr=visRect();
+  for(const s of doc.sections){
+    if(s.x>vr.x1||s.y>vr.y1||s.x+s.w<vr.x0||s.y+s.h<vr.y0) continue;
+    const dim=focusId&&focusId!==s.id;
+    ctx.save(); ctx.globalAlpha=dim?0.35:1;
+    ctx.save(); ctx.shadowColor='rgba(0,0,0,.16)'; ctx.shadowBlur=14*dpr; ctx.shadowOffsetY=2*dpr; ctx.fillStyle='#ffffff'; ctx.fillRect(s.x,s.y,s.w,s.h); ctx.restore();
+    ctx.beginPath(); ctx.rect(s.x,s.y,s.w,s.h); ctx.save(); ctx.clip();
+    if(mode==='build'&&!dim){ let g=doc.prefs.grid; while(g*cam.z<9) g*=2;
+      const x0=Math.max(s.x,Math.floor(vr.x0/g)*g), x1=Math.min(s.x+s.w,vr.x1), y0=Math.max(s.y,Math.floor(vr.y0/g)*g), y1=Math.min(s.y+s.h,vr.y1);
+      if((x1-x0)/g*(y1-y0)/g<40000){ ctx.fillStyle='rgba(30,33,32,.15)'; const d=0.8*PX;
+        for(let x=Math.ceil((x0-s.x)/g)*g+s.x;x<=x1;x+=g) for(let y=Math.ceil((y0-s.y)/g)*g+s.y;y<=y1;y+=g) ctx.fillRect(x-d,y-d,2*d,2*d);} }
+    drawElements(elsOf(s.id),focusId===s.id||!focusId);
+    if(sim&&sim.sec.id===s.id) drawSim();
+    ctx.restore();
+    ctx.lineWidth=(sel.has(s.id)?1.8:1)*PX; ctx.strokeStyle=sel.has(s.id)||hoverId===s.id?tk.accent:'rgba(0,0,0,.12)'; ctx.strokeRect(s.x,s.y,s.w,s.h);
+    ctx.restore();
+  }
+  drawElements(looseEls(),true);
+  drawSelection(tk);
+  // Labels (Bildschirmkoordinaten)
+  ctx.setTransform(dpr,0,0,dpr,0,0); labelRects=[];
+  ctx.font='600 12px "Instrument Sans", system-ui, sans-serif'; ctx.textBaseline='bottom'; ctx.textAlign='left';
+  for(const s of doc.sections){
+    const p=toScreen(s.x,s.y); if(p.x>CW||p.y<-20||p.y>CH+20) continue;
+    const name=s.name||'Spielfeld'; const wmax=Math.max(30,s.w*cam.z); let t=name;
+    while(ctx.measureText(t).width>wmax&&t.length>3) t=t.slice(0,-2);
+    if(t!==name) t=t.slice(0,-1)+'…';
+    const tw=ctx.measureText(t).width;
+    ctx.globalAlpha=focusId&&focusId!==s.id?0.45:1;
+    ctx.fillStyle=sel.has(s.id)||focusId===s.id?tk.accent:tk.muted; ctx.fillText(t,p.x,p.y-5);
+    ctx.globalAlpha=1;
+    labelRects.push({id:s.id,x:p.x,y:p.y-21,w:tw,h:18});
+  }
+  if(!doc.sections.length){ctx.fillStyle=tk.muted; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.font='500 14px "Instrument Sans", sans-serif'; ctx.fillText('Drück F und zieh ein Spielfeld auf.',CW/2,CH/2);}
+}
+function drawSim(){
+  const sm=sim;
+  if(doc.prefs.trail){for(let i=0;i<sm.trail.length;i++){const t=sm.trail[i]; ctx.fillStyle=`rgba(122,75,255,${0.04+0.28*i/sm.trail.length})`; ctx.beginPath(); ctx.arc(t.x,t.y,3.2,0,7); ctx.fill();}}
+  for(const f of sm.marks){const k=10; ctx.strokeStyle='#e2461c'; ctx.lineWidth=3; ctx.beginPath(); ctx.moveTo(f.x-k,f.y-k); ctx.lineTo(f.x+k,f.y+k); ctx.moveTo(f.x+k,f.y-k); ctx.lineTo(f.x-k,f.y+k); ctx.stroke();}
+  const failing=sm.phase==='fail', blink=failing&&Math.floor(sm.msgT*8)%2===0, multi=sm.balls.length>1;
+  for(const b of sm.balls){
+    if(b.lost){ if(failing&&b===sm.lastLoss&&!blink){ drawBall(b.x,b.y,b.r,b.ang,0.9); ctx.strokeStyle='#e2461c'; ctx.lineWidth=4; ctx.beginPath(); ctx.arc(b.x,b.y,b.r+4,0,7); ctx.stroke(); if(multi) ballNum(b); } continue; }
+    drawBall(b.x,b.y,b.r,b.ang,b.parked?0.55:1);
+    if(b.sleep) sleepRing(b.x,b.y,b.r);
+    if(b.parked){ctx.strokeStyle='#178a49'; ctx.lineWidth=3; ctx.beginPath(); ctx.arc(b.x,b.y,b.r+3,0,7); ctx.stroke();}
+    if(multi) ballNum(b);
+  }
+}
+function sleepRing(x,y,r){ctx.save(); ctx.setLineDash([4*PX,4*PX]); ctx.strokeStyle='#7a4bff'; ctx.lineWidth=2*PX; ctx.beginPath(); ctx.arc(x,y,r+5*PX,0,7); ctx.stroke(); ctx.restore(); ctx.fillStyle='#7a4bff'; ctx.font=`700 ${Math.max(6,r*0.5)}px "IBM Plex Mono", monospace`; ctx.textAlign='left'; ctx.textBaseline='bottom'; ctx.fillText('zz',x+r*0.75,y-r*0.6);}
+function ballNum(b){ctx.fillStyle='#fff'; ctx.font=`700 ${b.r*0.95}px "IBM Plex Mono", monospace`; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(String(b.n),b.x,b.y+b.r*0.05);
+}
+function drawSelection(tk){
+  const ac=tk.accent;
+  if(tool==='attach'){ for(const e of doc.elements) if(isMover(e)&&!attachSrc.includes(e.id)){const g=geo(e); outline(g,ac,2.4,true);} }
+  if(hoverId&&!sel.has(hoverId)){const e=elById(hoverId); if(e) outline(geo(e),ac,1.2,false);}
+  for(const id of sel){
+    const e=elById(id); if(!e) continue; const g=geo(e); outline(g,ac,1.6,false);
+    if(mode==='build'){
+      if(e.parent){const p=elById(e.parent); if(p) link(e.x,e.y,p,ac);}
+      if(isMover(e)) for(const c of doc.elements) if(c.parent===e.id) link(c.x,c.y,e,ac);
+    }
+  }
+  const one=single();
+  if(one){ for(const h of handlesOf(one)) drawHandle(h,ac); }
+  if(ptr&&ptr.k==='marquee'){const x=Math.min(ptr.x0,ptr.x1), y=Math.min(ptr.y0,ptr.y1), w=Math.abs(ptr.x1-ptr.x0), h=Math.abs(ptr.y1-ptr.y0);
+    ctx.fillStyle='rgba(122,75,255,.08)'; ctx.fillRect(x,y,w,h); ctx.strokeStyle=ac; ctx.lineWidth=PX; ctx.strokeRect(x,y,w,h);}
+  if(ptr&&ptr.k==='draw'){const b=drawBox(ptr); ctx.save(); ctx.strokeStyle=ac; ctx.lineWidth=1.5*PX; ctx.setLineDash([5*PX,4*PX]);
+    if(ptr.tool==='circle'){const r=Math.min(b.w,b.h)/2; ctx.beginPath(); ctx.arc(b.x+b.w/2,b.y+b.h/2,r,0,7); ctx.stroke();} else ctx.strokeRect(b.x,b.y,b.w,b.h);
+    ctx.restore();
+    if(ptr.tool!=='circle'){ctx.fillStyle=ac; ctx.font=`600 ${11*PX}px "IBM Plex Mono", monospace`; ctx.textAlign='left'; ctx.textBaseline='top'; ctx.fillText(`${Math.round(b.w)} × ${Math.round(b.h)}`,b.x,b.y+b.h+4*PX);}
+  }
+}
+function outline(g,col,lw,dash){
+  ctx.save(); ctx.strokeStyle=col; ctx.lineWidth=lw*PX; if(dash) ctx.setLineDash([5*PX,4*PX]);
+  ctx.translate(g.cx,g.cy); ctx.rotate(g.ang||0); ctx.beginPath();
+  if(g.k==='r') ctx.rect(-g.hw-3*PX,-g.hh-3*PX,g.hw*2+6*PX,g.hh*2+6*PX); else ctx.arc(0,0,g.r+3*PX,0,7);
+  ctx.stroke(); ctx.restore();
+}
+function link(x,y,p,col){const a=(p.a||0)*DEG, px=p.x+Math.cos(a)*(p.pox||0), py=p.y+Math.sin(a)*(p.pox||0);
+  ctx.save(); ctx.strokeStyle=col; ctx.globalAlpha=0.7; ctx.lineWidth=1.2*PX; ctx.setLineDash([3*PX,3*PX]); ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(px,py); ctx.stroke(); ctx.restore();}
+function drawHandle(h,ac){
+  const z=4*PX;
+  if(h.k==='rot'){ctx.strokeStyle=ac; ctx.lineWidth=PX; ctx.beginPath(); ctx.moveTo(h.ax,h.ay); ctx.lineTo(h.x,h.y); ctx.stroke(); ctx.beginPath(); ctx.arc(h.x,h.y,5*PX,0,7); ctx.fillStyle='#fff'; ctx.fill(); ctx.lineWidth=1.6*PX; ctx.stroke(); return;}
+  if(h.k==='pv'){ctx.beginPath(); ctx.arc(h.x,h.y,6*PX,0,7); ctx.strokeStyle=ac; ctx.lineWidth=1.5*PX; ctx.stroke(); ctx.beginPath(); ctx.moveTo(h.x-9*PX,h.y); ctx.lineTo(h.x+9*PX,h.y); ctx.moveTo(h.x,h.y-9*PX); ctx.lineTo(h.x,h.y+9*PX); ctx.stroke(); return;}
+  ctx.save(); ctx.translate(h.x,h.y);
+  if(h.k==='rmin'||h.k==='rmax'||h.k==='sp'){ctx.rotate(Math.PI/4); ctx.fillStyle=h.k==='sp'?'#e8851a':'#1e2120'; ctx.fillRect(-z-PX,-z-PX,2*z+2*PX,2*z+2*PX); ctx.strokeStyle='#fff'; ctx.lineWidth=1.3*PX; ctx.strokeRect(-z-PX,-z-PX,2*z+2*PX,2*z+2*PX);}
+  else {ctx.fillStyle='#fff'; ctx.fillRect(-z,-z,2*z,2*z); ctx.strokeStyle=ac; ctx.lineWidth=1.4*PX; ctx.strokeRect(-z,-z,2*z,2*z);}
+  ctx.restore();
+}
+
+/* ================= Griffe ================= */
+const single=()=>sel.size===1?findAny([...sel][0]):null;
+function handlesOf(o){
+  const H=[], px=1/cam.z;
+  if(secById(o.id)){ for(const sx of [-1,0,1]) for(const sy of [-1,0,1]){ if(!sx&&!sy)continue; H.push({k:'sr',sx,sy,x:o.x+o.w*(sx+1)/2,y:o.y+o.h*(sy+1)/2}); } return H; }
+  const e=o;
+  if(e.kind==='rect'){
+    const a=(e.a||0)*DEG,c=Math.cos(a),s=Math.sin(a),P=(lx,ly)=>({x:e.x+lx*c-ly*s,y:e.y+lx*s+ly*c});
+    for(const sx of [-1,0,1]) for(const sy of [-1,0,1]){ if(!sx&&!sy)continue; if(sx===0&&e.w*cam.z<40)continue; if(sy===0&&e.h*cam.z<40)continue; H.push(Object.assign({k:'rs',sx,sy},P(sx*e.w/2,sy*e.h/2))); }
+    const A=P(0,-e.h/2), Q=P(0,-e.h/2-24*px); H.push({k:'rot',x:Q.x,y:Q.y,ax:A.x,ay:A.y});
+  } else for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]) H.push({k:'cr',x:e.x+dx*e.r,y:e.y+dy*e.r});
+  if(isBody(e)&&(e.motion==='rotor'||e.motion==='seesaw')){const a=(e.a||0)*DEG; H.push({k:'pv',x:e.x+Math.cos(a)*(e.pox||0),y:e.y+Math.sin(a)*(e.pox||0),small:true});}
+  if(isBody(e)&&e.motion==='slider'){const sc=settingsOf(e).rangeScale/100, ra=(e.railAng||0)*DEG, ux=Math.cos(ra), uy=Math.sin(ra);
+    H.push({k:'rmin',x:e.x+ux*e.rMin*sc,y:e.y+uy*e.rMin*sc},{k:'rmax',x:e.x+ux*e.rMax*sc,y:e.y+uy*e.rMax*sc});}
+  if(e.kind==='spawn') H.push({k:'sp',x:e.x+e.dx,y:e.y+e.dy});
+  return H;
+}
+function hitHandle(o,w){const hs=handlesOf(o); for(let i=hs.length-1;i>=0;i--){const h=hs[i]; if(Math.hypot(h.x-w.x,h.y-w.y)*cam.z<(h.small?6:8)) return h;} return null;}
+
+/* ================= Picking ================= */
+function hitEl(e,w,tol){const g=geo(e); if(g.k==='r') return !!hitRect(g,w.x,w.y,tol); return Math.hypot(w.x-g.cx,w.y-g.cy)<g.r+tol;}
+function pickIn(list,w){const tol=4/cam.z, o=ordered(list); for(let i=o.length-1;i>=0;i--) if(hitEl(o[i],w,tol)) return o[i]; return null;}
+function pick(w){
+  if(focusId) return pickIn(elsOf(focusId),w)||pickIn(looseEls(),w);
+  const le=pickIn(looseEls(),w); if(le) return le;
+  for(let i=doc.sections.length-1;i>=0;i--){const s=doc.sections[i]; if(inSec(s,w)) return pickIn(elsOf(s.id),w)||s;}
+  return null;
+}
+function hitLabel(ev){const r=cv.getBoundingClientRect(), x=ev.clientX-r.left, y=ev.clientY-r.top; for(let i=labelRects.length-1;i>=0;i--){const l=labelRects[i]; if(x>=l.x&&x<=l.x+l.w&&y>=l.y&&y<=l.y+l.h) return secById(l.id);} return null;}
+
+/* ================= Snap ================= */
+const snapV=v=>doc.prefs.snap?Math.round(v/doc.prefs.grid)*doc.prefs.grid:r1(v);
+
+/* ================= Erstellen ================= */
+function createBody(kind,props,x,y){
+  const e=mkEl(kind,Object.assign({x:r1(x),y:r1(y)},props)); reparent(e); doc.elements.push(e); return e;
+}
+function placeKind(kind,x,y){
+  x=snapV(x); y=snapV(y);
+  const e=mkEl(kind,{x,y}); reparent(e); doc.elements.push(e); return e;
+}
+function placePreset(key,x,y){
+  const p=PRESETS.find(q=>q.key===key); let e;
+  if(p.tool==='section'){const s=newSection({x:snapV(x-450),y:snapV(y-500)}); doc.sections.push(s); adopt(s); selectOnly(s.id); commit(); renderAll(); return;}
+  if(p.tool==='place') e=placeKind(p.kind,x,y);
+  else e=createBody(p.tool,Object.assign({},p.p,p.def),snapV(x),snapV(y));
+  selectOnly(e.id); commit(); renderAll();
+}
+function adopt(s){for(const e of doc.elements) if((!e.sec||!secById(e.sec))&&inSec(s,e)) e.sec=s.id;}
+function drawBox(p){return {x:Math.min(p.x0,p.x1),y:Math.min(p.y0,p.y1),w:Math.abs(p.x1-p.x0),h:Math.abs(p.y1-p.y0)};}
+function finishDraw(p){
+  const b=drawBox(p), tiny=b.w<6&&b.h<6;
+  const pr=preset?PRESETS.find(q=>q.key===preset):null;
+  if(p.tool==='section'){
+    const s=newSection(tiny?{x:snapV(p.x0-450),y:snapV(p.y0-500)}:{x:b.x,y:b.y,w:Math.max(120,b.w),h:Math.max(120,b.h)});
+    doc.sections.push(s); adopt(s); selectOnly(s.id);
+  } else if(p.tool==='rect'){
+    const props=Object.assign({},pr&&pr.tool==='rect'?pr.p:{});
+    const d=pr&&pr.def?pr.def:{w:200,h:24};
+    const e=tiny?createBody('rect',Object.assign(props,{w:d.w,h:d.h}),p.x0,p.y0):createBody('rect',Object.assign(props,{w:Math.max(4,b.w),h:Math.max(4,b.h)}),b.x+b.w/2,b.y+b.h/2);
+    if(e.motion==='slider'){e.rMin=-Math.max(60,e.w*0.7); e.rMax=Math.max(60,e.w*0.7);}
+    selectOnly(e.id);
+  } else if(p.tool==='circle'){
+    const props=Object.assign({},pr&&pr.tool==='circle'?pr.p:{});
+    const r=tiny?((pr&&pr.def&&pr.def.r)||20):Math.max(3,Math.min(b.w,b.h)/2);
+    const e=createBody('circle',Object.assign(props,{r:r1(r)}),tiny?p.x0:b.x+b.w/2,tiny?p.y0:b.y+b.h/2);
+    selectOnly(e.id);
+  }
+  setTool('select'); commit(); renderAll();
+}
+
+/* ================= Selektion ================= */
+function selectOnly(id){sel=new Set(id?[id]:[]); }
+function setSel(s){sel=s; renderLayers(); renderInspector();}
+function clearSel(){sel=new Set(); }
+
+/* ================= Zeiger ================= */
+let ptr=null, spaceDown=false;
+cv.addEventListener('pointerdown',ev=>{
+  if(document.activeElement&&document.activeElement!==cv) document.activeElement.blur();
+  cv.focus({preventScroll:true});
+  const w=toWorld(ev);
+  camAnim=null;
+  if(ev.button===1||tool==='hand'||(spaceDown&&mode==='build')||ev.button===2&&false){ptr={k:'pan',sx:ev.clientX,sy:ev.clientY,cx:cam.x,cy:cam.y}; cv.setPointerCapture(ev.pointerId); cv.style.cursor='grabbing'; return;}
+  if(ev.button!==0) return;
+  if(tool==='section'||tool==='rect'||tool==='circle'){const x=snapV(w.x), y=snapV(w.y); ptr={k:'draw',tool,x0:x,y0:y,x1:x,y1:y}; cv.setPointerCapture(ev.pointerId); return;}
+  if(tool==='place'){const p=PRESETS.find(q=>q.key===preset); if(p) placePreset(p.key,w.x,w.y); setTool('select'); return;}
+  if(tool==='attach'){const hit=pick(w); if(isMover(hit)&&!attachSrc.includes(hit.id)){ for(const id of attachSrc){const e=elById(id); if(e&&!isMover(e)){e.parent=hit.id; reparent(e);}} flash('Angeheftet an '+displayName(hit)); commit(); }
+    else flash('Kein beweglicher Balken getroffen – Anheften abgebrochen');
+    setTool('select'); renderAll(); return;}
+  const one=single();
+  if(one){const h=hitHandle(one,w); if(h){beginHandle(h,one,w,ev); return;}}
+  const hit=hitLabel(ev)||pick(w);
+  if(hit){
+    if(ev.shiftKey){ if(sel.has(hit.id)) sel.delete(hit.id); else sel.add(hit.id); renderLayers(); renderInspector(); if(!sel.has(hit.id)) return; }
+    else if(!sel.has(hit.id)) {selectOnly(hit.id); renderLayers(); renderInspector();}
+    if(ev.altKey&&mode==='build'){ duplicateSel(0,0); }
+    beginMove(w,ev,hit); return;
+  }
+  if(!ev.shiftKey){clearSel(); renderLayers(); renderInspector();}
+  ptr={k:'marquee',x0:w.x,y0:w.y,x1:w.x,y1:w.y,base:new Set(sel)}; cv.setPointerCapture(ev.pointerId);
+});
+function beginMove(w,ev,hit){
+  const origs=new Map(), direct=[];
+  const add=t=>{if(!origs.has(t.id)) origs.set(t.id,{x:t.x,y:t.y});};
+  for(const id of sel){const s=secById(id); if(s){add(s); for(const e of elsOf(s.id)) add(e);} }
+  for(const id of sel){const e=elById(id); if(!e)continue; if(origs.has(e.id)&&secById(e.sec)&&sel.has(e.sec)) continue; add(e); direct.push(e.id);
+    if(isMover(e)) for(const c of doc.elements) if(c.parent===e.id){add(c); direct.push(c.id);} }
+  const anchorT=findAny(hit.id)||hit;
+  ptr={k:'move',sx:w.x,sy:w.y,origs,direct,anchor:{x:anchorT.x,y:anchorT.y},moved:false};
+  cv.setPointerCapture(ev.pointerId);
+}
+function beginHandle(h,o,w,ev){
+  const kids=[]; if(isMover(o)) for(const c of doc.elements) if(c.parent===o.id) kids.push([c,{x:c.x,y:c.y,a:c.a||0}]);
+  ptr={k:'handle',h,el:o,orig:deep(o),kids,sx:w.x,sy:w.y,moved:false}; cv.setPointerCapture(ev.pointerId);
+}
+cv.addEventListener('pointermove',ev=>{
+  const w=toWorld(ev);
+  if(!ptr){ hoverUpdate(w,ev); return; }
+  if(ptr.k==='pan'){cam.x=ptr.cx-(ev.clientX-ptr.sx)/cam.z; cam.y=ptr.cy-(ev.clientY-ptr.sy)/cam.z; return;}
+  if(ptr.k==='draw'){ptr.x1=snapV(w.x); ptr.y1=snapV(w.y); if(ev.shiftKey&&ptr.tool!=='rect'){const d=Math.max(Math.abs(ptr.x1-ptr.x0),Math.abs(ptr.y1-ptr.y0)); ptr.x1=ptr.x0+Math.sign(ptr.x1-ptr.x0||1)*d; ptr.y1=ptr.y0+Math.sign(ptr.y1-ptr.y0||1)*d;} return;}
+  if(ptr.k==='marquee'){ptr.x1=w.x; ptr.y1=w.y; marqueeSelect(); return;}
+  const dx=w.x-ptr.sx, dy=w.y-ptr.sy;
+  if(!ptr.moved&&Math.hypot(dx,dy)*cam.z<3) return;
+  ptr.moved=true;
+  if(ptr.k==='move'){
+    let ddx=dx, ddy=dy; if(doc.prefs.snap){ddx=snapV(ptr.anchor.x+dx)-ptr.anchor.x; ddy=snapV(ptr.anchor.y+dy)-ptr.anchor.y;}
+    for(const [id,o] of ptr.origs){const t=findAny(id); if(t){t.x=r1(o.x+ddx); t.y=r1(o.y+ddy);}}
+    for(const id of ptr.direct) reparent(elById(id));
+    syncFields(); return;
+  }
+  if(ptr.k==='handle') dragHandle(w,ev);
+});
+function dragHandle(w,ev){
+  const {h,el:e,orig:o}=ptr; const snL=snapV;
+  switch(h.k){
+    case 'sr':{let L=o.x,Rr=o.x+o.w,T=o.y,Bb=o.y+o.h;
+      if(h.sx===1) Rr=Math.max(L+100,snapV(w.x)); if(h.sx===-1) L=Math.min(Rr-100,snapV(w.x));
+      if(h.sy===1) Bb=Math.max(T+100,snapV(w.y)); if(h.sy===-1) T=Math.min(Bb-100,snapV(w.y));
+      e.x=L; e.y=T; e.w=Rr-L; e.h=Bb-T; break;}
+    case 'rs':{const a=(o.a||0)*DEG,c=Math.cos(a),s=Math.sin(a),rx=w.x-o.x,ry=w.y-o.y,lx=rx*c+ry*s,ly=-rx*s+ry*c;
+      let L=-o.w/2,Rr=o.w/2,T=-o.h/2,Bb=o.h/2;
+      if(ev.altKey){ if(h.sx){const hw=Math.max(2,snL(Math.abs(lx))); L=-hw; Rr=hw;} if(h.sy){const hh=Math.max(2,snL(Math.abs(ly))); T=-hh; Bb=hh;} }
+      else { if(h.sx===1) Rr=L+Math.max(4,snL(lx-L)); if(h.sx===-1) L=Rr-Math.max(4,snL(Rr-lx)); if(h.sy===1) Bb=T+Math.max(4,snL(ly-T)); if(h.sy===-1) T=Bb-Math.max(4,snL(Bb-ly)); }
+      e.w=r1(Rr-L); e.h=r1(Bb-T); const lcx=(L+Rr)/2, lcy=(T+Bb)/2; e.x=r1(o.x+lcx*c-lcy*s); e.y=r1(o.y+lcx*s+lcy*c);
+      if(e.pox) e.pox=clamp(e.pox,-e.w/2,e.w/2); break;}
+    case 'cr': e.r=Math.max(3,snL(Math.hypot(w.x-o.x,w.y-o.y))); break;
+    case 'rot':{let ang=Math.atan2(w.y-o.y,w.x-o.x)/DEG+90; ang=ev.shiftKey?Math.round(ang/15)*15:doc.prefs.snap?Math.round(ang/5)*5:Math.round(ang);
+      e.a=normAng(ang); const d=(e.a-(o.a||0))*DEG, c=Math.cos(d), s=Math.sin(d);
+      for(const [k,ko] of ptr.kids){const dx=ko.x-o.x, dy=ko.y-o.y; k.x=r1(o.x+dx*c-dy*s); k.y=r1(o.y+dx*s+dy*c); k.a=normAng(ko.a+e.a-(o.a||0));}
+      break;}
+    case 'pv':{ if(e.kind==='rect'){const a=(o.a||0)*DEG; let v=(w.x-o.x)*Math.cos(a)+(w.y-o.y)*Math.sin(a); v=clamp(v,-o.w/2,o.w/2); const t=8/cam.z; for(const c of [0,-o.w/2,o.w/2]) if(Math.abs(v-c)<t) v=c; e.pox=r1(v);}
+      else {const vx=w.x-o.x, vy=w.y-o.y, d=Math.hypot(vx,vy); if(d<8/cam.z) e.pox=0; else {e.pox=r1(Math.min(d,o.r)); e.a=r1(Math.atan2(vy,vx)/DEG);}} break;}
+    case 'rmax':{const sc=settingsOf(e).rangeScale/100, vx=w.x-o.x, vy=w.y-o.y; let ang=Math.atan2(vy,vx)/DEG; ang=ev.shiftKey?Math.round(ang/45)*45:doc.prefs.snap?Math.round(ang/5)*5:Math.round(ang);
+      e.railAng=normAng(ang); e.rMax=Math.max(0,snL(Math.hypot(vx,vy)/sc)); if(e.rMin>e.rMax) e.rMin=e.rMax; break;}
+    case 'rmin':{const sc=settingsOf(e).rangeScale/100, ra=(o.railAng||0)*DEG; const proj=((w.x-o.x)*Math.cos(ra)+(w.y-o.y)*Math.sin(ra))/sc; e.rMin=Math.min(snL(proj),o.rMax); break;}
+    case 'sp': e.dx=snL(w.x-o.x); e.dy=snL(w.y-o.y); break;
+  }
+  syncFields();
+}
+cv.addEventListener('pointerup',ev=>{
+  if(!ptr)return; const p=ptr; ptr=null;
+  if(p.k==='pan'){cv.style.cursor=''; saveDoc(); return;}
+  if(p.k==='draw'){finishDraw(p); return;}
+  if(p.k==='marquee'){renderLayers(); renderInspector(); return;}
+  if(p.moved){commit(); renderInspector();}
+});
+cv.addEventListener('dblclick',ev=>{
+  const w=toWorld(ev); const lab=hitLabel(ev);
+  if(lab){enterFocus(lab.id); return;}
+  if(!focusId){
+    const hit=pick(w); const sid=hit?(secById(hit.id)?hit.id:hit.sec):secAt(w.x,w.y);
+    if(sid&&secById(sid)){enterFocus(sid); if(hit&&!secById(hit.id)){selectOnly(hit.id); renderAll();}}
+  } else { const f=focusSec(); if(f&&!inSec(f,w)){const sid=secAt(w.x,w.y); if(sid) enterFocus(sid); else exitFocus();} }
+});
+cv.addEventListener('contextmenu',ev=>ev.preventDefault());
+function hoverUpdate(w,ev){
+  let c='default', hv=null;
+  if(tool==='hand'||(spaceDown&&mode==='build')) c='grab';
+  else if(['section','rect','circle','place'].includes(tool)) c='crosshair';
+  else if(tool==='attach'){const h=pick(w); c=isMover(h)?'copy':'not-allowed'; hv=isMover(h)?h.id:null;}
+  else {
+    const one=single(), h=one&&hitHandle(one,w);
+    if(h){ c=h.k==='rot'?'grab':h.k==='sr'||h.k==='rs'?resizeCursor(h,one):'crosshair'; }
+    else {const lab=hitLabel(ev); const t=lab||pick(w); if(t){hv=t.id; c='default';}}
+  }
+  cv.style.cursor=c; if(hv!==hoverId){hoverId=hv; renderLayersHover();}
+}
+function resizeCursor(h,o){ let a=Math.atan2(h.sy||0,h.sx||0)/DEG+(o.a||0); a=((a%180)+180)%180; return a<22.5||a>=157.5?'ew-resize':a<67.5?'nwse-resize':a<112.5?'ns-resize':'nesw-resize'; }
+function marqueeSelect(){
+  const x0=Math.min(ptr.x0,ptr.x1), x1=Math.max(ptr.x0,ptr.x1), y0=Math.min(ptr.y0,ptr.y1), y1=Math.max(ptr.y0,ptr.y1);
+  const s=new Set(ptr.base);
+  const inside=e=>{const g=geo(e); return g.cx>=x0&&g.cx<=x1&&g.cy>=y0&&g.cy<=y1;};
+  if(focusId){ for(const e of elsOf(focusId)) if(inside(e)) s.add(e.id); }
+  else { for(const sc of doc.sections) if(sc.x<x1&&sc.x+sc.w>x0&&sc.y<y1&&sc.y+sc.h>y0) s.add(sc.id); }
+  for(const e of looseEls()) if(inside(e)) s.add(e.id);
+  sel=s;
+}
+cv.addEventListener('wheel',ev=>{
+  ev.preventDefault(); camAnim=null;
+  const r=cv.getBoundingClientRect(), k=ev.deltaMode===1?16:ev.deltaMode===2?400:1;
+  if(ev.ctrlKey||ev.metaKey) zoomAt(Math.exp(-ev.deltaY*k*0.0025*(ev.ctrlKey&&Math.abs(ev.deltaY)<40?4:1)),ev.clientX-r.left,ev.clientY-r.top);
+  else { const dx=ev.shiftKey&&!ev.deltaX?ev.deltaY:ev.deltaX, dy=ev.shiftKey&&!ev.deltaX?0:ev.deltaY; cam.x+=dx*k/cam.z; cam.y+=dy*k/cam.z; saveDoc(); }
+},{passive:false});
+
+/* ================= Aktionen ================= */
+function duplicateSel(ox,oy){
+  const ids=[...sel], idMap=new Map(), newEls=[], newSecs=[];
+  const right=rightEdge();
+  for(const id of ids){const s=secById(id); if(!s)continue; const c=deep(s); c.id=uid(); c.name=s.name+' (Kopie)'; c.x=ox===0&&oy===0?s.x:right+200; idMap.set(s.id,c.id); newSecs.push(c);
+    const dx=c.x-s.x; for(const e of elsOf(s.id)){const ce=deep(e); ce.id=uid(); idMap.set(e.id,ce.id); ce.sec=c.id; ce.x+=dx; newEls.push(ce);} }
+  const elIds=new Set(); for(const id of ids){const e=elById(id); if(!e||idMap.has(e.id))continue; elIds.add(e.id); if(isMover(e)) for(const c of doc.elements) if(c.parent===e.id) elIds.add(c.id);}
+  for(const id of elIds){const e=elById(id); if(idMap.has(id))continue; const ce=deep(e); ce.id=uid(); idMap.set(e.id,ce.id); ce.x+=ox; ce.y+=oy; newEls.push(ce);}
+  for(const e of newEls){ if(e.parent&&idMap.has(e.parent)) e.parent=idMap.get(e.parent); if(e.kind==='start'){} }
+  doc.sections.push(...newSecs); doc.elements.push(...newEls);
+  for(const e of newEls) if(!newSecs.find(s=>s.id===e.sec)) reparent(e);
+  const top=new Set(); for(const id of ids) if(idMap.has(id)) top.add(idMap.get(id));
+  sel=top;
+}
+function deleteSel(){
+  const ids=[...sel]; if(!ids.length)return;
+  const del=new Set(ids);
+  for(const id of ids){const s=secById(id); if(s) for(const e of elsOf(s.id)) del.add(e.id);}
+  doc.sections=doc.sections.filter(s=>!del.has(s.id));
+  doc.elements=doc.elements.filter(e=>!del.has(e.id));
+  for(const e of doc.elements) if(e.parent&&del.has(e.parent)) e.parent=null;
+  if(focusId&&del.has(focusId)){ if(mode==='test') setMode('build'); focusId=null; }
+  sel=new Set(); commit(); renderAll();
+}
+let clip=null;
+function copySel(){
+  const ids=[...sel]; if(!ids.length)return;
+  const secs=[], els=[]; const inc=new Set();
+  for(const id of ids){const s=secById(id); if(s){secs.push(deep(s)); for(const e of elsOf(s.id)){els.push(deep(e)); inc.add(e.id);}}}
+  for(const id of ids){const e=elById(id); if(e&&!inc.has(e.id)){els.push(deep(e)); inc.add(e.id); if(isMover(e)) for(const c of doc.elements) if(c.parent===e.id&&!inc.has(c.id)){els.push(deep(c)); inc.add(c.id);}}}
+  clip={secs,els,n:0}; flash(`${ids.length} kopiert`);
+}
+function paste(){
+  if(!clip)return; clip.n++; const off=clip.n*20, idMap=new Map(), right=rightEdge(), top=new Set();
+  const secs=clip.secs.map(s=>{const c=deep(s); c.id=uid(); idMap.set(s.id,c.id); c.dx=right+200-s.x; c.x=right+200; top.add(c.id); return c;});
+  const els=clip.els.map(e=>{const c=deep(e); c.id=uid(); idMap.set(e.id,c.id); return c;});
+  for(const e of els){ const ns=e.sec&&idMap.get(e.sec); if(ns){const s=secs.find(q=>q.id===ns); e.x+=s.dx; e.sec=ns;} else {e.x+=off; e.y+=off; top.add(e.id);} if(e.parent) e.parent=idMap.get(e.parent)||null; }
+  for(const s of secs) delete s.dx;
+  doc.sections.push(...secs); doc.elements.push(...els);
+  for(const e of els) if(!secs.find(s=>s.id===e.sec)) reparent(e);
+  sel=top; commit(); renderAll();
+}
+function nudge(dx,dy){
+  const moved=new Set();
+  const mv=t=>{if(moved.has(t.id))return; moved.add(t.id); t.x=r1(t.x+dx); t.y=r1(t.y+dy);};
+  for(const id of sel){const s=secById(id); if(s){mv(s); for(const e of elsOf(s.id)) mv(e);}}
+  for(const id of sel){const e=elById(id); if(e){mv(e); if(isMover(e)) for(const c of doc.elements) if(c.parent===e.id) mv(c); reparent(e);}}
+  syncFields(); commit();
+}
+function rotateSel(d){
+  for(const id of sel){const e=elById(id); if(!e||e.kind!=='rect'&&e.kind!=='circle')continue; const old=e.a||0; e.a=normAng(old+d);
+    if(isMover(e)){const rr=d*DEG,c=Math.cos(rr),s=Math.sin(rr); for(const k of doc.elements) if(k.parent===e.id){const dx=k.x-e.x,dy=k.y-e.y; k.x=r1(e.x+dx*c-dy*s); k.y=r1(e.y+dx*s+dy*c); k.a=normAng((k.a||0)+d);}}}
+  syncFields(); commit();
+}
+function enterFocus(id){const s=secById(id); if(!s)return; focusId=id; sel=new Set(); fitSec(s); renderAll();}
+function exitFocus(){ if(mode==='test') setMode('build'); const id=focusId; focusId=null; sel=new Set(id&&secById(id)?[id]:[]); fitAll(); renderAll(); }
+function flash(t){flashMsg={t,until:performance.now()+2200};}
+
+/* ================= Tools ================= */
+function setTool(t,pk){
+  tool=t; preset=pk||null; if(t!=='attach') attachSrc=[];
+  document.querySelectorAll('.tool').forEach(b=>b.classList.toggle('on',b.dataset.tool===t||(t==='place'&&false)));
+  document.querySelectorAll('.pre').forEach(b=>b.classList.toggle('on',b.dataset.key===preset&&t!=='select'));
+  updateTips();
+}
+$('#tools').addEventListener('click',ev=>{const b=ev.target.closest('.tool'); if(b){setTool(b.dataset.tool); b.blur();}});
+
+/* ================= Bauteile-Palette ================= */
+const preBox=$('#presets');
+preBox.innerHTML=PRESETS.map(p=>`<button type="button" class="pre" data-key="${p.key}" title="${p.label}: klicken und auf der Canvas aufziehen oder klicken – oder direkt hineinziehen"><svg viewBox="0 0 40 26" aria-hidden="true">${SVG[p.key]}</svg><span>${p.label}</span></button>`).join('');
+let palDrag=null, ghost=null;
+preBox.addEventListener('pointerdown',ev=>{const b=ev.target.closest('.pre'); if(!b)return; palDrag={key:b.dataset.key,x:ev.clientX,y:ev.clientY,moved:false}; ev.preventDefault();});
+preBox.addEventListener('click',ev=>{const b=ev.target.closest('.pre'); if(b&&ev.detail===0) armPreset(b.dataset.key);});
+window.addEventListener('pointermove',ev=>{
+  if(!palDrag)return;
+  if(!palDrag.moved&&Math.hypot(ev.clientX-palDrag.x,ev.clientY-palDrag.y)>6){palDrag.moved=true; ghost=document.createElement('div'); ghost.className='ghost'; ghost.textContent=PRESETS.find(p=>p.key===palDrag.key).label; document.body.appendChild(ghost);}
+  if(ghost){ghost.style.left=ev.clientX+'px'; ghost.style.top=ev.clientY+'px';}
+});
+window.addEventListener('pointerup',ev=>{
+  if(!palDrag)return; const d=palDrag; palDrag=null; if(ghost){ghost.remove(); ghost=null;}
+  if(!d.moved){armPreset(d.key); return;}
+  const r=cv.getBoundingClientRect();
+  if(ev.clientX>=r.left&&ev.clientX<=r.right&&ev.clientY>=r.top&&ev.clientY<=r.bottom){placePreset(d.key,cam.x+(ev.clientX-r.left)/cam.z,cam.y+(ev.clientY-r.top)/cam.z);}
+});
+function armPreset(key){
+  const p=PRESETS.find(q=>q.key===key);
+  if(preset===key&&tool!=='select'){setTool('select'); return;}
+  setTool(p.tool,key); cv.focus({preventScroll:true});
+  flash(p.tool==='place'?`${p.label}: auf die Canvas klicken`:`${p.label}: auf der Canvas aufziehen oder klicken`);
+}
+
+/* ================= Ebenen ================= */
+const layBox=$('#layers');
+function displayName(e){
+  if(!e) return '';
+  if(secById(e.id)) return e.name;
+  if(e.kind==='goal') return 'Ziel'; if(e.kind==='start') return e.sleep?'Kugel (wartet)':'Kugel'; if(e.kind==='spawn') return 'Multiball';
+  if(e.kind==='rect'){ if(e.motion==='rotor') return 'Rotationsbalken'; if(e.motion==='slider') return 'Schieber'; if(e.motion==='seesaw') return 'Wippe';
+    return {reset:'Begrenzung',bounce:'Bounce-Balken',normal:'Plattform',slick:'Glatter Balken',grip:'Griffiger Balken'}[e.effect]||'Balken'; }
+  if(e.motion==='rotor') return 'Rad'; if(e.motion==='slider') return 'Schiebe-Kreis'; if(e.motion==='seesaw') return 'Wipp-Kreis';
+  return e.effect==='bounce'?'Pin':e.effect==='reset'?'Neustart-Kreis':'Kreis';
+}
+function swatch(e){
+  if(e.kind==='goal') return '<i class="sw round" style="background:rgba(122,75,255,.25);border:1px solid #7a4bff"></i>';
+  if(e.kind==='spawn') return '<i class="sw round" style="background:rgba(242,140,30,.3);border:1px solid #e8851a"></i>';
+  if(e.kind==='start') return '<i class="sw round" style="background:#7a4bff"></i>';
+  return `<i class="sw ${e.kind==='circle'?'round':''}" style="background:${bodyFill(e)}"></i>`;
+}
+const FRAME_ICON='<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M5 1.5v13M11 1.5v13M1.5 5h13M1.5 11h13"/></svg>';
+function elRow(e){const tag=isMover(e)&&e.motion!=='seesaw'?`<span class="tag">S${e.player||1}</span>`:e.parent?'<span class="tag">⛓</span>':'';
+  return `<div class="lay el ${sel.has(e.id)?'on':''}" data-id="${e.id}">${swatch(e)}<span class="nm">${esc(displayName(e))}</span>${tag}</div>`;}
+function renderLayers(){
+  let h='';
+  for(const s of doc.sections){
+    const els=elsOf(s.id); const open=focusId===s.id||sel.has(s.id)||els.some(e=>sel.has(e.id));
+    h+=`<div class="lay sec ${sel.has(s.id)?'on':''}" data-id="${s.id}" title="Doppelklick öffnet das Spielfeld">${FRAME_ICON}<span class="nm">${esc(s.name)}</span><span class="ct">${focusId===s.id?'offen':els.length}</span></div>`;
+    if(open) for(const e of [...ordered(els)].reverse()) h+=elRow(e);
+  }
+  const lo=looseEls(); if(lo.length){h+=`<div class="lay sec" style="cursor:default;opacity:.7">Ohne Spielfeld<span class="ct" style="margin-left:auto">${lo.length}</span></div>`; for(const e of lo) h+=elRow(e);}
+  if(!doc.sections.length&&!lo.length) h='<div class="hint">Noch leer. Wähl oben das Spielfeld-Werkzeug (F) und zieh auf der Canvas einen Rahmen auf.</div>';
+  layBox.innerHTML=h;
+}
+function renderLayersHover(){layBox.querySelectorAll('.lay').forEach(r=>r.style.outline=r.dataset.id&&r.dataset.id===hoverId?'1px solid var(--accent)':'');}
+layBox.addEventListener('click',ev=>{
+  const r=ev.target.closest('.lay'); if(!r||!r.dataset.id)return; const id=r.dataset.id, t=findAny(id); if(!t)return;
+  if(!secById(id)&&focusId&&t.sec&&t.sec!==focusId) enterFocus(t.sec);
+  if(ev.shiftKey){ if(sel.has(id)) sel.delete(id); else sel.add(id);} else sel=new Set([id]);
+  renderLayers(); renderInspector();
+});
+layBox.addEventListener('dblclick',ev=>{const r=ev.target.closest('.lay'); if(r&&r.dataset.id&&secById(r.dataset.id)) enterFocus(r.dataset.id);});
+layBox.addEventListener('pointerover',ev=>{const r=ev.target.closest('.lay'); hoverId=r&&r.dataset.id||null;});
+layBox.addEventListener('pointerleave',()=>{hoverId=null;});
+
+/* ================= Inspector ================= */
+const insp=$('#insp');
+let inspSecId=null;
+function num(t,k,label,val,unit,step,extra){return `<label class="row"><span>${label}</span><span class="inp"><input type="number" id="f-${t}-${k}" data-t="${t}" data-k="${k}" value="${r1(val??0)}" step="${step||1}" ${extra||''}>${unit?`<em>${unit}</em>`:''}</span></label>`;}
+function seg(t,k,opts,cur){return `<div class="seg2" role="group">${opts.map(([v,l])=>`<button type="button" data-t="${t}" data-seg="${k}" data-val="${v}" class="${String(cur)===String(v)?'on':''}">${l}</button>`).join('')}</div>`;}
+function selRow(t,k,label,opts,cur){return `<label class="row"><span>${label}</span><select id="f-${t}-${k}" data-t="${t}" data-k="${k}">${opts.map(([v,l])=>`<option value="${v}" ${String(cur)===String(v)?'selected':''}>${esc(l)}</option>`).join('')}</select></label>`;}
+function chk(t,k,label,cur,extra){return `<label class="check"><input type="checkbox" id="f-${t}-${k}" data-t="${t}" data-k="${k}" ${cur?'checked':''} ${extra||''}> ${label}</label>`;}
+const fmtSet=(it,v)=>(it.step<1?Number(v).toFixed(2):Math.round(v))+(it.unit?' '+it.unit:'');
+function rangeRow(t,it,v,id){return `<div class="srow"><label class="lab" for="f-${t}-${it.k}"><span>${it.label}</span><output id="o-${t}-${it.k}">${fmtSet(it,v)}</output></label><input type="range" id="f-${t}-${it.k}" data-t="${t}" data-k="${it.k}" ${id?`data-id="${id}"`:''} min="${it.min}" max="${it.max}" step="${it.step}" value="${v}">${it.hint?`<small>${it.hint}</small>`:''}</div>`;}
+function renderInspector(){
+  const ids=[...sel];
+  if(tool==='attach'){insp.innerHTML=`<h3>Anheften</h3><div class="callout">Klick auf der Canvas auf einen beweglichen Balken (Rotor, Schieber, Wippe). Die ausgewählten Teile bewegen sich danach mit ihm.</div><div class="acts"><button class="btn" type="button" data-act="cancelAttach">Abbrechen</button></div>`; return;}
+  if(!ids.length){const f=focusSec(); insp.innerHTML=f?secPanel(f,true):boardPanel(); return;}
+  if(ids.length>1){insp.innerHTML=multiPanel(ids); return;}
+  const s=secById(ids[0]); if(s){insp.innerHTML=secPanel(s,false); return;}
+  const e=elById(ids[0]); if(e) insp.innerHTML=elPanel(e); else insp.innerHTML=boardPanel();
+}
+function boardPanel(){
+  inspSecId=null;
+  return `<h3>Board</h3><p class="sub">${doc.sections.length} Spielfelder · ${doc.elements.length} Bauteile. Klick ein Spielfeld an für seine Physik, Doppelklick öffnet es zum Bauen und Testen.</p>
+  <h4>Allgemein</h4>${PREF_ITEMS.map(it=>it.t==='bool'?chk('pref',it.k,it.label,doc.prefs[it.k])+(it.hint?`<small class="hint" style="margin-top:-5px">${it.hint}</small>`:''):rangeRow('pref',it,doc.prefs[it.k])).join('')}
+  <h4>Tastatur</h4>
+  <div class="keys"><span><kbd>V</kbd> <kbd>H</kbd></span><span>Auswählen · Hand</span><span><kbd>F</kbd> <kbd>R</kbd> <kbd>O</kbd></span><span>Spielfeld · Rechteck · Kreis</span>
+  <span><kbd>G</kbd> <kbd>B</kbd> <kbd>M</kbd></span><span>Ziel · Kugel · Multiball</span><span><kbd>Leertaste</kbd></span><span>gedrückt halten = Canvas schieben</span>
+  <span><kbd>Ctrl</kbd>+Rad</span><span>Zoomen (Trackpad: Pinch)</span><span><kbd>Shift</kbd>+<kbd>1</kbd> / <kbd>2</kbd></span><span>Alles · Auswahl zeigen</span>
+  <span><kbd>Alt</kbd>+Ziehen</span><span>Kopie ziehen · bei Griffen symmetrisch</span><span><kbd>Q</kbd> <kbd>E</kbd></span><span>Drehen um 5°</span>
+  <span><kbd>Ctrl</kbd>+<kbd>C</kbd> <kbd>V</kbd> <kbd>D</kbd></span><span>Kopieren · Einfügen · Duplizieren</span><span><kbd>Enter</kbd> / <kbd>Esc</kbd></span><span>Öffnen &amp; Testen · zurück</span></div>
+  <div class="acts"><button class="btn" type="button" data-act="io">Export / Import</button></div>`;
+}
+function secPanel(s,isFocus){
+  inspSecId=s.id; const S=s.settings;
+  let h=`<h3>${isFocus?'Spielfeld (offen)':'Spielfeld'}</h3>
+  <label class="row"><span>Name</span><input class="txt" id="f-sec-name" data-t="sec" data-k="name" value="${esc(s.name)}"></label>
+  <div class="grid2">${num('sec','x','X',s.x)}${num('sec','y','Y',s.y)}${num('sec','w','B',s.w)}${num('sec','h','H',s.h)}</div>
+  <div class="acts">${isFocus||focusId===s.id?'<button class="btn" type="button" data-act="exitFocus">Zur Übersicht</button>':'<button class="btn" type="button" data-act="open">Öffnen</button>'}<button class="btn primary" type="button" data-act="test" data-id="${s.id}">Testen</button></div>
+  <h4>Regeln</h4>${selRow('set','winRule','Gewonnen wenn',[['all','alle Kugeln im Ziel'],['any','eine Kugel im Ziel']],S.winRule)}
+  <p class="hint" style="margin:-4px 0 0">${S.winRule==='all'?'Geht eine Kugel verloren, startet die Runde neu.':'Neustart erst, wenn alle Kugeln verloren sind.'}</p>`;
+  for(const g of SEC_GROUPS){h+=`<details ${g.open?'open':''}><summary>${g.g}</summary><div>${g.items.map(it=>it.t==='bool'?chk('set',it.k,it.label,S[it.k]):rangeRow('set',it,S[it.k],s.id)).join('')}</div></details>`;}
+  h+=`<div class="acts"><button class="btn" type="button" data-act="secDefaults">Standardwerte</button><button class="btn" type="button" data-act="dup">Duplizieren</button><button class="btn danger" type="button" data-act="del">Löschen</button></div>`;
+  return h;
+}
+function parentOpts(e){const ms=doc.elements.filter(m=>isMover(m)&&m.sec===e.sec&&m.id!==e.id); const opts=[['','nichts']];
+  ms.forEach((m,i)=>opts.push([m.id,`${displayName(m)} ${isMover(m)&&m.motion!=='seesaw'?'· S'+(m.player||1):''} #${i+1}`])); return opts;}
+function attachBlock(e){
+  return `<h4>Anheften</h4>${selRow('el','parent','Bewegt mit',parentOpts(e),e.parent||'')}
+  <div class="acts"><button class="btn" type="button" data-act="attachPick">Auf Canvas wählen</button></div>
+  <p class="hint" style="margin:0">Angeheftete Teile machen jede Bewegung des Balkens mit, z.B. Ziel und Schüssel auf einem Schieber.</p>`;
+}
+function elPanel(e){
+  inspSecId=null; const S=settingsOf(e);
+  let h=`<h3>${esc(displayName(e))}</h3>`;
+  if(e.kind==='start'){
+    h+=`<p class="sub">Startposition einer Kugel. Du kannst beliebig viele platzieren, alle starten gleichzeitig mit der Leertaste.</p><div class="grid2">${num('el','x','X',e.x)}${num('el','y','Y',e.y)}</div>${num('el','r','Kugelradius',e.r,'px')}
+    <p class="hint" style="margin:0">Durchmesser ${r1(e.r*2)} px</p>
+    ${chk('el','sleep','Wartet, bis sie angestossen wird',e.sleep)}
+    <p class="hint" style="margin:-4px 0 0">Die Kugel bleibt in der Luft liegen, bis eine andere Kugel oder ein bewegter Balken sie berührt.</p>`;
+  } else if(e.kind==='goal'){
+    h+=`<p class="sub">Die Kugel muss mit ihrer Mitte in diesen Kreis. Die Schüssel baust du aus Balken drumherum.</p><div class="grid2">${num('el','x','X',e.x)}${num('el','y','Y',e.y)}</div>${num('el','r','Radius',e.r,'px')}`+attachBlock(e);
+  } else if(e.kind==='spawn'){
+    h+=`<p class="sub">Trifft eine Kugel dieses Feld, kommt eine weitere Kugel am Spawn-Punkt (orange Raute) ins Spiel.</p>
+    <div class="grid2">${num('el','x','X',e.x)}${num('el','y','Y',e.y)}</div>${num('el','r','Trigger-Radius',e.r,'px')}${num('el','br','Neue Kugel',e.br,'px')}
+    <div class="grid2">${num('el','dx','dX',e.dx)}${num('el','dy','dY',e.dy)}</div>${chk('el','once','Nur einmal pro Runde auslösen',e.once)}`+attachBlock(e);
+  } else {
+    const motions=[['static','Fest'],['rotor','Drehen'],['slider','Schieben'],['seesaw','Wippe']];
+    h+=`<h4>Bewegung</h4>${seg('el','motion',motions,e.motion)}`;
+    if(e.motion==='rotor'||e.motion==='slider') h+=`<div class="row"><span>Gesteuert von</span>${seg('el','player',[[1,'<i class="sw" style="background:'+PL[1].fill+'"></i>Spieler 1'],[2,'<i class="sw" style="background:'+PL[2].fill+'"></i>Spieler 2']],e.player||1)}</div>`;
+    if(e.motion==='rotor'){const own=e.lim!=null; h+=chk('el','limOwn',`Eigenes Limit (sonst ±${S.rotLimit}° vom Spielfeld)`,own)+num('el','lim','Limit',own?e.lim:S.rotLimit,'±°',1,own?'':'disabled');
+      h+=num('el','pox','Drehpunkt',e.pox,'px')+`<p class="hint" style="margin:-4px 0 0">${e.kind==='rect'?'Abstand von der Mitte entlang der Länge · 0 = Mitte · Fadenkreuz-Griff ziehen':'0 = dreht um die Mitte (Rad) · sonst exzentrisch'}</p>`;}
+    if(e.motion==='seesaw') h+=num('el','lim','Limit',e.lim??25,'±°')+num('el','pox','Drehpunkt',e.pox,'px');
+    if(e.motion==='slider'){
+      h+=num('el','railAng','Richtung',e.railAng,'°')+`<div class="grid2">${num('el','rMin','−','rMin' in e?e.rMin:0)}${num('el','rMax','+',e.rMax)}</div>`;
+      h+=selRow('el','keyAxis','Tasten',[['auto',`automatisch (${sliderAxis(Object.assign({},e,{keyAxis:'auto'}))==='h'?'links/rechts':'hoch/runter'})`],['h','links / rechts'],['v','hoch / runter']],e.keyAxis||'auto');
+      h+=`<p class="hint" style="margin:-4px 0 0">Richtung der Schiene, unabhängig vom Balkenwinkel. Schwarze Rauten ziehen: Ende rechts setzt Richtung und Länge. Weg wird mit der Range des Spielfelds (${S.rangeScale}%) skaliert.</p>`;}
+    h+=`<h4>Form</h4><div class="grid2">${num('el','x','X',e.x)}${num('el','y','Y',e.y)}</div>`;
+    if(e.kind==='rect') h+=`<div class="grid2">${num('el','w','B',e.w)}${num('el','h','H',e.h)}</div>`+num('el','a','Winkel',e.a,'°');
+    else h+=num('el','r','Radius',e.r,'px');
+    h+=`<h4>Oberfläche</h4>${selRow('el','effect','Effekt',Object.entries(EFF),e.effect||'normal')}`;
+    if(e.motion==='static') h+=attachBlock(e);
+  }
+  h+=`<div class="acts"><button class="btn" type="button" data-act="dup">Duplizieren</button><button class="btn danger" type="button" data-act="del">Löschen</button></div>`;
+  return h;
+}
+function multiPanel(ids){
+  inspSecId=null; const els=ids.map(elById).filter(Boolean); const bodies=els.filter(isBody); const nonMov=els.filter(e=>!isMover(e)&&e.kind!=='start');
+  let h=`<h3>${ids.length} ausgewählt</h3><p class="sub">${els.length} Bauteile${ids.length>els.length?' · '+(ids.length-els.length)+' Spielfelder':''}</p>`;
+  if(bodies.length) h+=`<h4>Oberfläche</h4>${selRow('multi','effect','Effekt',[['','gemischt'],...Object.entries(EFF)],bodies.every(b=>b.effect===bodies[0].effect)?bodies[0].effect:'')}`;
+  const movs=els.filter(e=>e.motion==='rotor'||e.motion==='slider');
+  if(movs.length) h+=`<div class="row"><span>Gesteuert von</span>${seg('multi','player',[[1,'Spieler 1'],[2,'Spieler 2']],movs.every(m=>m.player===movs[0].player)?movs[0].player:'')}</div>`;
+  if(nonMov.length) h+=`<div class="acts"><button class="btn" type="button" data-act="attachPick">An Balken anheften</button><button class="btn" type="button" data-act="detach">Lösen</button></div>`;
+  h+=`<div class="acts"><button class="btn" type="button" data-act="dup">Duplizieren</button><button class="btn danger" type="button" data-act="del">Löschen</button></div>`;
+  return h;
+}
+function syncFields(){
+  const one=single(); if(!one)return; const t=secById(one.id)?'sec':'el';
+  for(const k of ['x','y','w','h','a','r','pox','rMin','rMax','railAng','dx','dy']){const f=document.getElementById(`f-${t}-${k}`); if(f&&document.activeElement!==f&&one[k]!=null) f.value=r1(one[k]);}
+}
+function moveKids(e,dx,dy){ if(isMover(e)) for(const c of doc.elements) if(c.parent===e.id){c.x=r1(c.x+dx); c.y=r1(c.y+dy);} }
+function setElProp(e,k,v){
+  if(k==='x'||k==='y'){const d=v-e[k]; e[k]=v; moveKids(e,k==='x'?d:0,k==='y'?d:0); reparent(e); return;}
+  if(k==='a'){const d=v-(e.a||0); e.a=v; if(isMover(e)){const rr=d*DEG,c=Math.cos(rr),s=Math.sin(rr); for(const kd of doc.elements) if(kd.parent===e.id){const dx=kd.x-e.x,dy=kd.y-e.y; kd.x=r1(e.x+dx*c-dy*s); kd.y=r1(e.y+dx*s+dy*c); kd.a=normAng((kd.a||0)+d);}} return;}
+  if(['w','h','r','br'].includes(k)){e[k]=Math.max(k==='h'?2:3,v); return;}
+  if(k==='lim'){e.lim=Math.max(0,v); return;}
+  e[k]=v;
+}
+function onField(ev,isChange){
+  const t=ev.target, k=t.dataset.k, tg=t.dataset.t; if(!k||!tg)return;
+  const isSel=t.tagName==='SELECT', isChk=t.type==='checkbox', isNum=t.type==='number', isRange=t.type==='range', isText=t.type==='text'||t.classList.contains('txt');
+  if((isSel||isChk)&&!isChange) return;
+  if((isNum||isText)&&isChange){commit(); return;}
+  if(isRange&&isChange){ if(tg!=='pref') commit(); t.blur(); return; }
+  let v=isChk?t.checked:(isNum||isRange)?parseFloat(t.value):t.value;
+  if((isNum||isRange)&&!isFinite(v)) return;
+  if(tg==='pref'){doc.prefs[k]=v; const it=findItem(k), o=document.getElementById('o-pref-'+k); if(o&&it)o.textContent=fmtSet(it,v); saveDoc(); return;}
+  if(tg==='set'){const s=secById(inspSecId); if(!s)return; s.settings[k]=v; const it=findItem(k), o=document.getElementById('o-set-'+k); if(o&&it&&it.t==='range')o.textContent=fmtSet(it,v);
+    if(isSel||isChk){commit(); if(k==='winRule') renderInspector(); t.blur();} saveDoc(); return;}
+  if(tg==='sec'){const s=secById(inspSecId)||single(); if(!s)return;
+    if(k==='name'){s.name=v||'Spielfeld'; renderLayers(); saveDoc(); return;}
+    if(k==='x'||k==='y'){const d=v-s[k]; s[k]=v; for(const e of elsOf(s.id)) e[k]=r1(e[k]+d); return;}
+    if(k==='w'||k==='h'){s[k]=Math.max(100,v); return;} return;}
+  if(tg==='multi'){ if(k==='effect'&&v){for(const id of sel){const e=elById(id); if(isBody(e)) e.effect=v;} commit(); renderInspector(); t.blur();} return; }
+  if(tg==='el'){const e=single(); if(!e||!elById(e.id))return;
+    if(k==='limOwn'){e.lim=v?settingsOf(e).rotLimit:null; commit(); renderInspector(); return;}
+    if(k==='parent'){e.parent=v||null; reparent(e); commit(); renderAll(); t.blur(); return;}
+    if(k==='once'||k==='sleep'){e[k]=v; commit(); renderLayers(); return;}
+    if(isSel){e[k]=v; commit(); renderInspector(); renderLayers(); t.blur(); return;}
+    setElProp(e,k,v);
+  }
+}
+insp.addEventListener('input',ev=>onField(ev,false));
+insp.addEventListener('change',ev=>onField(ev,true));
+insp.addEventListener('click',ev=>{
+  const b=ev.target.closest('button'); if(!b)return;
+  if(b.dataset.seg){
+    const v=b.dataset.val, k=b.dataset.seg;
+    if(b.dataset.t==='multi'){ for(const id of sel){const e=elById(id); if(e&&(e.motion==='rotor'||e.motion==='slider')) e.player=+v;} commit(); renderInspector(); renderLayers(); return; }
+    const e=single(); if(!e)return;
+    if(k==='player') e.player=+v;
+    if(k==='motion'){ e.motion=v; rt.delete(e.id);
+      if(v!=='static'){ if(e.parent){e.parent=null;} if((v==='rotor'||v==='slider')&&!e.player) e.player=v==='rotor'?1:2; if(v==='seesaw'&&e.lim==null) e.lim=25; if(v==='slider'&&e.rMin==null){e.rMin=-120;e.rMax=120;} if(v==='slider') e.railAng=e.railAng??(e.a||0); }
+      else for(const c of doc.elements) if(c.parent===e.id) c.parent=null; }
+    commit(); renderInspector(); renderLayers(); return;
+  }
+  const act=b.dataset.act; if(!act)return;
+  if(act==='dup'){duplicateSel(20,20); commit(); renderAll();}
+  if(act==='del') deleteSel();
+  if(act==='open'){const s=secById(inspSecId); if(s) enterFocus(s.id);}
+  if(act==='exitFocus') exitFocus();
+  if(act==='test'){const id=b.dataset.id; if(focusId!==id) enterFocus(id); setMode('test');}
+  if(act==='secDefaults'){const s=secById(inspSecId); if(s){s.settings=deep(SEC_DEF); commit(); renderInspector();}}
+  if(act==='io') openIO();
+  if(act==='attachPick'){attachSrc=[...sel].filter(id=>{const e=elById(id); return e&&!isMover(e)&&e.kind!=='start';}); if(!attachSrc.length){flash('Bewegliche Balken können nicht angeheftet werden'); return;} setTool('attach'); renderInspector();}
+  if(act==='cancelAttach'){setTool('select'); renderInspector();}
+  if(act==='detach'){for(const id of sel){const e=elById(id); if(e){e.parent=null; reparent(e);}} commit(); renderAll();}
+});
+
+/* ================= Modus ================= */
+function setMode(m){
+  if(m==='test'){
+    let s=focusSec();
+    if(!s){ const cand=[...sel].map(id=>secById(id)||secById((elById(id)||{}).sec)).find(Boolean)||(doc.sections.length===1?doc.sections[0]:null);
+      if(!cand){flash('Wähl zuerst ein Spielfeld aus oder öffne es per Doppelklick'); return;} enterFocus(cand.id); s=cand; }
+    sim=newSim(s); fitSec(s);
+  } else sim=null;
+  mode=m; rt.clear(); keys.clear(); setTool('select');
+  $('#modeBuild').classList.toggle('on',m==='build'); $('#modeTest').classList.toggle('on',m==='test');
+  if(document.activeElement) document.activeElement.blur(); cv.focus({preventScroll:true});
+  renderInspector(); updateTips();
+}
+$('#modeBuild').addEventListener('click',()=>setMode('build'));
+$('#modeTest').addEventListener('click',()=>setMode('test'));
+$('#undoBtn').addEventListener('click',undo); $('#redoBtn').addEventListener('click',redo);
+$('#zIn').addEventListener('click',()=>{const {w,h}=cssSize(); zoomAt(1.25,w/2,h/2);});
+$('#zOut').addEventListener('click',()=>{const {w,h}=cssSize(); zoomAt(0.8,w/2,h/2);});
+$('#zLbl').addEventListener('click',()=>{const f=focusSec(); f?fitSec(f):fitAll();});
+
+/* ================= Tastatur ================= */
+const GAME_CODES=new Set(['KeyA','KeyD','KeyW','KeyS','ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Space']);
+window.addEventListener('keydown',ev=>{
+  const tag=(ev.target.tagName||'').toLowerCase();
+  const typing=(tag==='input'&&!['range','checkbox'].includes(ev.target.type))||tag==='textarea'||tag==='select';
+  if(!modal.hidden){if(ev.key==='Escape') modal.hidden=true; return;}
+  if(typing){if(ev.key==='Escape') ev.target.blur(); return;}
+  const mod=ev.ctrlKey||ev.metaKey;
+  if(mod&&ev.code==='KeyZ'){ev.preventDefault(); ev.shiftKey?redo():undo(); return;}
+  if(mod&&ev.code==='KeyY'){ev.preventDefault(); redo(); return;}
+  if(mod&&(ev.code==='Equal'||ev.code==='NumpadAdd')){ev.preventDefault(); $('#zIn').click(); return;}
+  if(mod&&(ev.code==='Minus'||ev.code==='NumpadSubtract')){ev.preventDefault(); $('#zOut').click(); return;}
+  if(mode==='test'){
+    if(mod) return;
+    if(GAME_CODES.has(ev.code)){ev.preventDefault(); if(tag==='input'||tag==='button') ev.target.blur();}
+    keys.add(ev.code);
+    if(ev.code==='Escape'){setMode('build'); return;}
+    if(ev.code==='Space'&&!ev.repeat){ if(sim.phase==='ready'){sim.phase='run'; sim.attempts++;} else if(sim.phase==='win') newRound(sim); return; }
+    if(ev.code==='KeyR'&&!ev.repeat){sim.marks=[]; newRound(sim); return;}
+    if(ev.code==='KeyP'&&!ev.repeat){sim.paused=!sim.paused; return;}
+    return;
+  }
+  if(mod){
+    if(ev.code==='KeyD'){ev.preventDefault(); duplicateSel(20,20); commit(); renderAll();}
+    if(ev.code==='KeyC'){ev.preventDefault(); copySel();}
+    if(ev.code==='KeyV'){ev.preventDefault(); paste();}
+    if(ev.code==='KeyA'){ev.preventDefault(); sel=new Set(focusId?elsOf(focusId).map(e=>e.id):doc.sections.map(s=>s.id)); renderAll();}
+    return;
+  }
+  if(ev.code==='Space'){ if(tag==='button') return; ev.preventDefault(); if(!spaceDown){spaceDown=true; cv.style.cursor='grab';} return; }
+  if(ev.shiftKey&&ev.code==='Digit1'){ev.preventDefault(); fitAll(); return;}
+  if(ev.shiftKey&&ev.code==='Digit2'){ev.preventDefault(); fitSel(); return;}
+  if(ev.code==='Enter'&&tag!=='button'){ev.preventDefault();
+    if(focusId) setMode('test'); else {const s=[...sel].map(secById).find(Boolean); if(s) enterFocus(s.id); else setMode('test');} return;}
+  if(ev.code==='Escape'){ if(tool!=='select'){setTool('select'); renderInspector(); return;} if(sel.size){sel=new Set(); renderAll(); return;} if(focusId) exitFocus(); return; }
+  if(ev.code==='Delete'||ev.code==='Backspace'){if(sel.size){ev.preventDefault(); deleteSel();} return;}
+  const st1=ev.shiftKey?10:1;
+  const nd={ArrowLeft:[-st1,0],ArrowRight:[st1,0],ArrowUp:[0,-st1],ArrowDown:[0,st1]}[ev.code];
+  if(nd&&sel.size){ev.preventDefault(); nudge(nd[0],nd[1]); return;}
+  if(ev.code==='KeyQ'||ev.code==='KeyE'){if(sel.size) rotateSel((ev.code==='KeyE'?1:-1)*(ev.shiftKey?1:5)); return;}
+  const toolKeys={KeyV:['select'],KeyH:['hand'],KeyF:['section'],KeyR:['rect'],KeyO:['circle'],KeyG:['place','goal'],KeyB:['place','start'],KeyM:['place','spawn']};
+  const tk=toolKeys[ev.code]; if(tk&&!ev.repeat){setTool(tk[0],tk[1]); renderInspector();}
+  if(ev.code==='Equal'||ev.code==='NumpadAdd') $('#zIn').click();
+  if(ev.code==='Minus'||ev.code==='NumpadSubtract') $('#zOut').click();
+});
+window.addEventListener('keyup',ev=>{keys.delete(ev.code); if(ev.code==='Space'){spaceDown=false; if(!ptr) cv.style.cursor='';}});
+window.addEventListener('blur',()=>{keys.clear(); spaceDown=false;});
+
+/* ================= Export / Import ================= */
+const modal=$('#ioModal'), ioMsg=$('#ioMsg');
+function openIO(){ $('#ioText').value=JSON.stringify({v:2,sections:doc.sections,elements:doc.elements,prefs:doc.prefs},null,1); ioMsg.textContent=''; modal.hidden=false; }
+$('#ioBtn').addEventListener('click',openIO);
+$('#ioClose').addEventListener('click',()=>modal.hidden=true);
+modal.addEventListener('click',ev=>{if(ev.target===modal) modal.hidden=true;});
+$('#ioCopy').addEventListener('click',()=>{const ta=$('#ioText'); navigator.clipboard.writeText(ta.value).then(()=>{ioMsg.style.color=''; ioMsg.textContent='Kopiert.';}).catch(()=>{ta.select(); ioMsg.textContent='Text ist markiert, jetzt mit Ctrl+C kopieren.';});});
+function parseImport(txt){
+  const o=JSON.parse(txt);
+  if(o&&Array.isArray(o.sections)&&Array.isArray(o.elements)) return {sections:o.sections,elements:o.elements,prefs:o.prefs};
+  if(o&&Array.isArray(o.elements)){const {sec,els}=fromV1(o,0,0); return {sections:[sec],elements:els};}
+  throw new Error('weder Board noch Spielfeld erkannt');
+}
+function addImported(d){
+  const idMap=new Map(); let x=rightEdge()+200; const minX=Math.min(...d.sections.map(s=>s.x),0);
+  const secs=d.sections.map(s=>{const c=deep(s); c.id=uid(); idMap.set(s.id,c.id); c.settings=Object.assign(deep(SEC_DEF),c.settings||{}); return c;});
+  const shift=x-minX;
+  for(const s of secs) s.x+=shift;
+  const els=d.elements.map(e=>{const c=Object.assign(mkEl(e.kind in BASE?e.kind:'rect'),deep(e)); c.id=uid(); idMap.set(e.id,c.id); c.x+=shift; return c;});
+  for(const e of els){e.sec=e.sec&&idMap.get(e.sec)||null; e.parent=e.parent&&idMap.get(e.parent)||null;}
+  doc.sections.push(...secs); doc.elements.push(...els); for(const e of els) if(!e.sec) reparent(e);
+  sel=new Set(secs.map(s=>s.id)); commit(); renderAll(); fitAll();
+}
+function ioErr(err){ioMsg.style.color='var(--warn)'; ioMsg.textContent='Das JSON konnte nicht gelesen werden: '+err.message+'. Prüf, ob der ganze Text eingefügt ist.';}
+$('#ioAdd').addEventListener('click',()=>{try{addImported(parseImport($('#ioText').value)); modal.hidden=true;}catch(e){ioErr(e);}});
+let repArm=0;
+$('#ioReplace').addEventListener('click',ev=>{
+  const b=ev.currentTarget;
+  if(!b.classList.contains('armed')){b.classList.add('armed'); b.textContent='Wirklich ersetzen?'; clearTimeout(repArm); repArm=setTimeout(()=>{b.classList.remove('armed'); b.textContent='Board ersetzen';},3000); return;}
+  clearTimeout(repArm); b.classList.remove('armed'); b.textContent='Board ersetzen';
+  try{const d=parseImport($('#ioText').value); if(mode==='test') setMode('build'); doc.sections=[]; doc.elements=[]; focusId=null; addImported(d); modal.hidden=true;}catch(e){ioErr(e);}
+});
+$('#ioFile').addEventListener('change',ev=>{const f=ev.target.files[0]; if(!f)return; const r=new FileReader(); r.onload=()=>{try{addImported(parseImport(r.result)); modal.hidden=true;}catch(e){ioErr(e);}}; r.readAsText(f); ev.target.value='';});
+$('#ioSample').addEventListener('click',()=>{const {sec,els}=fromV1(sampleV1(),rightEdge()+200,0); doc.sections.push(sec); doc.elements.push(...els); sel=new Set([sec.id]); commit(); renderAll(); fitAll(); modal.hidden=true;});
+
+/* ================= HUD ================= */
+const tl=$('#tl'), banner=$('#banner'); let lastTl='';
+tl.addEventListener('click',ev=>{const b=ev.target.closest('button'); if(!b)return; if(b.dataset.act==='overview') exitFocus(); if(b.dataset.act==='build') setMode('build');});
+function updateHud(){
+  let h;
+  if(mode==='test'&&sim){
+    const alive=sim.balls.filter(b=>b.alive).length, parked=sim.balls.filter(b=>b.parked).length;
+    h=`<button class="chip mode test" type="button" data-act="build" title="Zurück zum Bauen (Esc)">Testen · ${esc(sim.sec.name)}</button><span class="chip">Versuch ${Math.max(1,sim.attempts)}</span><span class="chip">Ziele ${sim.wins}</span><span class="chip">Zeit ${sim.t.toFixed(1)} s</span><span class="chip">Best ${sim.best==null?'–':sim.best.toFixed(1)+' s'}</span>${sim.balls.length>1?`<span class="chip">Kugeln ${alive} im Spiel · ${parked} im Ziel</span>`:''}${doc.prefs.timeScale!==1?`<span class="chip">Tempo ${doc.prefs.timeScale.toFixed(2)}×</span>`:''}`;
+  } else {
+    const f=focusSec();
+    h=f?`<button class="chip mode" type="button" data-act="overview" title="Zur Übersicht (Esc)">← Übersicht</button><span class="crumbsep">›</span><span class="chip mode">${esc(f.name)}</span>`
+       :`<span class="chip mode">Übersicht</span><span class="chip">${doc.sections.length} Spielfelder</span>`;
+  }
+  if(h!==lastTl){tl.innerHTML=h; lastTl=h;}
+  $('#zLbl').textContent=Math.round(cam.z*100)+'%';
+  let b=null, cls='';
+  if(mode==='test'&&sim){
+    if(sim.paused) b='Pause · P drücken zum Weiterspielen';
+    else if(sim.phase==='ready') b=startOf(sim.sec).found?'Bereit? Leertaste lässt die Kugel los':'Keine Kugel in diesem Spielfeld – eine startet oben in der Mitte';
+    else if(sim.phase==='fail'){const L=sim.lastLoss; b=L?(sim.balls.length>1?`Kugel ${L.n} ${WHY[L.why]} – Runde verloren`:`Daneben! Die Kugel ${WHY[L.why]}`):'Daneben! Gleich nochmal …'; cls='fail';}
+    else if(sim.phase==='win'){b=`Ziel in ${sim.lastWin.toFixed(1)} s · Leertaste für die nächste Runde`; cls='win';}
+  }
+  if(!b&&flashMsg&&performance.now()<flashMsg.until) b=flashMsg.t;
+  banner.hidden=!b; if(b){ if(banner.textContent!==b) banner.textContent=b; banner.className='banner '+cls; }
+  $('#undoBtn').disabled=hi<=0; $('#redoBtn').disabled=hi>=hist.length-1;
+}
+function updateTips(){
+  $('#tips').innerHTML=mode==='test'
+    ?'Spieler 1: <kbd>A</kbd> <kbd>D</kbd> (<kbd>W</kbd> <kbd>S</kbd>) · Spieler 2: <kbd>←</kbd> <kbd>→</kbd> (<kbd>↑</kbd> <kbd>↓</kbd>) · <kbd>Leertaste</kbd> los · <kbd>R</kbd> neu · <kbd>P</kbd> Pause · <kbd>Esc</kbd> bauen'
+    :tool==='select'?'Doppelklick öffnet ein Spielfeld · <kbd>Leertaste</kbd>+Ziehen schiebt die Canvas · <kbd>Ctrl</kbd>+Rad zoomt · <kbd>Alt</kbd>+Ziehen kopiert'
+    :tool==='hand'?'Ziehen schiebt die Canvas · <kbd>V</kbd> zurück zum Auswählen'
+    :tool==='attach'?'Klick auf einen beweglichen Balken · <kbd>Esc</kbd> bricht ab'
+    :'Aufziehen für eigene Grösse, klicken für Standardgrösse · <kbd>Esc</kbd> bricht ab';
+}
+function renderAll(){renderLayers(); renderInspector(); updateTips();}
+
+/* ================= Loop ================= */
+let last=performance.now(), acc=0; const STEP=1/240;
+function frame(now){
+  const dt=Math.min(0.05,(now-last)/1000); last=now;
+  if(camAnim){camAnim.t+=dt/0.32; const t=Math.min(1,camAnim.t), k=1-Math.pow(1-t,3), f=camAnim.from, to=camAnim.to;
+    const z=Math.exp(Math.log(f.z)+(Math.log(to.z)-Math.log(f.z))*k);
+    const {w,h}=cssSize(); const fcx=f.x+w/2/f.z, fcy=f.y+h/2/f.z, tcx=to.x+w/2/to.z, tcy=to.y+h/2/to.z;
+    cam.z=z; cam.x=fcx+(tcx-fcx)*k-w/2/z; cam.y=fcy+(tcy-fcy)*k-h/2/z;
+    if(t>=1){cam=Object.assign({},to); camAnim=null; saveDoc();}}
+  if(mode==='test'&&sim&&!sim.paused){
+    acc+=dt*doc.prefs.timeScale; let n=0;
+    while(acc>=STEP&&n<60){physStep(STEP); acc-=STEP; n++;}
+    if(sim.phase==='fail'){sim.msgT-=dt; if(sim.msgT<=0) newRound(sim);}
+  } else acc=0;
+  draw(); updateHud();
+  requestAnimationFrame(frame);
+}
+
+/* ================= Start ================= */
+loadDoc();
+hist=[snapshot()]; hi=0;
+resize();
+if(doc.view&&isFinite(doc.view.z)) cam=Object.assign({},doc.view); else setTimeout(()=>fitAll(true),0);
+setTool('select'); renderAll();
+requestAnimationFrame(frame);
+})();
+</script>
+
+</body></html>

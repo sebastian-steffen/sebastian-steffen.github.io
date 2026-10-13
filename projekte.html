@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Projekte — Sebastian Steffen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Syne:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body data-page="projekte">
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="index.html"><span class="suit">♠</span>Sebastian Steffen</a>
+    <nav>
+      <a href="projekte.html" aria-current="page">Projekte</a>
+      <a href="ueber.html">Über mich</a>
+      <a href="#kontakt">Kontakt</a>
+    </nav>
+  </header>
+
+  <section class="section" style="padding-top:24px">
+    <div class="section-head">
+      <div>
+        <h1 class="title">Projekte</h1>
+        <p class="lead">Installationen, Spiele, Videos und Animationen. Die grossen Karten sind die, bei denen man selbst mitspielt.</p>
+      </div>
+    </div>
+    <div class="section-head" style="margin-bottom:28px">
+      <div class="chips">
+        <button class="chip" data-filter="alle" aria-pressed="true">Alle<small></small></button>
+        <button class="chip" data-filter="installation" aria-pressed="false">Installationen<small></small></button>
+        <button class="chip" data-filter="video" aria-pressed="false">Videos<small></small></button>
+        <button class="chip" data-filter="animation" aria-pressed="false">Animation<small></small></button>
+        <button class="chip" data-filter="spielbar" aria-pressed="false">Spielbar<small></small></button>
+      </div>
+      <button class="btn" id="draw">Karte ziehen</button>
+    </div>
+    <div class="deck" id="deck"></div>
+  </section>
+
+  <footer id="kontakt">
+    <p class="big">Dein Projekt fehlt noch?<br><a href="mailto:sebastian.steffen@hyperwerk.ch">Schreib mir.</a></p>
+    <p>sebastian.steffen@hyperwerk.ch<br>4057 Basel<br><a href="https://www.instagram.com/seb.ulon/">Instagram</a></p>
+  </footer>
+</div>
+<script src="projekte.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

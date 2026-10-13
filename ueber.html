@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Über mich — Sebastian Steffen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Syne:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body data-page="ueber">
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="index.html"><span class="suit">♠</span>Sebastian Steffen</a>
+    <nav>
+      <a href="projekte.html">Projekte</a>
+      <a href="ueber.html" aria-current="page">Über mich</a>
+      <a href="#kontakt">Kontakt</a>
+    </nav>
+  </header>
+
+  <section class="about">
+    <div class="about-text">
+      <h1 class="about-title">Hoi, ich bin Seb.</h1>
+      <p>Ich arbeite an der Schnittstelle von Technik, Design und interaktiven Medien.</p>
+      <p>Auf Grundlage meiner Ausbildung zum Automatiker habe ich während meines Studiums im Post-Industrial Design am HyperWerk (FHNW) eine Praxis entwickelt, die sich auf spielerische und interaktive Installationen konzentriert.</p>
+      <p>In meiner Arbeit erforsche ich, wie Menschen über Objekte, Materialien und technologische Systeme miteinander in Beziehung treten. Mit digitaler Fertigung, Elektronik und experimentellem Prototyping gestalte ich Installationen, die Besuchende aktiv erleben, statt sie nur zu betrachten.</p>
+      <p>Im Zentrum steht das Spiel als sozialer Rahmen: Auf einem gemeinsamen Spielfeld begegnen sich Menschen unabhängig von Rolle oder Herkunft auf Augenhöhe.</p>
+    </div>
+    <div class="table about-table" id="table">
+      <div class="pcard" tabindex="0" aria-label="Foto-Karte, zum Umdrehen klicken" data-x="-70" data-y="10" data-r="-7" style="z-index:1">
+        <div class="inner">
+          <div class="face"><span class="idx tl">B<b>♦</b></span><div class="photo"><img src="images/pic11.jpg" alt="Seb lacht, Schwarzweissfoto"></div><div class="name">In der Werkstatt</div><span class="idx br">B<b>♦</b></span></div>
+          <div class="face back"><div class="pattern"><span>Automatiker, Interaction Designer und Videomacher.</span></div></div>
+        </div>
+      </div>
+      <div class="pcard" tabindex="0" aria-label="Porträt-Karte, zum Umdrehen klicken" data-x="70" data-y="-10" data-r="6" style="z-index:2">
+        <div class="inner">
+          <div class="face"><span class="idx tl">A<b>♥</b></span><div class="photo"><img src="images/pic13.png" alt="Porträt von Seb am Meer"></div><div class="name">Sebastian Steffen</div><span class="idx br">A<b>♥</b></span></div>
+          <div class="face back"><div class="pattern"><span>Basel.<br><a href="mailto:sebastian.steffen@hyperwerk.ch">Schreib mir</a></span></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="about-grid">
+  <section class="about-block">
+    <h2 class="about-h2">Mein Blatt</h2>
+    <div class="hand">
+      <button class="flip" type="button" aria-pressed="false" aria-label="Karte Automatiker umdrehen" style="--rot:-3deg">
+        <span class="inner">
+          <span class="face front"><span class="idx tl">A<b>♥</b></span><span class="rank-big">A</span><span class="ftitle">Automatiker</span><span class="fsub">Ausbildung</span><span class="idx br">A<b>♥</b></span></span>
+          <span class="face back"><span class="pattern"><span>Die Ausbildung, mit der alles anfängt: Mechanik, Elektronik und Steuerungen verstehen und selber bauen.</span></span></span>
+        </span>
+      </button>
+      <button class="flip" type="button" aria-pressed="false" aria-label="Karte HyperWerk umdrehen" style="--rot:1.5deg">
+        <span class="inner">
+          <span class="face front"><span class="idx tl">K<b>♠</b></span><span class="rank-big">K</span><span class="ftitle">HyperWerk</span><span class="fsub">Studium, FHNW</span><span class="idx br">K<b>♠</b></span></span>
+          <span class="face back"><span class="pattern"><span>Studium im Post-Industrial Design. Hier wurde das Spiel zum Zentrum meiner Praxis.</span></span></span>
+        </span>
+      </button>
+      <button class="flip" type="button" aria-pressed="false" aria-label="Karte Escape Room umdrehen" style="--rot:-1.5deg">
+        <span class="inner">
+          <span class="face front"><span class="idx tl">D<b>♦</b></span><span class="rank-big">D</span><span class="ftitle">Escape Room</span><span class="fsub">Nebenbei</span><span class="idx br">D<b>♦</b></span></span>
+          <span class="face back"><span class="pattern"><span>Ich entwickle Rätsel und Spielmechaniken. Mich interessiert der Moment zwischen Unter- und Überforderung, in dem «Flow» entsteht.</span></span></span>
+        </span>
+      </button>
+    </div>
+  </section>
+
+  <section class="about-block">
+    <h2 class="about-h2">Werkzeug</h2>
+    <ul class="tools" id="tools"></ul>
+  </section>
+  </div>
+
+  <footer id="kontakt">
+    <p class="big">Lust auf eine Partie?<br><a href="mailto:sebastian.steffen@hyperwerk.ch">Schreib mir.</a></p>
+    <p>sebastian.steffen@hyperwerk.ch<br>4057 Basel<br><a href="https://www.instagram.com/seb.ulon/">Instagram</a></p>
+  </footer>
+</div>
+<script src="projekte.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
