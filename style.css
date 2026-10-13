@@ -441,3 +441,33 @@ footer.kontakt-ping .big { animation: kontaktLift 1.6s ease .35s; }
 
 /* Joker: Ecken-Buchstaben wieder in die Ecken */
 .joker .face > .idx { position: absolute; }
+
+/* ===== Handy-Korrekturen ===== */
+/* Spieltisch: senkrecht scrollen bleibt möglich, Karten lassen sich trotzdem seitlich schieben und antippen */
+@media (pointer: coarse), (max-width: 900px) {
+  .table, .table .pcard { touch-action: pan-y; }
+}
+/* Umdrehen: Vorderseite sicher ausblenden (Safari ignoriert sonst backface-visibility bei Ebenen) */
+.flip .front, .pcard .face:not(.back) { transition: visibility 0s linear .3s; }
+.flip .back, .pcard .back { visibility: hidden; transition: visibility 0s linear .3s; }
+.flip.flipped .front, .pcard.flipped .face:not(.back) { visibility: hidden; }
+.flip.flipped .back, .pcard.flipped .back { visibility: visible; }
+/* Kleine Tischkarten: Eckzeichen kleiner, eng in die Ecke, Name mit Abstand */
+@media (max-width: 620px) {
+  .pcard .idx { font-size: 12px; }
+  .pcard .idx b { font-size: 10px; }
+  .pcard .idx.tl { top: 5px; left: 6px; }
+  .pcard .idx.br { bottom: 5px; right: 6px; }
+  .pcard .face .name { padding-inline: 14px; font-size: 14px; }
+}
+/* Karussell-Balken (nur Handy) */
+.rail-bar { display: none; }
+@media (max-width: 620px) {
+  .rail-bar { display: flex; align-items: center; gap: 12px; margin-top: 14px; }
+  .rail-track { position: relative; flex: 1; height: 6px; border-radius: 99px; background: rgba(244,236,219,.14); overflow: hidden; }
+  .rail-thumb { position: absolute; top: 0; bottom: 0; border-radius: 99px; background: var(--gold); transition: left .15s; }
+  .rail-mini { flex: none; width: 40px; height: 40px; border-radius: 50%; border: 1px solid rgba(244,236,219,.35); background: none; color: var(--on-felt); font-size: 18px; }
+  .rail-mini:disabled { opacity: .25; }
+  .more.rail { scrollbar-width: none; }
+  .more.rail::-webkit-scrollbar { display: none; }
+}

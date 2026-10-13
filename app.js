@@ -272,9 +272,15 @@
   /* Karussell: immer nur ganze Karten; Pfeile, Mausrad und gedrücktes Mausrad blättern */
   function rail(el, prev, next) {
     var GAP = 20, MIN = 200;
+    /* eigener Balken: Handys blenden die normale Scrollleiste aus */
+    var bar = document.createElement('div'); bar.className = 'rail-bar';
+    bar.innerHTML = '<button class="rail-mini" type="button" aria-label="Zurück">←</button><span class="rail-track"><span class="rail-thumb"></span></span><button class="rail-mini" type="button" aria-label="Weiter">→</button>';
+    el.parentNode.parentNode.insertBefore(bar, el.parentNode.nextSibling);
+    var thumb = bar.querySelector('.rail-thumb'), mini = bar.querySelectorAll('.rail-mini');
     function layout() {
       var w = el.clientWidth;
-      var n = Math.max(1, Math.floor((w + GAP) / (MIN + GAP)));
+      var gapMin = innerWidth <= 620 ? 140 : MIN;
+      var n = Math.max(1, Math.floor((w + GAP) / (gapMin + GAP)));
       el.style.setProperty('--cw', ((w - GAP * (n - 1)) / n) + 'px');
       sync();
     }
@@ -282,6 +288,8 @@
     function go(dir) { el.scrollBy({ left: dir * step(), behavior: 'smooth' }); }
     prev.addEventListener('click', function () { go(-1); });
     next.addEventListener('click', function () { go(1); });
+    mini[0].addEventListener('click', function () { go(-1); });
+    mini[1].addEventListener('click', function () { go(1); });
 
     /* Mausrad drehen: eine Karte pro Raste */
     var lock = 0;
@@ -318,8 +326,11 @@
     });
 
     function sync() {
-      prev.disabled = el.scrollLeft <= 2;
-      next.disabled = el.scrollLeft >= el.scrollWidth - el.clientWidth - 2;
+      prev.disabled = mini[0].disabled = el.scrollLeft <= 2;
+      next.disabled = mini[1].disabled = el.scrollLeft >= el.scrollWidth - el.clientWidth - 2;
+      var vis = el.clientWidth / Math.max(el.scrollWidth, 1), max = el.scrollWidth - el.clientWidth;
+      thumb.style.width = (vis * 100) + '%';
+      thumb.style.left = (max > 0 ? (el.scrollLeft / max) * (1 - vis) * 100 : 0) + '%';
     }
     el.addEventListener('scroll', sync, { passive: true });
     window.addEventListener('resize', layout);
