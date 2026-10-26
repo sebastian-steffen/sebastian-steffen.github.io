@@ -365,12 +365,13 @@ window.PROJEKTE = [
             "datei": "bebbisagg-original.bin",
             "name": "Der Scan",
             "text": "Ein echter Bebbi-Sagg, mit Polycam gescannt",
-            "farbe": "#2f6cc0"
+            "farbe": "#2f6cc0",
+            "textur": "bebbisagg-original.jpg"
           },
           {
             "datei": "bebbisagg-druck.bin",
             "name": "Der Druck",
-            "text": "Nachmodelliert, mit Aufdruck, bereit für den Drucker",
+            "text": "Nachmodelliert, blau mit weissem Aufdruck, bereit für den Drucker",
             "farbe": "#3a95e6",
             "flach": true
           }

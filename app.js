@@ -380,7 +380,7 @@
         }).join('') + '</div>';
       } else if (g.typ === 'modelle') {
         inner = '<div class="gal-grid n' + g.modelle.length + '">' + g.modelle.map(function (m) {
-          return '<figure class="model"><div class="model-box"><canvas data-src="' + MOD + m.datei + '" data-col="' + m.farbe + '" data-flat="' + (m.flach ? 1 : 0) + '" aria-label="3D-Modell ' + esc(m.name) + '"></canvas></div>' +
+          return '<figure class="model"><div class="model-box"><canvas data-src="' + MOD + m.datei + '"' + (m.textur ? ' data-tex="' + MOD + m.textur + '"' : '') + ' data-col="' + m.farbe + '" data-flat="' + (m.flach ? 1 : 0) + '" aria-label="3D-Modell ' + esc(m.name) + '"></canvas></div>' +
             '<figcaption><b>' + esc(m.name) + '</b>' + (m.text ? '<br>' + esc(m.text) : '') + '</figcaption></figure>';
         }).join('') + '</div>';
       }
@@ -419,70 +419,99 @@
     sync();
   }
 
-  /* Kleiner eigener 3D-Betrachter (WebGL, ohne Bibliothek). Dreht von selbst, ziehen dreht von Hand. */
+  /* Kleiner eigener 3D-Betrachter (WebGL, ohne Bibliothek). Dreht von selbst, ziehen dreht von Hand.
+     Zeigt Farben: entweder ein Farbbild (Scan) oder eine Farbe pro Bauteil (Druck). */
   function viewer(canvas) {
     var gl = canvas.getContext('webgl', { antialias: true, alpha: true });
     if (!gl) { canvas.parentNode.classList.add('no-gl'); return; }
-    var VS = 'attribute vec3 p;attribute vec3 n;uniform mat4 m;uniform mat4 pr;varying vec3 vn;varying vec3 vp;' +
-      'void main(){vec4 w=m*vec4(p,1.);vn=mat3(m)*n;vp=w.xyz;gl_Position=pr*w;}';
-    var FS = 'precision mediump float;varying vec3 vn;varying vec3 vp;uniform vec3 col;' +
+    var VS = 'attribute vec3 p;attribute vec3 n;attribute vec3 c;attribute vec2 t;uniform mat4 m;uniform mat4 pr;' +
+      'varying vec3 vn;varying vec3 vp;varying vec3 vc;varying vec2 vt;' +
+      'void main(){vec4 w=m*vec4(p,1.);vn=mat3(m)*n;vp=w.xyz;vc=c;vt=t;gl_Position=pr*w;}';
+    var FS = 'precision mediump float;varying vec3 vn;varying vec3 vp;varying vec3 vc;varying vec2 vt;' +
+      'uniform sampler2D tex;uniform float useTex;uniform float amb;uniform float dif;' +
       'void main(){vec3 N=normalize(vn);if(!gl_FrontFacing)N=-N;vec3 L=normalize(vec3(.45,.7,.9));vec3 V=normalize(-vp);' +
-      'float d=max(dot(N,L),0.);float s=pow(max(dot(N,normalize(L+V)),0.),36.)*.3;float r=pow(1.-max(dot(N,V),0.),2.)*.22;' +
-      'gl_FragColor=vec4(col*(.3+.78*d)+vec3(s)+r*vec3(.95,.9,.8),1.);}';
+      'float d=max(dot(N,L),0.);float s=pow(max(dot(N,normalize(L+V)),0.),36.)*.22;float r=pow(1.-max(dot(N,V),0.),2.)*.18;' +
+      'vec3 b=useTex>.5?texture2D(tex,vt).rgb:vc;' +
+      'gl_FragColor=vec4(b*(amb+dif*d)+vec3(s)+r*vec3(.95,.9,.8),1.);}';
     function sh(type, src) { var s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); return s; }
     var prog = gl.createProgram();
     gl.attachShader(prog, sh(gl.VERTEX_SHADER, VS)); gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, FS));
     gl.linkProgram(prog); gl.useProgram(prog);
-    var aP = gl.getAttribLocation(prog, 'p'), aN = gl.getAttribLocation(prog, 'n');
-    var uM = gl.getUniformLocation(prog, 'm'), uPr = gl.getUniformLocation(prog, 'pr'), uC = gl.getUniformLocation(prog, 'col');
-    var hex = canvas.dataset.col.replace('#', '');
-    gl.uniform3f(uC, parseInt(hex.slice(0, 2), 16) / 255, parseInt(hex.slice(2, 4), 16) / 255, parseInt(hex.slice(4, 6), 16) / 255);
+    var loc = {}; ['p', 'n', 'c', 't'].forEach(function (k) { loc[k] = gl.getAttribLocation(prog, k); });
+    var uM = gl.getUniformLocation(prog, 'm'), uPr = gl.getUniformLocation(prog, 'pr');
     gl.enable(gl.DEPTH_TEST);
 
-    var count = 0, indexed = false, ready = false;
+    function buffer(name, data, size) {
+      if (loc[name] < 0) return;
+      var b = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, b); gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
+      gl.enableVertexAttribArray(loc[name]); gl.vertexAttribPointer(loc[name], size, gl.FLOAT, false, 0, 0);
+    }
+    var count = 0, meshReady = false, texReady = true;
+    var texSrc = canvas.dataset.tex;
+    gl.uniform1f(gl.getUniformLocation(prog, 'useTex'), texSrc ? 1 : 0);
+    gl.uniform1f(gl.getUniformLocation(prog, 'amb'), texSrc ? .62 : .34);
+    gl.uniform1f(gl.getUniformLocation(prog, 'dif'), texSrc ? .48 : .74);
+    if (texSrc) {
+      texReady = false;
+      var img = new Image();
+      img.onload = function () {
+        var tx = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, tx);
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, img);
+        gl.generateMipmap(gl.TEXTURE_2D);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+        gl.uniform1i(gl.getUniformLocation(prog, 'tex'), 0);
+        texReady = true; check();
+      };
+      img.src = texSrc;
+    }
+    function check() { if (meshReady && texReady) canvas.parentNode.classList.add('ready'); }
+
     fetch(canvas.dataset.src).then(function (r) { return r.arrayBuffer(); }).then(function (buf) {
-      var dv = new DataView(buf), nv = dv.getUint32(4, true), nt = dv.getUint32(8, true);
-      var q = new Int16Array(buf, 12, nv * 3), idx = new Uint16Array(buf, 12 + nv * 6, nt * 3);
-      var pos = new Float32Array(nv * 3), i, a, b, c;
-      for (i = 0; i < nv * 3; i++) pos[i] = q[i] / 32767;
+      var dv = new DataView(buf), nv = dv.getUint32(4, true), nt = dv.getUint32(8, true), fl = dv.getUint32(12, true);
+      var off = 16, idx = fl & 4 ? new Uint32Array(buf, off, nt * 3) : new Uint16Array(buf, off, nt * 3);
+      off += nt * 3 * (fl & 4 ? 4 : 2);
+      var q = new Int16Array(buf, off, nv * 3); off += nv * 6;
+      var uv = null, col = null;
+      if (fl & 2) { uv = new Uint16Array(buf, off, nv * 2); off += nv * 4; }
+      if (fl & 1) { col = new Uint8Array(buf, off, nv * 3); }
+      var flat = canvas.dataset.flat === '1', i, k;
       function fn(a, b, c) {
-        var ux = pos[b * 3] - pos[a * 3], uy = pos[b * 3 + 1] - pos[a * 3 + 1], uz = pos[b * 3 + 2] - pos[a * 3 + 2];
-        var vx = pos[c * 3] - pos[a * 3], vy = pos[c * 3 + 1] - pos[a * 3 + 1], vz = pos[c * 3 + 2] - pos[a * 3 + 2];
+        var ux = q[b * 3] - q[a * 3], uy = q[b * 3 + 1] - q[a * 3 + 1], uz = q[b * 3 + 2] - q[a * 3 + 2];
+        var vx = q[c * 3] - q[a * 3], vy = q[c * 3 + 1] - q[a * 3 + 1], vz = q[c * 3 + 2] - q[a * 3 + 2];
         return [uy * vz - uz * vy, uz * vx - ux * vz, ux * vy - uy * vx];
       }
-      var P2, N2;
-      if (canvas.dataset.flat === '1') {
-        /* Druck: kantige Flächen sichtbar lassen */
-        P2 = new Float32Array(nt * 9); N2 = new Float32Array(nt * 9);
+      /* weiche Schattierung: Normalen pro Ort sammeln (auch über Nähte im Farbbild hinweg) */
+      var sm = null, slot = null;
+      if (!flat) {
+        var map = {}, nk = 0; slot = new Uint32Array(nv);
+        for (i = 0; i < nv; i++) { var key = q[i * 3] + ',' + q[i * 3 + 1] + ',' + q[i * 3 + 2]; if (!(key in map)) map[key] = nk++; slot[i] = map[key]; }
+        sm = new Float32Array(nk * 3);
         for (i = 0; i < nt; i++) {
-          a = idx[i * 3]; b = idx[i * 3 + 1]; c = idx[i * 3 + 2];
-          var f = fn(a, b, c), l = Math.hypot(f[0], f[1], f[2]) || 1;
-          [a, b, c].forEach(function (v, k) {
-            P2.set(pos.subarray(v * 3, v * 3 + 3), i * 9 + k * 3);
-            N2.set([f[0] / l, f[1] / l, f[2] / l], i * 9 + k * 3);
-          });
+          var g = fn(idx[i * 3], idx[i * 3 + 1], idx[i * 3 + 2]);
+          for (k = 0; k < 3; k++) { var s = slot[idx[i * 3 + k]] * 3; sm[s] += g[0]; sm[s + 1] += g[1]; sm[s + 2] += g[2]; }
         }
-        count = nt * 3;
-      } else {
-        /* Scan: weich schattiert */
-        P2 = pos; N2 = new Float32Array(nv * 3);
-        for (i = 0; i < nt; i++) {
-          a = idx[i * 3]; b = idx[i * 3 + 1]; c = idx[i * 3 + 2];
-          var g = fn(a, b, c);
-          [a, b, c].forEach(function (v) { N2[v * 3] += g[0]; N2[v * 3 + 1] += g[1]; N2[v * 3 + 2] += g[2]; });
-        }
-        for (i = 0; i < nv; i++) { var L = Math.hypot(N2[i * 3], N2[i * 3 + 1], N2[i * 3 + 2]) || 1; N2[i * 3] /= L; N2[i * 3 + 1] /= L; N2[i * 3 + 2] /= L; }
-        var ib = gl.createBuffer(); gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ib); gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, idx, gl.STATIC_DRAW);
-        count = nt * 3; indexed = true;
       }
-      var pb = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, pb); gl.bufferData(gl.ARRAY_BUFFER, P2, gl.STATIC_DRAW);
-      gl.enableVertexAttribArray(aP); gl.vertexAttribPointer(aP, 3, gl.FLOAT, false, 0, 0);
-      var nb = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, nb); gl.bufferData(gl.ARRAY_BUFFER, N2, gl.STATIC_DRAW);
-      gl.enableVertexAttribArray(aN); gl.vertexAttribPointer(aN, 3, gl.FLOAT, false, 0, 0);
-      ready = true; canvas.parentNode.classList.add('ready');
+      var P = new Float32Array(nt * 9), N = new Float32Array(nt * 9), C = new Float32Array(nt * 9), T = new Float32Array(nt * 6);
+      var base = (canvas.dataset.col || '#3a95e6').replace('#', '');
+      var br = parseInt(base.slice(0, 2), 16) / 255, bg = parseInt(base.slice(2, 4), 16) / 255, bb = parseInt(base.slice(4, 6), 16) / 255;
+      for (i = 0; i < nt; i++) {
+        var f = flat ? fn(idx[i * 3], idx[i * 3 + 1], idx[i * 3 + 2]) : null;
+        for (k = 0; k < 3; k++) {
+          var v = idx[i * 3 + k], o = i * 9 + k * 3, nx, ny, nz;
+          P[o] = q[v * 3] / 32767; P[o + 1] = q[v * 3 + 1] / 32767; P[o + 2] = q[v * 3 + 2] / 32767;
+          if (flat) { nx = f[0]; ny = f[1]; nz = f[2]; } else { var z = slot[v] * 3; nx = sm[z]; ny = sm[z + 1]; nz = sm[z + 2]; }
+          var l = Math.hypot(nx, ny, nz) || 1; N[o] = nx / l; N[o + 1] = ny / l; N[o + 2] = nz / l;
+          if (col) { C[o] = col[v * 3] / 255; C[o + 1] = col[v * 3 + 1] / 255; C[o + 2] = col[v * 3 + 2] / 255; }
+          else { C[o] = br; C[o + 1] = bg; C[o + 2] = bb; }
+          if (uv) { T[i * 6 + k * 2] = uv[v * 2] / 65535; T[i * 6 + k * 2 + 1] = uv[v * 2 + 1] / 65535; }
+        }
+      }
+      buffer('p', P, 3); buffer('n', N, 3); buffer('c', C, 3); buffer('t', T, 2);
+      count = nt * 3; meshReady = true; check();
     });
 
-    /* Drehen: von selbst, und mit Ziehen (waagrecht) von Hand */
+    /* Drehen: von selbst, und mit Ziehen von Hand */
     var angle = -0.5, tilt = 0.18, drag = null, idle = 0, last = 0, visible = true;
     canvas.addEventListener('pointerdown', function (e) {
       drag = { x: e.clientX, y: e.clientY, a: angle, t: tilt }; canvas.setPointerCapture(e.pointerId); canvas.classList.add('grab');
@@ -504,7 +533,7 @@
     function frame(t) {
       requestAnimationFrame(frame);
       var dt = last ? Math.min(0.05, (t - last) / 1000) : 0; last = t;
-      if (!ready || !visible) return;
+      if (!meshReady || !texReady || !visible) return;
       if (!drag && t - idle > 1200) angle += dt * 0.55;
       var dpr = Math.min(window.devicePixelRatio || 1, 2), w = Math.round(canvas.clientWidth * dpr), h = Math.round(canvas.clientHeight * dpr);
       if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
@@ -515,7 +544,7 @@
       var ry = new Float32Array([ca, 0, -sa, 0, 0, 1, 0, 0, sa, 0, ca, 0, 0, 0, 0, 1]);
       var rx = new Float32Array([1, 0, 0, 0, 0, ct, st, 0, 0, -st, ct, 0, 0, 0, -3.6, 1]);
       gl.uniformMatrix4fv(uM, false, mul(rx, ry));
-      if (indexed) gl.drawElements(gl.TRIANGLES, count, gl.UNSIGNED_SHORT, 0); else gl.drawArrays(gl.TRIANGLES, 0, count);
+      gl.drawArrays(gl.TRIANGLES, 0, count);
     }
     requestAnimationFrame(frame);
   }
