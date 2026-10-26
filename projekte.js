@@ -270,12 +270,12 @@ window.PROJEKTE = [
         "titel": "Die Lampe",
         "bilder": [
           {
-            "src": "3d/baumlampe-1.jpg",
-            "alt": "Baumlampe von oben, die Druckringe leuchten"
-          },
-          {
             "src": "3d/baumlampe-2.jpg",
             "alt": "Baumlampe leuchtet nachts im Garten"
+          },
+          {
+            "src": "3d/baumlampe-1.jpg",
+            "alt": "Baumlampe von oben, die Druckringe leuchten"
           },
           {
             "src": "3d/baumlampe-3.jpg",
@@ -323,12 +323,13 @@ window.PROJEKTE = [
         "titel": "Aus vielen Teilen",
         "bilder": [
           {
-            "src": "3d/pyramide-3.jpg",
-            "alt": "Die Pyramide von oben"
+            "src": "3d/pyramide-luft.jpg",
+            "alt": "Die echte Pyramide aus der Vogelperspektive"
           },
           {
-            "src": "3d/pyramide-4.jpg",
-            "alt": "Rahmen und eingesetztes Glasfeld als einzelne Teile"
+            "src": "3d/pyramide-3.jpg",
+            "hover": "3d/pyramide-4.jpg",
+            "alt": "Die gedruckte Pyramide, zusammengesetzt und in Teilen"
           }
         ]
       }

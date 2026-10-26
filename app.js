@@ -373,8 +373,9 @@
         '</div>';
       } else if (g.typ === 'bilder') {
         inner = '<div class="gal-grid n' + g.bilder.length + (g.breit ? ' breit' : '') + '">' + g.bilder.map(function (b, k) {
-          return '<figure><button class="gal-img' + (b.frei ? ' frei' : '') + '" type="button" data-g="' + gi + '" data-k="' + k + '" aria-label="' + esc(b.alt) + ' gross anzeigen">' +
-            '<img src="' + IMG + b.src + '" alt="' + esc(b.alt) + '" loading="lazy"></button>' +
+          return '<figure><button class="gal-img' + (b.frei ? ' frei' : '') + (b.hover ? ' swap' : '') + '" type="button" data-g="' + gi + '" data-k="' + k + '" aria-label="' + esc(b.alt) + ' gross anzeigen">' +
+            '<img src="' + IMG + b.src + '" alt="' + esc(b.alt) + '" loading="lazy">' +
+            (b.hover ? '<img class="alt" src="' + IMG + b.hover + '" alt="" loading="lazy">' : '') + '</button>' +
             (b.text ? '<figcaption>' + esc(b.text) + '</figcaption>' : '') + '</figure>';
         }).join('') + '</div>';
       } else if (g.typ === 'modelle') {
@@ -389,7 +390,10 @@
 
     /* Klick auf ein Bild: Grossansicht, blättern innerhalb des Blocks */
     box.querySelectorAll('.gal-img, .slide').forEach(function (b) {
+      b.addEventListener('pointerdown', function (e) { b._touch = e.pointerType === 'touch'; });
       b.addEventListener('click', function () {
+        /* Touch: Antippen wechselt das Bild, statt es gross zu öffnen */
+        if (b.classList.contains('swap') && b._touch) { b.classList.toggle('on'); return; }
         var g = p.galerie[+b.dataset.g];
         lightbox(g.bilder.map(function (x) { return { src: IMG + x.src, alt: x.alt }; }), +b.dataset.k);
       });
@@ -552,6 +556,14 @@
       '</div>';
     if (p.postkarten) renderPostkarten(p);
     if (p.galerie) renderGalerie(p);
+    var h1 = d.querySelector('h1');
+    function fitTitle() {
+      h1.style.fontSize = '';
+      var fs = parseFloat(getComputedStyle(h1).fontSize);
+      while (h1.scrollWidth > h1.clientWidth + 1 && fs > 22) { fs -= 2; h1.style.fontSize = fs + 'px'; }
+    }
+    fitTitle(); window.addEventListener('resize', fitTitle);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitTitle);
     var mainImg = document.getElementById('mainImg');
     if (mainImg) mainImg.addEventListener('click', function () { lightbox([{ src: cover(p), alt: p.titel }], 0); });
     /* Spiel direkt im Portfolio: erst beim Klick laden (kein Ton, keine Last vorher) */
