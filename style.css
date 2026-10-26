@@ -540,6 +540,8 @@ footer.kontakt-ping .big { animation: kontaktLift 1.6s ease .35s; }
 /* Bild mit Wechselbild */
 .gal-img.swap { position: relative; }
 .gal-img.swap .alt { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .35s ease; }
-.gal-img.swap:hover .alt, .gal-img.swap.on .alt { opacity: 1; }
+.gal-img.swap.on .alt { opacity: 1; }
+/* nur mit Maus: darüberfahren wechselt (Handy würde sonst festhalten) */
+@media (hover: hover) { .gal-img.swap:hover .alt { opacity: 1; } }
 /* Knöpfe unter dem Projekt */
 .head-actions { display: flex; gap: 12px; flex-wrap: wrap; }
