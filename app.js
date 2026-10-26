@@ -30,7 +30,7 @@
   function yr(p) { return '’' + String(p.jahr).slice(2); }
   var ORDER = P.filter(function (p) { return p.highlight; }).concat(P.filter(function (p) { return !p.highlight; }));
   function nr(p) { return String(ORDER.indexOf(p) + 1); }
-  var KIND = { video: ['Video', 'var(--red)'], animation: ['Animation', 'var(--mint)'], installation: ['Installation', 'var(--gold)'], spiel: ['Spiel', 'var(--violet)'] };
+  var KIND = { video: ['Video', 'var(--red)'], animation: ['Animation', 'var(--mint)'], installation: ['Installation', 'var(--gold)'], spiel: ['Spiel', 'var(--violet)'], '3d': ['3D-Druck', 'var(--sky)'] };
   function kind(p) { return (KIND[p.kategorie] || KIND.installation)[0]; }
   function kindColor(p) { return (KIND[p.kategorie] || KIND.installation)[1]; }
   var IMG = 'images/', VID = 'video/web/';
@@ -47,7 +47,7 @@
       '<div class="face">' +
         '<span class="idx tl">' + yr(p) + '</span>' +
         (p.spielen ? '<span class="playable">Spielbar</span>' : '') +
-        '<div class="photo' + (p.bild && !p.spielen ? ' whole' : '') + '"><img class="' + (p.format === 'hoch' && !p.bild ? 'hoch' : '') + '" src="' + cover(p) + '" alt="" loading="lazy"></div>' +
+        '<div class="photo' + (p.bild && !p.spielen && p.bildGanz !== false ? ' whole' : '') + '"><img class="' + (p.format === 'hoch' && !p.bild ? 'hoch' : '') + '" src="' + cover(p) + '" alt="" loading="lazy"></div>' +
         '<div class="name">' + esc(short(p)) + '</div>' +
         '<div class="sub">' + esc(p.tagline) + '</div>' +
         (big ? '<p class="kurz">' + esc(p.kurz) + '</p>' : '') +
@@ -155,7 +155,7 @@
     html.push('<a class="card joker" href="mailto:sebastian.steffen@hyperwerk.ch"><div class="face"><span class="idx tl">J</span><p class="big-q">Dein<br>Projekt?</p><p class="sub">Schreib mir</p><span class="idx br">J</span></div></a>');
     fill(deck, html.join(''));
 
-    var counts = { alle: P.length, installation: 0, video: 0, animation: 0, spiel: 0, spielbar: 0 };
+    var counts = { alle: P.length, installation: 0, video: 0, animation: 0, spiel: 0, '3d': 0, spielbar: 0 };
     P.forEach(function (p) { counts[p.kategorie]++; if (p.spielen) counts.spielbar++; });
     document.querySelectorAll('.chip[data-filter]').forEach(function (c) {
       c.querySelector('small').textContent = counts[c.dataset.filter];
@@ -353,6 +353,169 @@
     layout(); setTimeout(layout, 300);
   }
 
+
+  /* ---------- Galerie: Slideshow, Bildreihen, 3D-Modelle (Feld "galerie" in projekte.js) ---------- */
+  var MOD = 'modelle/';
+  function renderGalerie(p) {
+    var box = document.getElementById('extra'); if (!box) return;
+    var html = p.galerie.map(function (g, gi) {
+      var head = g.titel ? '<div class="section-head"><div><h2 class="h2">' + esc(g.titel) + '</h2>' +
+        (g.text ? '<p class="lead">' + esc(g.text) + '</p>' : '') + '</div></div>' : '';
+      var inner = '';
+      if (g.typ === 'slides') {
+        inner = '<div class="slides" data-g="' + gi + '">' +
+          '<button class="rail-btn slide-nav prev" type="button" aria-label="Vorheriges Bild">←</button>' +
+          '<div class="slide-track">' + g.bilder.map(function (b, k) {
+            return '<button class="slide" type="button" data-g="' + gi + '" data-k="' + k + '" aria-label="' + esc(b.alt) + ' gross anzeigen"><img src="' + IMG + b.src + '" alt="' + esc(b.alt) + '" loading="lazy"></button>';
+          }).join('') + '</div>' +
+          '<button class="rail-btn slide-nav next" type="button" aria-label="Nächstes Bild">→</button>' +
+          '<div class="slide-dots">' + g.bilder.map(function (b, k) { return '<span' + (k ? '' : ' class="on"') + '></span>'; }).join('') + '</div>' +
+        '</div>';
+      } else if (g.typ === 'bilder') {
+        inner = '<div class="gal-grid n' + g.bilder.length + (g.breit ? ' breit' : '') + '">' + g.bilder.map(function (b, k) {
+          return '<figure><button class="gal-img' + (b.frei ? ' frei' : '') + '" type="button" data-g="' + gi + '" data-k="' + k + '" aria-label="' + esc(b.alt) + ' gross anzeigen">' +
+            '<img src="' + IMG + b.src + '" alt="' + esc(b.alt) + '" loading="lazy"></button>' +
+            (b.text ? '<figcaption>' + esc(b.text) + '</figcaption>' : '') + '</figure>';
+        }).join('') + '</div>';
+      } else if (g.typ === 'modelle') {
+        inner = '<div class="gal-grid n' + g.modelle.length + '">' + g.modelle.map(function (m) {
+          return '<figure class="model"><div class="model-box"><canvas data-src="' + MOD + m.datei + '" data-col="' + m.farbe + '" data-flat="' + (m.flach ? 1 : 0) + '" aria-label="3D-Modell ' + esc(m.name) + '"></canvas></div>' +
+            '<figcaption><b>' + esc(m.name) + '</b>' + (m.text ? '<br>' + esc(m.text) : '') + '</figcaption></figure>';
+        }).join('') + '</div>';
+      }
+      return '<section class="section gal">' + head + inner + '</section>';
+    }).join('');
+    box.insertAdjacentHTML('beforeend', html);
+
+    /* Klick auf ein Bild: Grossansicht, blättern innerhalb des Blocks */
+    box.querySelectorAll('.gal-img, .slide').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var g = p.galerie[+b.dataset.g];
+        lightbox(g.bilder.map(function (x) { return { src: IMG + x.src, alt: x.alt }; }), +b.dataset.k);
+      });
+    });
+    box.querySelectorAll('.slides').forEach(slideshow);
+    box.querySelectorAll('.model canvas').forEach(viewer);
+  }
+
+  function slideshow(s) {
+    var track = s.querySelector('.slide-track'), dots = s.querySelectorAll('.slide-dots span');
+    var prev = s.querySelector('.prev'), next = s.querySelector('.next');
+    function at() { return Math.round(track.scrollLeft / Math.max(track.clientWidth, 1)); }
+    function go(i) { i = Math.max(0, Math.min(dots.length - 1, i)); track.scrollTo({ left: i * track.clientWidth, behavior: 'smooth' }); }
+    function sync() {
+      var i = at();
+      dots.forEach(function (d, k) { d.classList.toggle('on', k === i); });
+      prev.disabled = i <= 0; next.disabled = i >= dots.length - 1;
+    }
+    prev.addEventListener('click', function () { go(at() - 1); });
+    next.addEventListener('click', function () { go(at() + 1); });
+    dots.forEach(function (d, k) { d.addEventListener('click', function () { go(k); }); });
+    track.addEventListener('scroll', function () { requestAnimationFrame(sync); }, { passive: true });
+    sync();
+  }
+
+  /* Kleiner eigener 3D-Betrachter (WebGL, ohne Bibliothek). Dreht von selbst, ziehen dreht von Hand. */
+  function viewer(canvas) {
+    var gl = canvas.getContext('webgl', { antialias: true, alpha: true });
+    if (!gl) { canvas.parentNode.classList.add('no-gl'); return; }
+    var VS = 'attribute vec3 p;attribute vec3 n;uniform mat4 m;uniform mat4 pr;varying vec3 vn;varying vec3 vp;' +
+      'void main(){vec4 w=m*vec4(p,1.);vn=mat3(m)*n;vp=w.xyz;gl_Position=pr*w;}';
+    var FS = 'precision mediump float;varying vec3 vn;varying vec3 vp;uniform vec3 col;' +
+      'void main(){vec3 N=normalize(vn);if(!gl_FrontFacing)N=-N;vec3 L=normalize(vec3(.45,.7,.9));vec3 V=normalize(-vp);' +
+      'float d=max(dot(N,L),0.);float s=pow(max(dot(N,normalize(L+V)),0.),36.)*.3;float r=pow(1.-max(dot(N,V),0.),2.)*.22;' +
+      'gl_FragColor=vec4(col*(.3+.78*d)+vec3(s)+r*vec3(.95,.9,.8),1.);}';
+    function sh(type, src) { var s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); return s; }
+    var prog = gl.createProgram();
+    gl.attachShader(prog, sh(gl.VERTEX_SHADER, VS)); gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, FS));
+    gl.linkProgram(prog); gl.useProgram(prog);
+    var aP = gl.getAttribLocation(prog, 'p'), aN = gl.getAttribLocation(prog, 'n');
+    var uM = gl.getUniformLocation(prog, 'm'), uPr = gl.getUniformLocation(prog, 'pr'), uC = gl.getUniformLocation(prog, 'col');
+    var hex = canvas.dataset.col.replace('#', '');
+    gl.uniform3f(uC, parseInt(hex.slice(0, 2), 16) / 255, parseInt(hex.slice(2, 4), 16) / 255, parseInt(hex.slice(4, 6), 16) / 255);
+    gl.enable(gl.DEPTH_TEST);
+
+    var count = 0, indexed = false, ready = false;
+    fetch(canvas.dataset.src).then(function (r) { return r.arrayBuffer(); }).then(function (buf) {
+      var dv = new DataView(buf), nv = dv.getUint32(4, true), nt = dv.getUint32(8, true);
+      var q = new Int16Array(buf, 12, nv * 3), idx = new Uint16Array(buf, 12 + nv * 6, nt * 3);
+      var pos = new Float32Array(nv * 3), i, a, b, c;
+      for (i = 0; i < nv * 3; i++) pos[i] = q[i] / 32767;
+      function fn(a, b, c) {
+        var ux = pos[b * 3] - pos[a * 3], uy = pos[b * 3 + 1] - pos[a * 3 + 1], uz = pos[b * 3 + 2] - pos[a * 3 + 2];
+        var vx = pos[c * 3] - pos[a * 3], vy = pos[c * 3 + 1] - pos[a * 3 + 1], vz = pos[c * 3 + 2] - pos[a * 3 + 2];
+        return [uy * vz - uz * vy, uz * vx - ux * vz, ux * vy - uy * vx];
+      }
+      var P2, N2;
+      if (canvas.dataset.flat === '1') {
+        /* Druck: kantige Flächen sichtbar lassen */
+        P2 = new Float32Array(nt * 9); N2 = new Float32Array(nt * 9);
+        for (i = 0; i < nt; i++) {
+          a = idx[i * 3]; b = idx[i * 3 + 1]; c = idx[i * 3 + 2];
+          var f = fn(a, b, c), l = Math.hypot(f[0], f[1], f[2]) || 1;
+          [a, b, c].forEach(function (v, k) {
+            P2.set(pos.subarray(v * 3, v * 3 + 3), i * 9 + k * 3);
+            N2.set([f[0] / l, f[1] / l, f[2] / l], i * 9 + k * 3);
+          });
+        }
+        count = nt * 3;
+      } else {
+        /* Scan: weich schattiert */
+        P2 = pos; N2 = new Float32Array(nv * 3);
+        for (i = 0; i < nt; i++) {
+          a = idx[i * 3]; b = idx[i * 3 + 1]; c = idx[i * 3 + 2];
+          var g = fn(a, b, c);
+          [a, b, c].forEach(function (v) { N2[v * 3] += g[0]; N2[v * 3 + 1] += g[1]; N2[v * 3 + 2] += g[2]; });
+        }
+        for (i = 0; i < nv; i++) { var L = Math.hypot(N2[i * 3], N2[i * 3 + 1], N2[i * 3 + 2]) || 1; N2[i * 3] /= L; N2[i * 3 + 1] /= L; N2[i * 3 + 2] /= L; }
+        var ib = gl.createBuffer(); gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ib); gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, idx, gl.STATIC_DRAW);
+        count = nt * 3; indexed = true;
+      }
+      var pb = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, pb); gl.bufferData(gl.ARRAY_BUFFER, P2, gl.STATIC_DRAW);
+      gl.enableVertexAttribArray(aP); gl.vertexAttribPointer(aP, 3, gl.FLOAT, false, 0, 0);
+      var nb = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, nb); gl.bufferData(gl.ARRAY_BUFFER, N2, gl.STATIC_DRAW);
+      gl.enableVertexAttribArray(aN); gl.vertexAttribPointer(aN, 3, gl.FLOAT, false, 0, 0);
+      ready = true; canvas.parentNode.classList.add('ready');
+    });
+
+    /* Drehen: von selbst, und mit Ziehen (waagrecht) von Hand */
+    var angle = -0.5, tilt = 0.18, drag = null, idle = 0, last = 0, visible = true;
+    canvas.addEventListener('pointerdown', function (e) {
+      drag = { x: e.clientX, y: e.clientY, a: angle, t: tilt }; canvas.setPointerCapture(e.pointerId); canvas.classList.add('grab');
+    });
+    canvas.addEventListener('pointermove', function (e) {
+      if (!drag) return;
+      angle = drag.a + (e.clientX - drag.x) * 0.012;
+      tilt = Math.max(-0.6, Math.min(0.8, drag.t + (e.clientY - drag.y) * 0.006));
+    });
+    function up() { if (drag) { drag = null; idle = performance.now(); canvas.classList.remove('grab'); } }
+    canvas.addEventListener('pointerup', up); canvas.addEventListener('pointercancel', up);
+    if ('IntersectionObserver' in window) new IntersectionObserver(function (es) { visible = es[0].isIntersecting; }).observe(canvas);
+
+    function mul(a, b) {
+      var o = new Float32Array(16), r, c, k;
+      for (c = 0; c < 4; c++) for (r = 0; r < 4; r++) { var s = 0; for (k = 0; k < 4; k++) s += a[k * 4 + r] * b[c * 4 + k]; o[c * 4 + r] = s; }
+      return o;
+    }
+    function frame(t) {
+      requestAnimationFrame(frame);
+      var dt = last ? Math.min(0.05, (t - last) / 1000) : 0; last = t;
+      if (!ready || !visible) return;
+      if (!drag && t - idle > 1200) angle += dt * 0.55;
+      var dpr = Math.min(window.devicePixelRatio || 1, 2), w = Math.round(canvas.clientWidth * dpr), h = Math.round(canvas.clientHeight * dpr);
+      if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
+      gl.viewport(0, 0, w, h); gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+      var f = 1 / Math.tan(0.30), asp = w / h, nr = 0.1, fr = 20;
+      gl.uniformMatrix4fv(uPr, false, new Float32Array([f / asp, 0, 0, 0, 0, f, 0, 0, 0, 0, (fr + nr) / (nr - fr), -1, 0, 0, 2 * fr * nr / (nr - fr), 0]));
+      var ca = Math.cos(angle), sa = Math.sin(angle), ct = Math.cos(tilt), st = Math.sin(tilt);
+      var ry = new Float32Array([ca, 0, -sa, 0, 0, 1, 0, 0, sa, 0, ca, 0, 0, 0, 0, 1]);
+      var rx = new Float32Array([1, 0, 0, 0, 0, ct, st, 0, 0, -st, ct, 0, 0, 0, -3.6, 1]);
+      gl.uniformMatrix4fv(uM, false, mul(rx, ry));
+      if (indexed) gl.drawElements(gl.TRIANGLES, count, gl.UNSIGNED_SHORT, 0); else gl.drawArrays(gl.TRIANGLES, 0, count);
+    }
+    requestAnimationFrame(frame);
+  }
+
   /* ---------- Projekt-Detail ---------- */
   if (page === 'projekt') {
     var id = new URLSearchParams(location.search).get('id');
@@ -370,6 +533,8 @@
         '<span class="idx tl">' + yr(p) + '</span>' +
         (p.yt
           ? '<div class="frame"><iframe src="https://www.youtube.com/embed/' + p.yt + '?autoplay=1&mute=1&playsinline=1&rel=0" title="' + esc(p.titel) + '" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div>'
+          : !p.spielen
+            ? '<button class="frame bild" type="button" id="mainImg" aria-label="Bild gross anzeigen"><img src="' + cover(p) + '" alt="' + esc(p.titel) + '"></button>'
           : '<div class="frame game' + (hochFormat ? ' game-hoch' : '') + '" id="game">' +
               '<button class="play-cover" type="button" id="playBtn"><img src="' + cover(p) + '" alt=""><span class="btn">Hier spielen</span></button>' +
             '</div>' +
@@ -386,6 +551,9 @@
         '<div class="text"><p class="kurz">' + esc(p.kurz) + '</p><p>' + p.lang + '</p></div>' +
       '</div>';
     if (p.postkarten) renderPostkarten(p);
+    if (p.galerie) renderGalerie(p);
+    var mainImg = document.getElementById('mainImg');
+    if (mainImg) mainImg.addEventListener('click', function () { lightbox([{ src: cover(p), alt: p.titel }], 0); });
     /* Spiel direkt im Portfolio: erst beim Klick laden (kein Ton, keine Last vorher) */
     if (p.spielen) {
       var game = document.getElementById('game');

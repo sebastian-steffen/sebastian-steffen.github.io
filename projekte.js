@@ -117,7 +117,39 @@ window.PROJEKTE = [
     "lang": "Statt eines sofortigen digitalen Abzugs zeichnet ein Plotter das aufgenommene Bild Linie für Linie von Hand nach. Die Spannung entsteht nicht im fertigen Foto, sondern im Entstehungsprozess selbst – ganz so, wie man es vom Warten auf eine Polaroid oder ein analoges Bild kennt. Man weiss nie genau, was am Ende auf dem Papier erscheint. <br><br> Ausgestellt an der Makerfaire 2026 im Enter Museum in Solothurn.",
     "yt": "vxfi5XnCydY",
     "format": "hoch",
-    "highlight": true
+    "highlight": true,
+    "galerie": [
+      {
+        "typ": "bilder",
+        "titel": "Vier Stile",
+        "bilder": [
+          {
+            "src": "plotter/plotter-1.webp",
+            "alt": "Spirale",
+            "text": "Spirale",
+            "frei": true
+          },
+          {
+            "src": "plotter/plotter-2.webp",
+            "alt": "Kontur",
+            "text": "Kontur",
+            "frei": true
+          },
+          {
+            "src": "plotter/plotter-3.webp",
+            "alt": "Welle",
+            "text": "Welle",
+            "frei": true
+          },
+          {
+            "src": "plotter/plotter-4.webp",
+            "alt": "Dreiecke",
+            "text": "Dreiecke",
+            "frei": true
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "doomscrolling-rc-car",
@@ -210,6 +242,150 @@ window.PROJEKTE = [
     "spielen": "spiele/kugelbahn/index.html",
     "spielHinweis": "Ins Feld klicken, dann Enter zum Testen. Spieler 1: A/D, Spieler 2: Pfeiltasten",
     "spielFormat": "quer"
+  },
+  {
+    "id": "baumlampe",
+    "titel": "Baumlampe",
+    "kategorie": "3d",
+    "jahr": "2026",
+    "kunde": "",
+    "rolle": "Scan, Modellierung, Druck, Licht",
+    "tools": "Polycam, Blender, 3D-Druck, LEDs",
+    "tagline": "Ein Baumstamm, der leuchtet",
+    "tags": [
+      "3D-Druck",
+      "3D-Scan",
+      "Licht"
+    ],
+    "kurz": "Ein Baumstamm, gescannt, in 3D gedruckt und von innen zum Leuchten gebracht.",
+    "lang": "Am Anfang stand ein wunderschöner Baumstamm. Mit Polycam habe ich ihn in 3D gescannt und das Modell in Blender bereinigt und für den Druck vorbereitet. Gedruckt in hellem Filament und mit LEDs bestückt, wird aus der Rinde ein Lampenschirm: Das Licht scheint durch die dünnen Stellen und zeichnet jede Furche nach. <br><br> Die Ringe auf der Oberseite sind keine Jahrringe. Sie stammen vom Drucker, der Schicht um Schicht seine Kreise zieht.",
+    "yt": "NUajofZTs2s",
+    "format": "hoch",
+    "highlight": false,
+    "bild": "3d/baumlampe-2.jpg",
+    "bildGanz": false,
+    "galerie": [
+      {
+        "typ": "slides",
+        "titel": "Die Lampe",
+        "bilder": [
+          {
+            "src": "3d/baumlampe-1.jpg",
+            "alt": "Baumlampe von oben, die Druckringe leuchten"
+          },
+          {
+            "src": "3d/baumlampe-2.jpg",
+            "alt": "Baumlampe leuchtet nachts im Garten"
+          },
+          {
+            "src": "3d/baumlampe-3.jpg",
+            "alt": "Baumlampe auf dem Schreibtisch"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "elisabethen-pyramiden",
+    "titel": "Elisabethen-Pyramiden",
+    "kategorie": "3d",
+    "jahr": "2024",
+    "kunde": "",
+    "rolle": "CAD-Modell, Druck, Schatzsuche",
+    "tools": "CAD, 3D-Druck, QR-Code",
+    "tagline": "Ein Schatz neben der Kirche",
+    "tags": [
+      "3D-Druck",
+      "CAD",
+      "Schatzsuche"
+    ],
+    "kurz": "Die Glaspyramiden vor der Elisabethenkirche, im CAD nachgebaut, gedruckt und als Schatz versteckt.",
+    "lang": "Vor der Elisabethenkirche in Basel stehen zwei Pyramiden aus Glasbausteinen. Ich habe sie im CAD nachgebaut. Die Herausforderung: viele einzelne Flächen so zu konstruieren, dass sie passgenau ineinandergreifen. Die Glasfelder sind eigene Teile, die in den Rahmen eingesetzt werden. <br><br> Aus den Modellen wurde eine Schatzsuche: Versteckt in der Nähe der echten Pyramiden, führte bei jedem Fund ein QR-Code zum Video.",
+    "yt": "QSKrsxZN6Ow",
+    "format": "hoch",
+    "highlight": false,
+    "bild": "3d/pyramide-kombi.jpg",
+    "bildGanz": false,
+    "galerie": [
+      {
+        "typ": "bilder",
+        "titel": "Modell und Vorbild",
+        "breit": true,
+        "bilder": [
+          {
+            "src": "3d/pyramide-kombi.jpg",
+            "alt": "Die gedruckte Pyramide vor ihrem Vorbild an der Elisabethenkirche"
+          }
+        ]
+      },
+      {
+        "typ": "bilder",
+        "titel": "Aus vielen Teilen",
+        "bilder": [
+          {
+            "src": "3d/pyramide-3.jpg",
+            "alt": "Die Pyramide von oben"
+          },
+          {
+            "src": "3d/pyramide-4.jpg",
+            "alt": "Rahmen und eingesetztes Glasfeld als einzelne Teile"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "bebbi-sagg-ohrring",
+    "titel": "Bebbi-Sagg-Ohrring",
+    "kategorie": "3d",
+    "jahr": "2026",
+    "kunde": "",
+    "rolle": "Scan, Modellierung, Druck",
+    "tools": "Polycam, 3D-Modellierung, 3D-Druck",
+    "tagline": "Vom Abfallsack zum Schmuckstück",
+    "tags": [
+      "3D-Druck",
+      "3D-Scan",
+      "Schmuck"
+    ],
+    "kurz": "Der Basler Bebbi-Sagg als Ohrring: gescannt, nachmodelliert und in 3D gedruckt.",
+    "lang": "Kaum ein Objekt ist so baslerisch wie der blaue Bebbi-Sagg. Ich habe einen echten Sack gescannt und das Modell mit viel Handarbeit verkleinert, geglättet und mit dem Aufdruck versehen, bis daraus ein kleiner, tragbarer Ohrring wurde. <br><br> In Zusammenarbeit mit der Stilberaterin Stéphanie Staub entstand danach das Video <a href=\"projekt.html?id=bebbi-sagg-farb-stil-basel\">Bebbi Sagg – farb.stil.basel</a>. Hier geht es um das Making-of: den Weg vom Abfallsack zum Schmuckstück.",
+    "yt": "",
+    "format": "hoch",
+    "highlight": false,
+    "bild": "3d/ohrring-2.jpg",
+    "bildGanz": false,
+    "galerie": [
+      {
+        "typ": "modelle",
+        "titel": "Vom Abfallsack zum Ohrring",
+        "modelle": [
+          {
+            "datei": "bebbisagg-original.bin",
+            "name": "Der Scan",
+            "text": "Ein echter Bebbi-Sagg, mit Polycam gescannt",
+            "farbe": "#2f6cc0"
+          },
+          {
+            "datei": "bebbisagg-druck.bin",
+            "name": "Der Druck",
+            "text": "Nachmodelliert, mit Aufdruck, bereit für den Drucker",
+            "farbe": "#3a95e6",
+            "flach": true
+          }
+        ]
+      },
+      {
+        "typ": "bilder",
+        "titel": "Das fertige Stück",
+        "bilder": [
+          {
+            "src": "3d/ohrring-1.jpg",
+            "alt": "Die Bebbi-Sagg-Ohrringe im Schmuckkästchen"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "bad-santa-weihnachts-schnitzeljagd",
