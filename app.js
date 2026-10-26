@@ -47,7 +47,7 @@
       '<div class="face">' +
         '<span class="idx tl">' + yr(p) + '</span>' +
         (p.spielen ? '<span class="playable">Spielbar</span>' : '') +
-        '<div class="photo' + (p.bild && !p.spielen && p.bildGanz !== false ? ' whole' : '') + '"><img class="' + (p.format === 'hoch' && !p.bild ? 'hoch' : '') + '" src="' + cover(p) + '" alt="" loading="lazy"></div>' +
+        '<div class="photo' + (p.bild && !p.spielen && p.bildGanz !== false ? ' whole' : '') + '"><img class="' + (p.format === 'hoch' && !p.bild ? 'hoch' : '') + '"' + (p.bildFokus ? ' style="transform:translate(-50%,-' + p.bildFokus + '%)"' : '') + ' src="' + cover(p) + '" alt="" loading="lazy"></div>' +
         '<div class="name">' + esc(short(p)) + '</div>' +
         '<div class="sub">' + esc(p.tagline) + '</div>' +
         (big ? '<p class="kurz">' + esc(p.kurz) + '</p>' : '') +

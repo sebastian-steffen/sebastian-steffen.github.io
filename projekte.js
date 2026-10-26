@@ -313,7 +313,7 @@ window.PROJEKTE = [
         "breit": true,
         "bilder": [
           {
-            "src": "3d/pyramide-kombi.jpg",
+            "src": "3d/pyramide-kombi.jpg?v=2",
             "alt": "Die gedruckte Pyramide vor ihrem Vorbild an der Elisabethenkirche"
           }
         ]
@@ -323,12 +323,12 @@ window.PROJEKTE = [
         "titel": "Aus vielen Teilen",
         "bilder": [
           {
-            "src": "3d/pyramide-luft.jpg",
+            "src": "3d/pyramide-luft.jpg?v=2",
             "alt": "Die echte Pyramide aus der Vogelperspektive"
           },
           {
-            "src": "3d/pyramide-3.jpg",
-            "hover": "3d/pyramide-4.jpg",
+            "src": "3d/pyramide-3.jpg?v=2",
+            "hover": "3d/pyramide-4.jpg?v=2",
             "alt": "Die gedruckte Pyramide, zusammengesetzt und in Teilen"
           }
         ]
@@ -362,14 +362,14 @@ window.PROJEKTE = [
         "titel": "Vom Abfallsack zum Ohrring",
         "modelle": [
           {
-            "datei": "bebbisagg-original.bin",
+            "datei": "bebbisagg-original.bin?v=2",
             "name": "Der Scan",
             "text": "Ein echter Bebbi-Sagg, mit Polycam gescannt",
             "farbe": "#2f6cc0",
-            "textur": "bebbisagg-original.jpg"
+            "textur": "bebbisagg-original.jpg?v=2"
           },
           {
-            "datei": "bebbisagg-druck.bin",
+            "datei": "bebbisagg-druck.bin?v=2",
             "name": "Der Druck",
             "text": "Nachmodelliert, blau mit weissem Aufdruck, bereit für den Drucker",
             "farbe": "#3a95e6",
@@ -485,7 +485,8 @@ window.PROJEKTE = [
     "lang": "Durch die Kombination von Hardware und Software entsteht ein einzigartiges Spielerlebnis, das sowohl körperliche als auch mentale Fähigkeiten erfordert. Durch hohe und tiefe Töne steuern die Spieler jeweils eine Spule, die sich entsprechend der Tonhöhe bewegt. Realisiert wurde das Projekt mit einem Lasercutter für die physischen Komponenten, Python für die Softwarelogik und Arduino und Raspberry Pi für die Steuerung der Hardware.",
     "yt": "IdArt2qjiuQ",
     "format": "hoch",
-    "highlight": true
+    "highlight": true,
+    "bildFokus": 35
   },
   {
     "id": "fitpass-szenario",
