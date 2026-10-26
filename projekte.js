@@ -313,7 +313,7 @@ window.PROJEKTE = [
         "breit": true,
         "bilder": [
           {
-            "src": "3d/pyramide-kombi.jpg?v=2",
+            "src": "3d/pyramide-kombi.jpg?v=3",
             "alt": "Die gedruckte Pyramide vor ihrem Vorbild an der Elisabethenkirche"
           }
         ]
@@ -323,12 +323,12 @@ window.PROJEKTE = [
         "titel": "Aus vielen Teilen",
         "bilder": [
           {
-            "src": "3d/pyramide-luft.jpg?v=2",
+            "src": "3d/pyramide-luft.jpg?v=3",
             "alt": "Die echte Pyramide aus der Vogelperspektive"
           },
           {
-            "src": "3d/pyramide-3.jpg?v=2",
-            "hover": "3d/pyramide-4.jpg?v=2",
+            "src": "3d/pyramide-3.jpg?v=3",
+            "hover": "3d/pyramide-4.jpg?v=3",
             "alt": "Die gedruckte Pyramide, zusammengesetzt und in Teilen"
           }
         ]
